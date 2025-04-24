@@ -27,7 +27,6 @@ header {
   line-height: 1.5;
   max-height: 100vh;
 }
-
 .logo {
   display: block;
   margin: 0 auto 2rem;
@@ -58,7 +57,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -86,9 +85,10 @@ nav a:first-of-type {
 }
 
 .background {
-  background-image: url('@/assets/imagens/fundo.jpg');
+  background-image: url('@/assets/imagens/fundo.png');
   background-size: cover;
   background-position: center;
+  width: 100vw;
   height: 100vh;
   position: relative;
 }
@@ -106,7 +106,6 @@ nav a:first-of-type {
   text-align: center;
   color: white;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
 }
 
