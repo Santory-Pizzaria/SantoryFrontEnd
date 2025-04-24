@@ -1,23 +1,25 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/imagens/logo.png" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
   </header>
 
-  <RouterView />
+  <div class="background">
+    <div class="overlay">
+      <div class="container">
+        <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
+        <h1 class="slogan">O Melhor Pedaço Do Seu Dia!</h1>
+        <div class="buttons">
+          <button class="btn orange">🍕 Ver Cardápio e Pedir!</button>
+          <button class="btn dark">📍 Como Chegar</button>
+          <button class="btn green">💬 Whatsapp</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -81,5 +83,84 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+.background {
+  background-image: url('@/assets/imagens/fundo.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+}
+
+.logo {
+  width: 160px;
+  margin-bottom: 1rem;
+}
+
+.slogan {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn.orange {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.btn.orange:hover {
+  background-color: #d97706;
+}
+
+.btn.dark {
+  background-color: #1f2937;
+  color: white;
+}
+
+.btn.dark:hover {
+  background-color: #374151;
+}
+
+.btn.green {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn.green:hover {
+  background-color: #059669;
 }
 </style>
