@@ -1,7 +1,11 @@
 <script setup>
 function openGoogleMaps() {
   window.open('https://maps.app.goo.gl/vFo8n8Xm1pSBPbwY7', '_blank');
+};
+function oswhats() {
+  window.open('https://wa.link/h475ec', '_blank');
 }
+
 </script>
 
 <template>
@@ -18,7 +22,7 @@ function openGoogleMaps() {
         <div class="buttons">
           <button class="btn orange">🍕 Ver Cardápio e Pedir!</button>
           <button class="btn dark" @click="openGoogleMaps">📍 Como Chegar</button>
-          <button class="btn green">💬 Whatsapp</button>
+          <button class="btn green" @click="oswhats">💬 Whatsapp</button>
         </div>
       </div>
     </div>
