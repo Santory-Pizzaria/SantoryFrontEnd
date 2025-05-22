@@ -1,4 +1,8 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
 function openGoogleMaps() {
   window.open('https://maps.app.goo.gl/vFo8n8Xm1pSBPbwY7', '_blank');
 };
@@ -6,6 +10,9 @@ function oswhats() {
   window.open('https://wa.link/h475ec', '_blank');
 }
 
+function goToMenu() {
+  router.push('/menu');
+}
 </script>
 
 <template>
@@ -13,6 +20,7 @@ function oswhats() {
 
 
   </header>
+  <router-view />
 
   <div class="background">
     <div class="overlay">
@@ -20,7 +28,7 @@ function oswhats() {
         <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
         <h1 class="slogan">O Melhor Pedaço Do Seu Dia!</h1>
         <div class="buttons">
-          <button class="btn orange">🍕 Ver Cardápio e Pedir!</button>
+          <button class="btn orange" @click="goToMenu">🍕 Ver Cardápio e Pedir!</button>
           <button class="btn dark" @click="openGoogleMaps">📍 Como Chegar</button>
           <button class="btn green" @click="oswhats">💬 Whatsapp</button>
         </div>

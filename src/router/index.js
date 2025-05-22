@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import MenuView from '../views/MenuView.vue' // Adicionar importação para MenuView
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +9,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/menu', // Adicionar rota para Menu
+      name: 'menu',
+      component: MenuView,
     },
     {
       path: '/about',
