@@ -22,7 +22,7 @@ function goToMenu() {
   </header>
   <router-view />
 
-  <div class="background">
+  <div v-if="$route.path === '/'" class="background">
     <div class="overlay">
       <div class="container">
         <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />

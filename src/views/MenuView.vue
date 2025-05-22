@@ -1,27 +1,57 @@
 <script setup>
-import PizzaCard from '@/components/PizzaCard.vue';
-import { ref } from 'vue';
+import PizzaList from '@/components/PizzaList.vue';
+import FooteRor from '@/components/FooteRor.vue';
 
-const pizzas = ref([
-  // Exemplo de dados, substitua com seus dados reais
-  // { name: 'Pepperoni', description: 'Clássica pizza de pepperoni', price: 'R$ 35,00', image: 'url_to_image_pepperoni.jpg' },
-  // { name: 'Margherita', description: 'Molho de tomate, mussarela e manjericão', price: 'R$ 30,00', image: 'url_to_image_margherita.jpg' }
-]);
+
+
 </script>
 <template>
   <div class="menu">
-    <header>
-      <img src="@/assets/imagens/logo.png" alt="Santory Logo" class="logo" />
-      <nav>
-        <a href="#">Pizza</a>
-        <a href="#">Combos</a>
-        <a href="#">Bebidas</a>
-      </nav>
-    </header>
-
-    <section class="pizza-list">
-      <PizzaCard v-for="pizza in pizzas" :key="pizza.name" :pizza="pizza" />
-    </section>
+ <PizzaList></PizzaList>
   </div>
+  <FooteRor></FooteRor>
 </template>
+
+<style scoped>
+.menu {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  height: 50px;
+}
+
+nav {
+  display: flex;
+  gap: 15px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #ff6347;
+}
+
+.pizza-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+</style>
 
