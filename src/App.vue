@@ -21,6 +21,7 @@ function goToMenu() {
 
   </header>
   <router-view />
+  
 
   <div v-if="$route.path === '/'" class="background">
     <div class="overlay">
