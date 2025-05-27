@@ -64,6 +64,13 @@ body {
 .header-Button {
   display: flex;
   align-items: center;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  padding: 20px;
+}
+.header-Button .nav-items a {
+  color: red;
+  text-decoration: none;
+
 }
 span{
   margin-right: 40px;
@@ -86,6 +93,10 @@ header {
 
 header .logo img {
   height: 40px;
+}
+
+header .logo {
+  background-color: aqua;
 }
 
 nav ul {
@@ -189,12 +200,12 @@ body {
 
 
 header {
-  background-color: #ff9800;
+  background-color: #e28f11;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  height: 35px;
+  height: 100px;
 }
 
 .logo {
@@ -206,7 +217,8 @@ header {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-}
+  margin-top: 30px;
+  margin-bottom: 50px;}
 
 nav {
   display: flex;
