@@ -12,15 +12,15 @@
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
-          <img src="/src/assets/imagens/icon-ingresso.png" alt="Meus Pedidos" class="nav-icon">
+          <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
           <span>Meus Pedidos</span>
         </a>
         <a href="#" class="nav-item">
-          <img src="/src/assets/imagens/fundo.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
+          <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
         <a href="#" class="nav-item">
-          <img src="/src/assets/imagens/fundo.png" alt="Avaliações" class="nav-icon">
+          <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
       </div>
@@ -205,7 +205,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  height: 100px;
+  height: 80px;
 }
 
 .logo {
@@ -246,7 +246,7 @@ nav a {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-top: 30px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 
 }
