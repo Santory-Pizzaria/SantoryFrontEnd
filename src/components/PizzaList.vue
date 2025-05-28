@@ -2,6 +2,9 @@
 
   <div class="container">
     <header class="header-logo">
+      <div class="header-status">
+        <button class="status-button">Fechado</button>
+      </div>
     </header>
     <div class="Logo">
       <img src="/src/assets/imagens/logo.png" alt="Santory Logo" class="logo" />
@@ -37,6 +40,7 @@
     <section class="pizza-list">
       <PizzaCard v-for="pizza in pizzas" :key="pizza.name" :pizza="pizza" />
     </section>
+
   </div>
 </template>
 
@@ -61,18 +65,32 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
 }
+
 .header-Button {
   display: flex;
   align-items: center;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding: 20px;
 }
+
+.header-Button .nav-items {
+  display: flex;
+  align-items: center;
+}
+
 .header-Button .nav-items a {
+  display: flex;
+  align-items: center;
   color: red;
   text-decoration: none;
 
 }
-span{
+
+.header-Button .nav-items span {
+  margin-left: 5px;
+}
+
+span {
   margin-right: 40px;
 }
 
@@ -181,11 +199,8 @@ nav a:hover {
   color: #f30;
 }
 
-
-
-
 .header {
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1);
   background-color: #fff;
   padding: 16px 24px;
 
@@ -218,7 +233,8 @@ header {
   justify-content: center;
   margin-bottom: 20px;
   margin-top: 30px;
-  margin-bottom: 50px;}
+  margin-bottom: 50px;
+}
 
 nav {
   display: flex;
@@ -247,7 +263,6 @@ nav a {
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
 
 }
 
@@ -259,6 +274,8 @@ nav a {
   align-items: center;
   padding: 16px;
   transition: box-shadow 0.3s;
+  height: 130px;
+  width: 90%;
 }
 
 .pizza-card:hover {
@@ -273,6 +290,28 @@ nav a {
   background-color: #eee;
 }
 
+.status-button {
+  background-color: #FFE4E9;
+  color: rgb(211, 53, 53);
+  border-color: rgb(211, 53, 53);
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  align-items: left;
+}
+
+.status-button:hover {
+  background-color: rgb(231, 83, 83);
+  color: #fff;
+}
+
+.header-status {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: auto;
+}
 
 
 @media (max-width: 768px) {
@@ -302,6 +341,39 @@ nav a {
 
   .pizza-info {
     margin-left: 0;
+  }
+
+  .header-status {
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .status-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-items {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-items a {
+    margin-bottom: 10px;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a {
+    margin: 5px 0;
+  }
+
+  .search-bar input {
+    width: 100%;
+    margin-bottom: 10px;
   }
 }
 </style>
