@@ -1,4 +1,18 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function openGoogleMaps() {
+  window.open('https://maps.app.goo.gl/vFo8n8Xm1pSBPbwY7', '_blank');
+};
+function oswhats() {
+  window.open('https://wa.link/h475ec', '_blank');
+}
+
+function goToMenu() {
+  router.push('/menu');
+}
 </script>
 
 <template>
@@ -6,16 +20,18 @@
 
 
   </header>
+  <router-view />
+  
 
-  <div class="background">
+  <div v-if="$route.path === '/'" class="background">
     <div class="overlay">
       <div class="container">
         <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
         <h1 class="slogan">O Melhor Pedaço Do Seu Dia!</h1>
         <div class="buttons">
-          <button class="btn orange">🍕 Ver Cardápio e Pedir!</button>
-          <button class="btn dark">📍 Como Chegar</button>
-          <button class="btn green">💬 Whatsapp</button>
+          <button class="btn orange" @click="goToMenu">🍕 Ver Cardápio e Pedir!</button>
+          <button class="btn dark" @click="openGoogleMaps">📍 Como Chegar</button>
+          <button class="btn green" @click="oswhats">💬 Whatsapp</button>
         </div>
       </div>
     </div>
@@ -64,9 +80,7 @@ nav a:first-of-type {
     padding-right: calc(var(--section-gap) / 2);
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+
 
   header .wrapper {
     display: flex;
