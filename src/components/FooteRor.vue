@@ -6,7 +6,6 @@
  <p> Endereço: Porto Grande,123 - Porto Grande</p>
   <p> Horário de funcionamento: 18:00 - 23:00</p>
   <p> Todos os direitos reservados</p>
-  <p> Desenvolvido por: 3INFO1</p>
   <p> &copy; {{ new Date().getFullYear() }}</p>
 </div>
   </footer>
