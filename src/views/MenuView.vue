@@ -11,5 +11,3 @@ import FooteRor from '@/components/FooteRor.vue';
   </div>
   <FooteRor></FooteRor>
 </template>
-
-

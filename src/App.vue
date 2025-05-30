@@ -21,7 +21,7 @@ function goToMenu() {
 
   </header>
   <router-view />
-  
+
 
   <div v-if="$route.path === '/'" class="background">
     <div class="overlay">
@@ -43,6 +43,7 @@ header {
   line-height: 1.5;
   max-height: 100vh;
 }
+
 .logo {
   display: block;
   margin: 0 auto 2rem;

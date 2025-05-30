@@ -1,3 +1,20 @@
+<script setup>
+import BebidaCard from './BebidaCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateTo(route) {
+  router.push(route);
+}
+
+const bebidas = [
+  { name: 'Coca-Cola', description: 'Refrigerante 2L', price: 9.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Guaraná', description: 'Refrigerante 1L', price: 5.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Suco de Laranja', description: 'Natural 500ml', price: 7.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Água Mineral', description: 'Sem gás 350ml', price: 2.90, image: '/src/assets/imagens/fundo.png' }
+];
+</script>
 <template>
 
   <div class="container-tudo">
@@ -46,23 +63,6 @@
   </div>
 </template>
 
-<script setup>
-import BebidaCard from './BebidaCard.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function navigateTo(route) {
-  router.push(route);
-}
-
-const bebidas = [
-  { name: 'Coca-Cola', description: 'Refrigerante 2L', price: 9.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Guaraná', description: 'Refrigerante 1L', price: 5.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Suco de Laranja', description: 'Natural 500ml', price: 7.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Água Mineral', description: 'Sem gás 350ml', price: 2.90, image: '/src/assets/imagens/fundo.png' }
-];
-</script>
 <style scoped>
 * {
   margin: 0;

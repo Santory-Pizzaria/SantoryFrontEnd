@@ -1,3 +1,20 @@
+<script setup>
+import PizzaCard from './PizzaCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateTo(route) {
+  router.push(route);
+}
+
+const pizzas = [
+  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
+];
+</script>
 <template>
 
   <div class="container-tudo">
@@ -46,23 +63,6 @@
   </div>
 </template>
 
-<script setup>
-import PizzaCard from './PizzaCard.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function navigateTo(route) {
-  router.push(route);
-}
-
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
-];
-</script>
 <style scoped>
 * {
   margin: 0;

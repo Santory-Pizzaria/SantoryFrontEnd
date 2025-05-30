@@ -1,3 +1,20 @@
+<script setup>
+import ComboCard from './ComboCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateTo(route) {
+  router.push(route);
+}
+
+const combos = [
+  { name: 'Combo Família', description: '2 Pizzas Grandes + 1 Refrigerante 2L', price: 49.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Casal', description: '1 Pizza Média + 1 Refrigerante 1L', price: 29.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Individual', description: '1 Pizza Pequena + 1 Refrigerante 350ml', price: 19.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Bebida', description: '1 Pizza Média + 2 Refrigerantes 1L', price: 39.90, image: '/src/assets/imagens/fundo.png' }
+];
+</script>
 <template>
 
   <div class="container-tudo">
@@ -46,23 +63,6 @@
   </div>
 </template>
 
-<script setup>
-import ComboCard from './ComboCard.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function navigateTo(route) {
-  router.push(route);
-}
-
-const combos = [
-  { name: 'Combo Família', description: '2 Pizzas Grandes + 1 Refrigerante 2L', price: 49.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Combo Casal', description: '1 Pizza Média + 1 Refrigerante 1L', price: 29.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Combo Individual', description: '1 Pizza Pequena + 1 Refrigerante 350ml', price: 19.90, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Combo Bebida', description: '1 Pizza Média + 2 Refrigerantes 1L', price: 39.90, image: '/src/assets/imagens/fundo.png' }
-];
-</script>
 <style scoped>
 * {
   margin: 0;
