@@ -1,6 +1,6 @@
 <template>
 
-  <div class="container">
+  <div class="container-tudo">
     <header class="header-logo">
       <div class="header-status">
         <button class="status-button">Fechado</button>
@@ -30,9 +30,11 @@
     </div>
     <div class=header>
       <nav>
-        <a href="#">Pizza</a>
-        <a href="#">Combos</a>
-        <a href="#">Bebidas</a>
+        <ul>
+          <li><a href="#" @click.prevent="navigateTo('/pizza')">Pizza</a></li>
+          <li><a href="#" @click.prevent="navigateTo('/combo')">Combo</a></li>
+          <li><a href="#" @click.prevent="navigateTo('/bebida')">Bebida</a></li>
+        </ul>
       </nav>
 
     </div>
@@ -46,6 +48,13 @@
 
 <script setup>
 import PizzaCard from './PizzaCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateTo(route) {
+  router.push(route);
+}
 
 const pizzas = [
   { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },

@@ -1,6 +1,6 @@
 <template>
 
-  <div class="container">
+  <div class="container-tudo">
     <header class="header-logo">
       <div class="header-status">
         <button class="status-button">Fechado</button>
@@ -30,9 +30,11 @@
     </div>
     <div class=header>
       <nav>
-        <a href="#">Pizza</a>
-        <a href="#">Combos</a>
-        <a href="#">Bebidas</a>
+        <ul>
+          <li><a href="#" @click.prevent="navigateTo('/pizza')">Pizza</a></li>
+          <li><a href="#" @click.prevent="navigateTo('/combo')">Combo</a></li>
+          <li><a href="#" @click.prevent="navigateTo('/bebida')">Bebida</a></li>
+        </ul>
       </nav>
 
     </div>
@@ -46,6 +48,13 @@
 
 <script setup>
 import ComboCard from './ComboCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateTo(route) {
+  router.push(route);
+}
 
 const combos = [
   { name: 'Combo Família', description: '2 Pizzas Grandes + 1 Refrigerante 2L', price: 49.90, image: '/src/assets/imagens/fundo.png' },
