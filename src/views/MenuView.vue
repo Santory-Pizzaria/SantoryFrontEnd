@@ -4,6 +4,7 @@ import FooteRor from '@/components/FooteRor.vue';
 
 
 
+
 </script>
 <template>
   <div class="menu">

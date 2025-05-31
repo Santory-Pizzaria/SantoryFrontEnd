@@ -4,6 +4,7 @@ import MenuView from '../views/MenuView.vue'
 import PizzaList from '../components/PizzaList.vue'
 import ComboList from '../components/ComboList.vue'
 import BebidaList from '../components/BebidaList.vue'
+import EnderecoForm from '../components/EnderecoForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,11 @@ const router = createRouter({
       path: '/bebida',
       name: 'BebidaList',
       component: BebidaList,
+    },
+    {
+      path: '/endereco',
+      name: 'EnderecoForm',
+      component: EnderecoForm,
     },
   ],
 })

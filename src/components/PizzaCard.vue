@@ -18,7 +18,6 @@ defineProps(['pizza']);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* Garantir que os elementos fiquem separados */
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
