@@ -28,7 +28,7 @@ export default {
     <div class="card">
 
       <div class="left">
-        <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
+        <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo-endereco" />
         <h3 class="title">Santory Pizzaria</h3>
 
         <h4 class="section-title">Contate-Nos</h4>
@@ -93,7 +93,7 @@ body {
   margin-bottom: 20px;
 }
 
-.logo {
+.logo-endereco {
   width: 80px;
   margin-bottom: 10px;
 }
