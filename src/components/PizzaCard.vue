@@ -42,7 +42,11 @@ defineProps(['pizza']);
 }
 .pizza-info {
   margin-left: 12px;
-  order: 1; 
+  order: 1;
+
+}
+.pizza-info h3 {
+  color: black;
 }
 .price {
   color: green;

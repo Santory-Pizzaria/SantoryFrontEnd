@@ -38,7 +38,14 @@
     </div>
 
     <section class="pizza-list">
-      <PizzaCard v-for="pizza in pizzas" :key="pizza.name" :pizza="pizza" />
+      <router-link
+        v-for="pizza in pizzas"
+        :key="pizza.name"
+        :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
+        class="pizza-link"
+      >
+        <PizzaCard :pizza="pizza" />
+      </router-link>
     </section>
 
   </div>
@@ -169,6 +176,7 @@ nav a:hover {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 .pizza-item img {
@@ -179,12 +187,14 @@ nav a:hover {
 
 .pizza-info {
   padding: 15px;
+  text-decoration: none;
 }
 
 .pizza-info h3 {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+
 }
 
 .pizza-info p {
@@ -313,6 +323,10 @@ nav a {
   margin-left: auto;
 }
 
+.pizza-link {
+  text-decoration: none;
+}
+
 
 @media (max-width: 768px) {
   header {
@@ -328,6 +342,8 @@ nav a {
   .pizza-list {
     padding: 16px;
     grid-template-columns: 1fr;
+    text-decoration: none;
+
   }
 
   .pizza-card {
