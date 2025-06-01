@@ -91,6 +91,7 @@ body {
   max-width: 300px;
   text-align: center;
   margin-bottom: 20px;
+  padding: 10px;
 }
 
 .logo-endereco {
@@ -106,6 +107,7 @@ body {
 .section-title {
   color: teal;
   margin-top: 15px;
+  padding: 10px;
 }
 
 .email {
@@ -121,7 +123,7 @@ body {
   gap: 20px;
 }
 
-P {
+p .form {
   padding: 10px;
 }
 
