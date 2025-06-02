@@ -12,7 +12,7 @@
       return
     }
 
-    // Simulação de envio
+
     console.log('Enviando para PagSeguro (simulação)...')
     console.log({
       email: email.value,
@@ -26,7 +26,7 @@
 
 <template>
     <div class="checkout-container">
-      <header class="header">
+      <header class="header-Pag">
         <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
         <h1>Pizzaria Santory</h1>
       </header>
@@ -85,7 +85,7 @@
     font-family: sans-serif;
     background: white;
   }
-  .header {
+  .header-Pag {
     display: flex;
     align-items: center;
     gap: 15px;
