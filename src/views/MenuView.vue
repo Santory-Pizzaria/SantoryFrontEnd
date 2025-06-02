@@ -1,6 +1,6 @@
 <script setup>
 import PizzaList from '@/components/PizzaList.vue';
-import FooteRor from '@/components/FooteRor.vue';
+
 
 
 
@@ -10,5 +10,5 @@ import FooteRor from '@/components/FooteRor.vue';
   <div class="menu">
     <PizzaList></PizzaList>
   </div>
-  <FooteRor></FooteRor>
+
 </template>
