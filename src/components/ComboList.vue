@@ -1,6 +1,7 @@
 <script setup>
 import ComboCard from './ComboCard.vue';
 import { useRouter } from 'vue-router';
+import FooteRor from './FooteRor.vue';
 
 const router = useRouter();
 
@@ -59,7 +60,7 @@ const combos = [
     <section class="combo-list">
       <ComboCard v-for="combo in combos" :key="combo.name" :combo="combo" />
     </section>
-
+    <FooteRor></FooteRor>
   </div>
 </template>
 

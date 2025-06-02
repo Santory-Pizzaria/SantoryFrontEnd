@@ -1,6 +1,7 @@
 <script setup>
 import PizzaCard from './PizzaCard.vue';
 import { useRouter } from 'vue-router';
+import FooteRor from './FooteRor.vue';
 
 const router = useRouter();
 
@@ -60,7 +61,9 @@ const pizzas = [
       <PizzaCard v-for="pizza in pizzas" :key="pizza.name" :pizza="pizza" />
     </section>
 
+
   </div>
+  <FooteRor></FooteRor>
 </template>
 
 <style scoped>

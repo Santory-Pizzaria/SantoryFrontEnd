@@ -1,6 +1,7 @@
 <script setup>
 import BebidaCard from './BebidaCard.vue';
 import { useRouter } from 'vue-router';
+import FooteRor from './FooteRor.vue';
 
 const router = useRouter();
 
@@ -59,6 +60,7 @@ const bebidas = [
     <section class="bebida-list">
       <BebidaCard v-for="bebida in bebidas" :key="bebida.name" :bebida="bebida" />
     </section>
+    <FooteRor></FooteRor>
 
   </div>
 </template>
