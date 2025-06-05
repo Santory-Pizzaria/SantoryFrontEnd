@@ -40,7 +40,7 @@ const pizzas = [
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
           <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
