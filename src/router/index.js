@@ -6,6 +6,7 @@ import ComboList from '../components/ComboList.vue'
 import BebidaList from '../components/BebidaList.vue'
 import EnderecoForm from '../components/EnderecoForm.vue'
 import CheckoutForm from '@/components/CheckoutForm.vue'
+import FeedBack from '@/components/FeedBack.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,11 @@ const router = createRouter({
       path: '/form',
       name: 'CheckoutForm',
       component: CheckoutForm,
+    },
+    {
+      path: '/feedback',
+      name: 'FeedBack',
+      component: FeedBack,
     },
   ],
 })
