@@ -6,18 +6,17 @@
       </button>
       <span class="pizza-title">{{ pizzaNome }}</span>
     </header>
-    <!-- Step 1: Quantos Sabores -->
     <section v-if="step === 1" class="section">
       <h2 class="section-title">Quantos Sabores?</h2>
       <div class="options-list">
-        <label v-for="q in [1,2,3,4]" :key="q" class="option-card">
+        <label v-for="q in opcoesSabores" :key="q" class="option-card">
           <input type="radio" name="qtdSabores" :value="q" v-model="qtdSabores" />
           <span>{{ q }} Sabor{{ q > 1 ? 'es' : '' }}</span>
         </label>
       </div>
-      <button class="nav-btn" @click="step = 2">Continuar</button>
+      <div v-if="erroSabores" class="erro-msg">{{ erroSabores }}</div>
+      <button class="nav-btn" @click="continuarSabores">Continuar</button>
     </section>
-    <!-- Step 2: Bordas -->
     <section v-if="step === 2" class="section">
       <h2 class="section-title">Bordas:</h2>
       <div class="options-list">
@@ -31,25 +30,25 @@
         <button class="nav-btn" @click="step = 3">Continuar</button>
       </div>
     </section>
-    <!-- Step 3: Sabores -->
     <section v-if="step === 3" class="section">
       <h2 class="section-title">Sabores:</h2>
       <div class="tabs">
         <button v-for="tab in tabs" :key="tab" :class="['tab', {active: tab === abaSelecionada}]" @click="abaSelecionada = tab">{{ tab }}</button>
       </div>
       <div class="options-list">
-        <div v-for="(sabor, i) in sabores[abaSelecionada]" :key="i" class="option-card sabor-card">
-          <button class="plus-btn" @click="adicionarSabor(sabor)">+</button>
+        <div v-for="(sabor, i) in sabores[abaSelecionada]" :key="i" :class="['option-card', 'sabor-card', { 'adicionado': isSaborAdicionado(sabor), 'desabilitado': !isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores }]">
+          <button class="plus-btn" @click="adicionarSabor(sabor)" :disabled="!isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores">+</button>
           <div class="sabor-info">
             <span class="sabor-nome">{{ sabor.nome }}</span>
             <span class="sabor-desc">{{ sabor.desc }}</span>
           </div>
-          <button class="minus-btn" @click="removerSabor(sabor)">-</button>
+          <button class="minus-btn" @click="removerSabor(sabor)" :disabled="!isSaborAdicionado(sabor)">-</button>
         </div>
       </div>
+      <div v-if="erroSelecaoSabores" class="erro-msg">{{ erroSelecaoSabores }}</div>
       <div class="step-buttons">
         <button class="nav-btn secondary" @click="step = 2">Voltar</button>
-        <button class="nav-btn" @click="$emit('finish')">Finalizar</button>
+        <button class="nav-btn" @click="continuarFinalizar">Finalizar</button>
       </div>
     </section>
   </div>
@@ -66,7 +65,8 @@ export default {
   },
   data() {
     return {
-      qtdSabores: 1,
+      qtdSabores: null,
+      opcoesSabores: this.getOpcoesSabores(this.pizzaNome),
       abaSelecionada: 'SALGADAS',
       bordaSelecionada: 'Sem Borda',
       step: 1,
@@ -74,17 +74,31 @@ export default {
       sabores: {
         SALGADAS: [
           { nome: 'Frango C/ Catupiry', desc: 'Mussarela, Frango, Catupiry e Orégano' },
-          { nome: 'Frango C/ Catupiry', desc: 'Mussarela, Frango, Catupiry e Orégano' },
-          { nome: 'Frango C/ Catupiry', desc: 'Mussarela, Frango, Catupiry e Orégano' },
-          { nome: 'Frango C/ Catupiry', desc: 'Mussarela, Frango, Catupiry e Orégano' },
+          { nome: 'Bacon', desc: 'Mussarela, Bacon, Cebola, Orégano' },
+          { nome: 'Calabresa', desc: 'Mussarela, Calabresa, Cebola, Orégano' },
+          { nome: 'Frango C/ Bacon', desc: 'Mussarela, Frango, Bacon, Orégano' },
+          { nome: 'Frango Crocante', desc: 'Mussarela, Frango Empanado, Catupiry, Orégano' },
+          { nome: 'Moda da Casa', desc: 'Mussarela, Frango, Calabresa, Bacon, Catupiry, Orégano' },
+          { nome: 'Portuguesa', desc: 'Mussarela, Presunto, Ovo, Cebola, Pimentão, Ervilha, Orégano' },
+          { nome: 'Marguerita', desc: 'Mussarela, Tomate, Manjericão, Orégano' },
+          { nome: 'Quatro Queijos', desc: 'Mussarela, Provolone, Parmesão, Catupiry, Orégano' },
+          { nome: 'Pepperoni', desc: 'Mussarela, Pepperoni, Orégano' },
         ],
         ESPECIAIS: [
-          { nome: 'Especial 1', desc: 'Descrição especial 1' },
-          { nome: 'Especial 2', desc: 'Descrição especial 2' },
+          { nome: 'Especial 1', desc: 'Mussarela, Presunto, Bacon, Catupiry, Orégano' },
+          { nome: 'Especial 2', desc: 'Mussarela, Calabresa, Frango, Cheddar, Orégano' },
+          { nome: 'Especial da Casa', desc: 'Mussarela, Frango, Bacon, Calabresa, Catupiry, Orégano' },
+          { nome: 'Suprema', desc: 'Mussarela, Presunto, Calabresa, Bacon, Ovo, Orégano' },
         ],
         DOCES: [
-          { nome: 'Chocolate', desc: 'Chocolate ao leite' },
-          { nome: 'Chocolate Branco', desc: 'Chocolate branco' },
+          { nome: 'Chocolate', desc: 'Chocolate ao leite, Granulado' },
+          { nome: 'Chocolate Branco', desc: 'Chocolate branco, Granulado branco' },
+          { nome: 'Prestígio', desc: 'Chocolate ao leite, Coco ralado' },
+          { nome: 'Sensação', desc: 'Chocolate ao leite, Morango' },
+          { nome: 'Romeu e Julieta', desc: 'Mussarela, Goiabada' },
+          { nome: 'Banana Nevada', desc: 'Banana, Leite condensado, Canela, Açúcar' },
+          { nome: 'Brigadeiro', desc: 'Chocolate ao leite, Leite condensado, Granulado' },
+          { nome: 'Beijinho', desc: 'Coco, Leite condensado, Açúcar' },
         ]
       },
       bordas: [
@@ -93,15 +107,83 @@ export default {
         'D/ Catupiry',
         'D/ Chocolate',
         'D/ Chocolate Branco'
-      ]
+      ],
+      saboresSelecionados: [],
+      erroSabores: '',
+      erroSelecaoSabores: ''
+    }
+  },
+  watch: {
+    pizzaNome(newVal) {
+      this.qtdSabores = null; // Limpa seleção ao trocar pizza
+      this.opcoesSabores = this.getOpcoesSabores(newVal);
+      this.saboresSelecionados = [];
     }
   },
   methods: {
+    getOpcoesSabores(nome) {
+      const nomeLower = nome.toLowerCase();
+      if (nomeLower.includes('média')) return [1, 2];
+      if (nomeLower.includes('pequena')) return [1];
+      if (nomeLower.includes('família') || nomeLower.includes('grande')) return [1, 2, 3, 4];
+      return [1];
+    },
+    getQtdSaboresPorTamanho(nome) {
+      const nomeLower = nome.toLowerCase();
+      if (nomeLower.includes('família') || nomeLower.includes('grande')) return 4;
+      if (nomeLower.includes('média')) return 2;
+      if (nomeLower.includes('pequena')) return 1;
+      return 1;
+    },
     adicionarSabor(sabor) {
-      // lógica para adicionar sabor
+      if (this.saboresSelecionados.length < this.qtdSabores) {
+        if (!this.saboresSelecionados.find(s => s.nome === sabor.nome)) {
+          this.saboresSelecionados.push({
+            nome: sabor.nome,
+          });
+          this.atualizarFracoes();
+        }
+      }
     },
     removerSabor(sabor) {
-      // lógica para remover sabor
+      const idx = this.saboresSelecionados.findIndex(s => s.nome === sabor.nome);
+      if (idx !== -1) {
+        this.saboresSelecionados.splice(idx, 1);
+        this.atualizarFracoes();
+      }
+    },
+    atualizarFracoes() {
+      let fracao = this.getFracao();
+      this.saboresSelecionados = this.saboresSelecionados.map(s => ({ ...s, fracao }));
+    },
+    getFracao() {
+      if (this.qtdSabores === 1) return 'Inteira';
+      if (this.qtdSabores === 2) return '1/2';
+      if (this.qtdSabores === 3) return '1/3';
+      if (this.qtdSabores === 4) return '1/4';
+      return '';
+    },
+    isSaborAdicionado(sabor) {
+      return this.saboresSelecionados.some(s => s.nome === sabor.nome);
+    },
+    finalizarSelecao() {
+      this.$emit('finish');
+    },
+    continuarSabores() {
+      if (!this.qtdSabores) {
+        this.erroSabores = 'Escolha a quantidade de sabores.';
+        return;
+      }
+      this.erroSabores = '';
+      this.step = 2;
+    },
+    continuarFinalizar() {
+      if (this.saboresSelecionados.length !== this.qtdSabores) {
+        this.erroSelecaoSabores = `Escolha exatamente ${this.qtdSabores} sabor${this.qtdSabores > 1 ? 'es' : ''}.`;
+        return;
+      }
+      this.erroSelecaoSabores = '';
+      this.finalizarSelecao();
     }
   }
 }
@@ -169,6 +251,15 @@ export default {
   transition: box-shadow 0.2s;
   border-left: #ff9800 4px solid;
 }
+.option-card.adicionado {
+  background: #fffbe6;
+  border-left: #ff9800 6px solid;
+  box-shadow: 0 2px 8px #ff980033;
+}
+.option-card.desabilitado {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .option-card input[type="radio"] {
   margin-right: 18px;
   width: 22px;
@@ -202,6 +293,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.plus-btn:disabled,
+.minus-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .tabs {
   display: flex;
@@ -243,6 +339,16 @@ export default {
 .nav-btn.secondary {
   background: #ccc;
   color: #333;
+}
+.erro-msg {
+  color: #d32f2f;
+  background: #fff3f3;
+  border: 1px solid #d32f2f;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 12px 0 0 0;
+  font-size: 1rem;
+  text-align: center;
 }
 @media (max-width: 600px) {
   .pizza-options-container {
