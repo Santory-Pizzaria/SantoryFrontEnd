@@ -55,7 +55,7 @@ function submitForm() {
     <div class="checkout-main-content">
       <section class="checkout-form-section">
         <div>
-          <label for="cep"><strong>Informe o CEP:</strong></label>
+          <div class="Cep" for="cep"><strong>Informe o CEP:</strong></div>
           <input id="cep" type="text" v-model="cep" @blur="validarCep" placeholder="CEP (ex: 01001000)" class="input" />
           <p v-if="erroCep" class="erro">{{ erroCep }}</p>
         </div>
@@ -70,7 +70,7 @@ function submitForm() {
           <input type="text" :value="endereco.uf" disabled class="input" />
         </div>
         <div class="payment-methods">
-          <h2>Pagamento</h2>
+          <div class="title-Pagamento"><h2>Pagamento</h2></div>
           <ul>
             <li>
               <label>
@@ -99,7 +99,7 @@ function submitForm() {
           </ul>
         </div>
         <div class="banks">
-          <label><strong>Selecione seu banco:</strong></label>
+          <label><strong>Bandeiras de cartões aceitas:</strong></label>
           <div class="banks-grid">
             <div class="bank-icon"></div>
             <div class="bank-icon"></div>
@@ -131,6 +131,12 @@ function submitForm() {
 
 
 <style scoped>
+.Cep {
+  padding: 5px;
+}
+.title-Pagamento{
+  padding: 5px;
+}
 .checkout-container {
   border: 8px solid orange;
   padding: 20px;
@@ -162,7 +168,6 @@ function submitForm() {
   background-color: #d2f9d2;
   padding: 10px;
   font-size: 14px;
-  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -214,7 +219,7 @@ function submitForm() {
 
 .checkout-summary {
   flex: 1;
-  background: #eaffea;
+  background: #d2f9d2;
   padding: 20px;
   border-radius: 5px;
   display: flex;
