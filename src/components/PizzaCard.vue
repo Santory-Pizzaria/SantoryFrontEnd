@@ -17,7 +17,7 @@ defineProps(['pizza']);
 .pizza-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; 
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -46,6 +46,9 @@ defineProps(['pizza']);
 .pizza-info {
   margin-left: 12px;
   order: 1;
+}
+.pizza-info h3 {
+  color: black;
 }
 
 .price {
