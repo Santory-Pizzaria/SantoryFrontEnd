@@ -1,5 +1,5 @@
 <script setup>
-import PizzaCard from './PizzaCard.vue';
+import ComboCard from './ComboCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
 
@@ -9,11 +9,11 @@ function navigateTo(route) {
   router.push(route);
 }
 
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
+const combos = [
+  { name: 'Combo Família', description: '2 Pizzas Grandes + 1 Refrigerante 2L', price: 49.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Casal', description: '1 Pizza Média + 1 Refrigerante 1L', price: 29.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Individual', description: '1 Pizza Pequena + 1 Refrigerante 350ml', price: 19.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Combo Bebida', description: '1 Pizza Média + 2 Refrigerantes 1L', price: 39.90, image: '/src/assets/imagens/fundo.png' }
 ];
 </script>
 <template>
@@ -29,7 +29,7 @@ const pizzas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Combos por Nome ou descrição" />
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
@@ -40,7 +40,7 @@ const pizzas = [
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
-        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
+        <a href="#" class="nav-item">
           <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
@@ -57,20 +57,11 @@ const pizzas = [
 
     </div>
 
-    <section class="pizza-list">
-      <router-link
-        v-for="pizza in pizzas"
-        :key="pizza.name"
-        :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
-        class="pizza-link"
-      >
-        <PizzaCard :pizza="pizza" />
-      </router-link>
+    <section class="combo-list">
+      <ComboCard v-for="combo in combos" :key="combo.name" :combo="combo" />
     </section>
-
-
+    <FooteRor></FooteRor>
   </div>
-  <FooteRor></FooteRor>
 </template>
 
 <style scoped>
@@ -176,46 +167,43 @@ nav a:hover {
 }
 
 
-.pizza-grid {
+.combo-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin: 20px;
 }
 
-.pizza-item {
+.combo-item {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
 }
 
-.pizza-item img {
+.combo-item img {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
 
-.pizza-info {
+.combo-info {
   padding: 15px;
-  text-decoration: none;
 }
 
-.pizza-info h3 {
+.combo-info h3 {
   font-size: 18px;
   font-weight: bold;
   color: #333;
-
 }
 
-.pizza-info p {
+.combo-info p {
   font-size: 14px;
   color: #777;
   margin: 5px 0;
 }
 
-.pizza-info span {
+.combo-info span {
   font-size: 16px;
   font-weight: bold;
   color: #f30;
@@ -277,7 +265,7 @@ nav a {
   margin: 0 5px;
 }
 
-.pizza-list {
+.combo-list {
   background-color: #fff;
   border-radius: 8px;
   padding: 24px;
@@ -288,7 +276,7 @@ nav a {
 
 }
 
-.pizza-card {
+.combo-card {
   background-color: #fafafa;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -300,11 +288,11 @@ nav a {
   width: 90%;
 }
 
-.pizza-card:hover {
+.combo-card:hover {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.pizza-image {
+.combo-image {
   width: 80px;
   height: 80px;
   border-radius: 8px;
@@ -335,10 +323,6 @@ nav a {
   margin-left: auto;
 }
 
-.pizza-link {
-  text-decoration: none;
-}
-
 
 @media (max-width: 768px) {
   header {
@@ -351,23 +335,21 @@ nav a {
     margin-bottom: 16px;
   }
 
-  .pizza-list {
+  .combo-list {
     padding: 16px;
     grid-template-columns: 1fr;
-    text-decoration: none;
-
   }
 
-  .pizza-card {
+  .combo-card {
     flex-direction: column;
     text-align: center;
   }
 
-  .pizza-image {
+  .combo-image {
     margin-bottom: 16px;
   }
 
-  .pizza-info {
+  .combo-info {
     margin-left: 0;
   }
 

@@ -1,23 +1,23 @@
 <template>
-  <div class="pizza-card">
-    <img :src="pizza.image" alt="Pizza" class="pizza-image" />
-    <div class="pizza-info">
-      <h3>{{ pizza.name }}</h3>
-      <p class="descricao">{{ pizza.description }}</p>
-      <p class="price">R$ {{ pizza.price.toFixed(2) }}</p>
+  <div class="combo-card">
+    <img :src="combo.image" alt="Combo" class="combo-image" />
+    <div class="combo-info">
+      <h3>{{ combo.name }}</h3>
+      <p class="descricao">{{ combo.description }}</p>
+      <p class="price">R$ {{ combo.price.toFixed(2) }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps(['pizza']);
+defineProps(['combo']);
 </script>
 
 <style scoped>
-.pizza-card {
+.combo-card {
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -26,13 +26,13 @@ defineProps(['pizza']);
   font-size: 14pt;
 }
 
-.pizza-info .descricao {
+.combo-info .descricao {
   color: #666;
   margin: 5px 0;
   font-size: 12pt;
 }
 
-.pizza-image {
+.combo-image {
   display: flex;
   width: 95px;
   height: 95px;
@@ -43,12 +43,9 @@ defineProps(['pizza']);
   order: 2;
 }
 
-.pizza-info {
+.combo-info {
   margin-left: 12px;
   order: 1;
-}
-.pizza-info h3 {
-  color: black;
 }
 
 .price {

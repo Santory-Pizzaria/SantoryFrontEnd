@@ -1,5 +1,5 @@
 <script setup>
-import PizzaCard from './PizzaCard.vue';
+import BebidaCard from './BebidaCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
 
@@ -9,11 +9,11 @@ function navigateTo(route) {
   router.push(route);
 }
 
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
+const bebidas = [
+  { name: 'Coca-Cola', description: 'Refrigerante 2L', price: 9.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Guaraná', description: 'Refrigerante 1L', price: 5.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Suco de Laranja', description: 'Natural 500ml', price: 7.90, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Água Mineral', description: 'Sem gás 350ml', price: 2.90, image: '/src/assets/imagens/fundo.png' }
 ];
 </script>
 <template>
@@ -29,7 +29,7 @@ const pizzas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Bebidas por Nome ou descrição" />
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
@@ -40,7 +40,7 @@ const pizzas = [
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
-        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
+        <a href="#" class="nav-item">
           <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
@@ -57,20 +57,12 @@ const pizzas = [
 
     </div>
 
-    <section class="pizza-list">
-      <router-link
-        v-for="pizza in pizzas"
-        :key="pizza.name"
-        :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
-        class="pizza-link"
-      >
-        <PizzaCard :pizza="pizza" />
-      </router-link>
+    <section class="bebida-list">
+      <BebidaCard v-for="bebida in bebidas" :key="bebida.name" :bebida="bebida" />
     </section>
-
+    <FooteRor></FooteRor>
 
   </div>
-  <FooteRor></FooteRor>
 </template>
 
 <style scoped>
@@ -176,46 +168,43 @@ nav a:hover {
 }
 
 
-.pizza-grid {
+.bebida-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin: 20px;
 }
 
-.pizza-item {
+.bebida-item {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
 }
 
-.pizza-item img {
+.bebida-item img {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
 
-.pizza-info {
+.bebida-info {
   padding: 15px;
-  text-decoration: none;
 }
 
-.pizza-info h3 {
+.bebida-info h3 {
   font-size: 18px;
   font-weight: bold;
   color: #333;
-
 }
 
-.pizza-info p {
+.bebida-info p {
   font-size: 14px;
   color: #777;
   margin: 5px 0;
 }
 
-.pizza-info span {
+.bebida-info span {
   font-size: 16px;
   font-weight: bold;
   color: #f30;
@@ -277,7 +266,7 @@ nav a {
   margin: 0 5px;
 }
 
-.pizza-list {
+.bebida-list {
   background-color: #fff;
   border-radius: 8px;
   padding: 24px;
@@ -288,7 +277,7 @@ nav a {
 
 }
 
-.pizza-card {
+.bebida-card {
   background-color: #fafafa;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -300,11 +289,11 @@ nav a {
   width: 90%;
 }
 
-.pizza-card:hover {
+.bebida-card:hover {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.pizza-image {
+.bebida-image {
   width: 80px;
   height: 80px;
   border-radius: 8px;
@@ -335,10 +324,6 @@ nav a {
   margin-left: auto;
 }
 
-.pizza-link {
-  text-decoration: none;
-}
-
 
 @media (max-width: 768px) {
   header {
@@ -351,23 +336,21 @@ nav a {
     margin-bottom: 16px;
   }
 
-  .pizza-list {
+  .bebida-list {
     padding: 16px;
     grid-template-columns: 1fr;
-    text-decoration: none;
-
   }
 
-  .pizza-card {
+  .bebida-card {
     flex-direction: column;
     text-align: center;
   }
 
-  .pizza-image {
+  .bebida-image {
     margin-bottom: 16px;
   }
 
-  .pizza-info {
+  .bebida-info {
     margin-left: 0;
   }
 
