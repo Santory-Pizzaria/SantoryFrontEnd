@@ -2,6 +2,7 @@
 import BebidaCard from './BebidaCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -15,6 +16,17 @@ const bebidas = [
   { name: 'Suco de Laranja', description: 'Natural 500ml', price: 7.90, image: '/src/assets/imagens/fundo.png' },
   { name: 'Água Mineral', description: 'Sem gás 350ml', price: 2.90, image: '/src/assets/imagens/fundo.png' }
 ];
+
+const searchText = ref('');
+
+const filteredBebidas = computed(() => {
+  if (!searchText.value.trim()) return bebidas;
+  const search = searchText.value.toLowerCase();
+  return bebidas.filter(bebida =>
+    bebida.name.toLowerCase().includes(search) ||
+    bebida.description.toLowerCase().includes(search)
+  );
+});
 </script>
 <template>
 
@@ -29,7 +41,7 @@ const bebidas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Bebidas por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Bebidas por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
@@ -58,7 +70,7 @@ const bebidas = [
     </div>
 
     <section class="bebida-list">
-      <BebidaCard v-for="bebida in bebidas" :key="bebida.name" :bebida="bebida" />
+      <BebidaCard v-for="bebida in filteredBebidas" :key="bebida.name" :bebida="bebida" />
     </section>
     <FooteRor></FooteRor>
 

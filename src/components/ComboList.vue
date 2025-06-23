@@ -2,6 +2,7 @@
 import ComboCard from './ComboCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -9,12 +10,23 @@ function navigateTo(route) {
   router.push(route);
 }
 
+const searchText = ref('');
+
 const combos = [
   { name: 'Combo Família', description: '2 Pizzas Grandes + 1 Refrigerante 2L', price: 49.90, image: '/src/assets/imagens/fundo.png' },
   { name: 'Combo Casal', description: '1 Pizza Média + 1 Refrigerante 1L', price: 29.90, image: '/src/assets/imagens/fundo.png' },
   { name: 'Combo Individual', description: '1 Pizza Pequena + 1 Refrigerante 350ml', price: 19.90, image: '/src/assets/imagens/fundo.png' },
   { name: 'Combo Bebida', description: '1 Pizza Média + 2 Refrigerantes 1L', price: 39.90, image: '/src/assets/imagens/fundo.png' }
 ];
+
+const filteredCombos = computed(() => {
+  if (!searchText.value.trim()) return combos;
+  const search = searchText.value.toLowerCase();
+  return combos.filter(combo =>
+    combo.name.toLowerCase().includes(search) ||
+    combo.description.toLowerCase().includes(search)
+  );
+});
 </script>
 <template>
 
@@ -29,7 +41,7 @@ const combos = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Combos por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Combos por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
@@ -58,7 +70,7 @@ const combos = [
     </div>
 
     <section class="combo-list">
-      <ComboCard v-for="combo in combos" :key="combo.name" :combo="combo" />
+      <ComboCard v-for="combo in filteredCombos" :key="combo.name" :combo="combo" />
     </section>
     <FooteRor></FooteRor>
   </div>

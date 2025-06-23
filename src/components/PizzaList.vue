@@ -2,6 +2,7 @@
 import PizzaCard from './PizzaCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -15,6 +16,17 @@ const pizzas = [
   { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
   { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
 ];
+
+const searchText = ref('');
+
+const filteredPizzas = computed(() => {
+  if (!searchText.value.trim()) return pizzas;
+  const search = searchText.value.toLowerCase();
+  return pizzas.filter(pizza =>
+    pizza.name.toLowerCase().includes(search) ||
+    pizza.description.toLowerCase().includes(search)
+  );
+});
 </script>
 <template>
 
@@ -29,7 +41,7 @@ const pizzas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
         <a href="#" class="nav-item">
@@ -59,7 +71,7 @@ const pizzas = [
 
     <section class="pizza-list">
       <router-link
-        v-for="pizza in pizzas"
+        v-for="pizza in filteredPizzas"
         :key="pizza.name"
         :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
         class="pizza-link"
