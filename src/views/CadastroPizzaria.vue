@@ -27,7 +27,7 @@ async function cadastrarPizzaria() {
 function irParaLogin() {
   router.push('/login')
 }
-</script>
+</script> 
 
 <template>
   <div class="cadastro-pizzaria-container">

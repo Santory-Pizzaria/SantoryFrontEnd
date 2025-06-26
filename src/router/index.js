@@ -10,6 +10,7 @@ import EnderecoForm from '../components/EnderecoForm.vue'
 import CheckoutForm from '@/components/CheckoutForm.vue'
 import FeedBack from '@/components/FeedBack.vue'
 import CadastroPizzaria from '../views/CadastroPizzaria.vue'
+import PerfilUsuario from '../views/PerfilUsuario.vue'
 
 
 const router = createRouter({
@@ -19,6 +20,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/perfil',
+      name: 'perfil',
+      component: PerfilUsuario,
     },
     {
       path: '/login',
