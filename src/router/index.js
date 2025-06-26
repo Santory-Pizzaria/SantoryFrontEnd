@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MenuView from '../views/MenuView.vue'
+import LoginCliente from '../views/LoginCliente.vue'
 import PizzaOptionsView from '../views/PizzaOptionsView.vue'
 import PizzaList from '../components/PizzaList.vue'
 import ComboList from '../components/ComboList.vue'
@@ -8,6 +9,7 @@ import BebidaList from '../components/BebidaList.vue'
 import EnderecoForm from '../components/EnderecoForm.vue'
 import CheckoutForm from '@/components/CheckoutForm.vue'
 import FeedBack from '@/components/FeedBack.vue'
+import CadastroPizzaria from '../views/CadastroPizzaria.vue'
 
 
 const router = createRouter({
@@ -17,6 +19,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginCliente,
+    },
+    {
+      path: '/cadastro',
+      name: 'cadastro',
+      component: CadastroPizzaria,
     },
     {
       path: '/menu',
