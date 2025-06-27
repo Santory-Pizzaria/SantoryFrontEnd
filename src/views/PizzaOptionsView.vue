@@ -39,17 +39,8 @@ export default {
       this.pedido = pedidoSelecionado;
       this.mostrarVerificacao = true;
     },
-    onFinishPizzaOptions() {
-      // Coletar dados do PizzaOptions (exemplo)
-      const pizzaOptions = this.$refs.pizzaOptions;
-      const pedidoSelecionado = {
-        pizzaNome: this.$route.params.pizzaNome,
-        saboresSelecionados: pizzaOptions.saboresSelecionados || [],
-        bordaSelecionada: pizzaOptions.bordaSelecionada,
-        frete: 'R$10,00',
-        valor: 'R$85,00',
-        quantidade: 1
-      };
+    onFinishPizzaOptions(pedidoSelecionado) {
+      // Usar diretamente os dados recebidos do PizzaOptions
       this.finalizarSelecao(pedidoSelecionado);
     },
     atualizarQuantidade(novaQtd) {
