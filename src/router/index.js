@@ -11,6 +11,7 @@ import CheckoutForm from '@/components/CheckoutForm.vue'
 import FeedBack from '@/components/FeedBack.vue'
 import CadastroPizzaria from '../views/CadastroPizzaria.vue'
 import PerfilUsuario from '../views/PerfilUsuario.vue'
+import PedidosProdutos from '../views/PedidosProdutos.vue'
 
 
 const router = createRouter({
@@ -81,6 +82,11 @@ const router = createRouter({
       path: '/feedback',
       name: 'FeedBack',
       component: FeedBack,
+    },
+    {
+      path: '/pedidos',
+      name: 'PedidosProdutos',
+      component: PedidosProdutos,
     },
   ],
 })
