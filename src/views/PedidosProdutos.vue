@@ -2,11 +2,9 @@
 import { ref, onMounted } from 'vue'
 import FooteRor from '@/components/FooteRor.vue'
 
-// Simulação de pedidos do usuário (em produção, buscar da API/backend)
 const pedidos = ref([])
 
 onMounted(() => {
-  // Exemplo de pedidos simulados
   pedidos.value = [
     {
       id: 1,

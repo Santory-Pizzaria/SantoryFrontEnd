@@ -44,7 +44,7 @@ const filteredPizzas = computed(() => {
         <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
           <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
           <span>Meus Pedidos</span>
         </a>
@@ -132,12 +132,12 @@ span {
 }
 
 header {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 20px 40px;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  height: 80px;
 }
 
 header .logo img {
@@ -249,7 +249,7 @@ body {
 
 
 header {
-  background-color: #e28f11;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
