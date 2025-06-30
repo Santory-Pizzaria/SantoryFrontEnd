@@ -10,7 +10,7 @@ const endereco = ref({
   rua: '',
   bairro: '',
   cidade: '',
-  uf: ''
+  uf: '',
 })
 
 // Dados do pedido vindos da verificação
@@ -53,7 +53,7 @@ async function validarCep() {
         rua: data.logradouro,
         bairro: data.bairro,
         cidade: data.localidade,
-        uf: data.uf
+        uf: data.uf,
       }
       // Calcular frete após obter o endereço
       calculandoFrete.value = true
@@ -74,14 +74,16 @@ function calcularFrete() {
   const cidade = endereco.value.cidade?.toLowerCase() || ''
 
   if (cidade.includes('joinville')) {
-    frete.value = 5.00 // Taxa mínima para Joinville
+    frete.value = 5.0 // Taxa mínima para Joinville
   } else if (endereco.value.uf === 'SC') {
-    frete.value = 15.00 // Taxa para outras cidades de SC
+    frete.value = 15.0 // Taxa para outras cidades de SC
   } else {
-    frete.value = 25.00 // Taxa para outros estados
+    frete.value = 25.0 // Taxa para outros estados
   }
 
-  console.log(`Frete calculado: R$ ${frete.value.toFixed(2)} para ${endereco.value.cidade}, ${endereco.value.uf}`)
+  console.log(
+    `Frete calculado: R$ ${frete.value.toFixed(2)} para ${endereco.value.cidade}, ${endereco.value.uf}`,
+  )
 }
 
 function obterValorFrete() {
@@ -133,25 +135,25 @@ function submitForm() {
         nome: pedidoData.value.pizzaNome,
         sabores: pedidoData.value.saboresSelecionados,
         borda: pedidoData.value.bordaSelecionada,
-        quantidade: pedidoData.value.quantidade
+        quantidade: pedidoData.value.quantidade,
       },
       valores: {
         unitario: pedidoData.value.valor,
         frete: obterValorFrete(),
-        total: calcularValorTotal()
+        total: calcularValorTotal(),
       },
       endereco: {
         cep: cep.value,
         rua: endereco.value.rua,
         bairro: endereco.value.bairro,
         cidade: endereco.value.cidade,
-        uf: endereco.value.uf
+        uf: endereco.value.uf,
       },
       pagamento: {
         metodo: metodoPagamento.value,
-        status: 'Aprovado'
+        status: 'Aprovado',
       },
-      status: 'Confirmado'
+      status: 'Confirmado',
     }
 
     // Salvar pedido confirmado
@@ -163,12 +165,14 @@ function submitForm() {
     processandoPagamento.value = false
 
     // Mostrar confirmação e redirecionar
-    alert(`🍕 Pagamento aprovado!\n\nPedido #${pedidoCompleto.id} confirmado com sucesso!\nTempo estimado de entrega: 30-45 minutos\n\nVocê será redirecionado para a página inicial.`)
+    alert(
+      `🍕 Pagamento aprovado!\n\nPedido #${pedidoCompleto.id} confirmado com sucesso!\nTempo estimado de entrega: 30-45 minutos\n\nVocê será redirecionado para a página inicial.`,
+    )
 
     setTimeout(() => {
-      router.push('/')
-    }, 2000)
-  }, 2000) // Simula tempo de processamento do pagamento
+      router.push('/menu')
+    }, 1000)
+  }, 1000) // Simula tempo de processamento do pagamento
 }
 
 function salvarPedidoConfirmado(pedido) {
@@ -200,7 +204,14 @@ function voltarParaVerificacao() {
       <section class="checkout-form-section">
         <div>
           <div class="Cep" for="cep"><strong>Informe o CEP:</strong></div>
-          <input id="cep" type="text" v-model="cep" @blur="validarCep" placeholder="CEP (ex: 01001000)" class="input" />
+          <input
+            id="cep"
+            type="text"
+            v-model="cep"
+            @blur="validarCep"
+            placeholder="CEP (ex: 01001000)"
+            class="input"
+          />
           <p v-if="erroCep" class="erro">{{ erroCep }}</p>
           <div class="info-pizzaria">
             <small>📍 Nossa pizzaria fica em Joinville/SC - R. Francisco Cristofolini, 326</small>
@@ -280,9 +291,7 @@ function voltarParaVerificacao() {
             <p v-else-if="frete > 0"><strong>Frete:</strong> {{ obterValorFrete() }}</p>
             <p v-else><strong>Frete:</strong> Informe o CEP para calcular</p>
           </div>
-          <div class="total">
-            <strong>Total a pagar:</strong> {{ calcularValorTotal() }}
-          </div>
+          <div class="total"><strong>Total a pagar:</strong> {{ calcularValorTotal() }}</div>
           <div class="buttons-container">
             <button
               @click="voltarParaVerificacao"
@@ -291,11 +300,7 @@ function voltarParaVerificacao() {
             >
               ← Voltar
             </button>
-            <button
-              @click="submitForm"
-              class="submit-button"
-              :disabled="processandoPagamento"
-            >
+            <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">
               {{ processandoPagamento ? '💳 Processando...' : 'Finalizar Pedido' }}
             </button>
           </div>
@@ -308,12 +313,11 @@ function voltarParaVerificacao() {
   </div>
 </template>
 
-
 <style scoped>
 .Cep {
   padding: 5px;
 }
-.title-Pagamento{
+.title-Pagamento {
   padding: 5px;
 }
 .checkout-container {
