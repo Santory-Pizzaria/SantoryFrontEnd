@@ -10,8 +10,8 @@ function oswhats() {
   window.open('https://wa.link/h475ec', '_blank');
 }
 
-function goToMenu() {
-  router.push('/menu');
+function goToLogin() {
+  router.push('/Login');
 }
 </script>
 
@@ -29,7 +29,7 @@ function goToMenu() {
         <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
         <h1 class="slogan">O Melhor Pedaço Do Seu Dia!</h1>
         <div class="buttons">
-          <button class="btn orange" @click="goToMenu">🍕 Ver Cardápio e Pedir!</button>
+          <button class="btn orange" @click="goToLogin">🍕 Ver Cardápio e Pedir!</button>
           <button class="btn dark" @click="openGoogleMaps">📍 Como Chegar</button>
           <button class="btn green" @click="oswhats">💬 Whatsapp</button>
         </div>
