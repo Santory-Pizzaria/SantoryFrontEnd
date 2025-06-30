@@ -48,7 +48,7 @@ const filteredPizzas = computed(() => {
           <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
           <span>Meus Pedidos</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
