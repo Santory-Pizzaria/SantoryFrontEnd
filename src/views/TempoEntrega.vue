@@ -1,3 +1,112 @@
+<script>
+export default {
+  name: 'TempoEntrega',
+  data() {
+    return {
+      tempoMin: 30,
+      tempoMax: 45,
+      progresso: 60,
+      etapaAtual: 1,
+      bairroSelecionado: '',
+      bairros: [
+        { nome: 'Centro' },
+        { nome: 'Jardim das Flores' },
+        { nome: 'Vila Nova' },
+        { nome: 'Bairro Industrial' },
+        { nome: 'Porto Grande' },
+        { nome: 'Santa Luzia' },
+        { nome: 'São João' },
+        { nome: 'Itinga' },
+        { nome: 'Estrada Nova' },
+        { nome: 'Vila Lenzi' }
+      ],
+      etapas: [
+        { nome: 'Recebido', icone: new URL('@/assets/imagens/Verificar.png', import.meta.url).href },
+        { nome: 'Preparando', icone: new URL('@/assets/imagens/Borda.png', import.meta.url).href },
+        { nome: 'Saiu para entrega', icone: new URL('@/assets/imagens/ingressos.png', import.meta.url).href },
+        { nome: 'Entregue', icone: new URL('@/assets/imagens/estrela.png', import.meta.url).href }
+      ],
+      taxaEntrega: null,
+      loadingTaxa: false
+    }
+  },
+  watch: {
+    bairroSelecionado(novoBairro) {
+      if (novoBairro) {
+        this.calcularTaxaEntrega(novoBairro)
+      } else {
+        this.taxaEntrega = null
+      }
+    }
+  },
+  methods: {
+    async calcularTaxaEntrega(bairro) {
+      this.loadingTaxa = true
+      try {
+        const origem = [-48.8493, -26.3045] // [longitude, latitude]
+        const destinos = {
+          'Centro': [-48.8494, -26.3046],
+          'Jardim das Flores': [-48.8700, -26.3200],
+          'Vila Nova': [-48.9000, -26.3200],
+          'Bairro Industrial': [-48.8600, -26.3100],
+          'Porto Grande': [-48.8800, -26.3300],
+          'Santa Luzia': [-48.8700, -26.3400],
+          'São João': [-48.8600, -26.3500],
+          'Itinga': [-48.9100, -26.3400],
+          'Estrada Nova': [-48.8900, -26.3100],
+          'Vila Lenzi': [-48.8800, -26.3200]
+        }
+        const destino = destinos[bairro]
+        if (!destino) throw new Error('Bairro não encontrado')
+        const apiKey = '5b3ce3597851110001cf624832b9ce60b0a846f0a395734793e8b9c4'
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`
+        const body = {
+          coordinates: [origem, destino]
+        }
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify(body)
+        })
+        const data = await response.json()
+        if (
+          data &&
+          data.features &&
+          data.features[0] &&
+          data.features[0].properties &&
+          data.features[0].properties.summary &&
+          typeof data.features[0].properties.summary.distance === 'number'
+        ) {
+          const distanciaMetros = data.features[0].properties.summary.distance
+          const distanciaKm = distanciaMetros / 1000
+          this.taxaEntrega = Number((5 + (distanciaKm * 2)).toFixed(2))
+        } else {
+          this.taxaEntrega = null
+          alert('Não foi possível calcular a taxa de entrega. Dados insuficientes.')
+        }
+      } catch (e) {
+        this.taxaEntrega = null
+        alert('Não foi possível calcular a taxa de entrega.')
+      }
+      this.loadingTaxa = false
+    },
+    voltarMenu() {
+      this.$router.push({ name: 'menu' })
+    },
+    verDetalhes() {
+      this.$router.push({ name: 'PedidosProdutos' })
+    },
+    abrirAjuda() {
+      alert('Entre em contato pelo WhatsApp: (99) 99999-9999')
+    }
+  }
+}
+</script>
+
+
 <template>
   <div class="tempo-entrega-container">
     <div class="tempo-header">
@@ -11,6 +120,18 @@
       <div class="tempo-info">
         <span class="tempo-estimado">Tempo estimado:</span>
         <span class="tempo">{{ tempoMin }}-{{ tempoMax }} min</span>
+      </div>
+      <div class="taxa-entrega">
+        <label for="local">Selecione seu bairro:</label>
+        <select id="local" v-model="bairroSelecionado">
+          <option disabled value="">Selecione</option>
+          <option v-for="bairro in bairros" :key="bairro.nome" :value="bairro.nome">
+            {{ bairro.nome }}
+          </option>
+        </select>
+        <span v-if="taxaEntrega !== null" class="taxa">
+          Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
+        </span>
       </div>
       <div class="progress-bar">
         <div class="progress" :style="{ width: progresso + '%' }"></div>
@@ -29,37 +150,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'TempoEntrega',
-  data() {
-    return {
-      tempoMin: 30,
-      tempoMax: 45,
-      progresso: 60, // valor fictício, pode ser dinâmico
-      etapaAtual: 1, // 0: Recebido, 1: Preparando, 2: Saiu para entrega, 3: Entregue
-      etapas: [
-        { nome: 'Recebido', icone: new URL('@/assets/imagens/Verificar.png', import.meta.url).href },
-        { nome: 'Preparando', icone: new URL('@/assets/imagens/Borda.png', import.meta.url).href },
-        { nome: 'Saiu para entrega', icone: new URL('@/assets/imagens/ingressos.png', import.meta.url).href },
-        { nome: 'Entregue', icone: new URL('@/assets/imagens/estrela.png', import.meta.url).href }
-      ]
-    }
-  },
-  methods: {
-    voltarMenu() {
-      this.$router.push({ name: 'menu' })
-    },
-    verDetalhes() {
-      this.$router.push({ name: 'PedidosProdutos' })
-    },
-    abrirAjuda() {
-      alert('Entre em contato pelo WhatsApp: (99) 99999-9999')
-    }
-  }
-}
-</script>
 
 <style scoped>
 .tempo-entrega-container {
@@ -128,6 +218,32 @@ export default {
   font-size: 2.2rem;
   font-weight: bold;
   color: var(--color-heading);
+}
+.taxa-entrega {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  gap: 0.3rem;
+}
+.taxa-entrega label {
+  font-size: 1rem;
+  color: var(--color-text);
+  opacity: 0.8;
+}
+.taxa-entrega select {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background-mute);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+.taxa {
+  margin-top: 0.3rem;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: bold;
 }
 .progress-bar {
   width: 240px;
