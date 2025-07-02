@@ -27,6 +27,7 @@ export default {
         { nome: 'Entregue', icone: new URL('@/assets/imagens/estrela.png', import.meta.url).href }
       ],
       taxaEntrega: null,
+      tempoEntregaMin: null,
       loadingTaxa: false
     }
   },
@@ -36,6 +37,7 @@ export default {
         this.calcularTaxaEntrega(novoBairro)
       } else {
         this.taxaEntrega = null
+        this.tempoEntregaMin = null
       }
     }
   },
@@ -78,17 +80,23 @@ export default {
           data.features[0] &&
           data.features[0].properties &&
           data.features[0].properties.summary &&
-          typeof data.features[0].properties.summary.distance === 'number'
+          typeof data.features[0].properties.summary.distance === 'number' &&
+          typeof data.features[0].properties.summary.duration === 'number'
         ) {
           const distanciaMetros = data.features[0].properties.summary.distance
           const distanciaKm = distanciaMetros / 1000
           this.taxaEntrega = Number((5 + (distanciaKm * 2)).toFixed(2))
+          // Tempo de entrega em minutos
+          const duracaoSegundos = data.features[0].properties.summary.duration
+          this.tempoEntregaMin = Math.ceil(duracaoSegundos / 60)
         } else {
           this.taxaEntrega = null
+          this.tempoEntregaMin = null
           alert('Não foi possível calcular a taxa de entrega. Dados insuficientes.')
         }
       } catch (e) {
         this.taxaEntrega = null
+        this.tempoEntregaMin = null
         alert('Não foi possível calcular a taxa de entrega.')
       }
       this.loadingTaxa = false
@@ -100,7 +108,7 @@ export default {
       this.$router.push({ name: 'PedidosProdutos' })
     },
     abrirAjuda() {
-      alert('Entre em contato pelo WhatsApp: (99) 99999-9999')
+      alert('Entre em contato pelo WhatsApp: (47) 998804-2804')
     }
   }
 }
@@ -119,7 +127,14 @@ export default {
     <div class="tempo-box">
       <div class="tempo-info">
         <span class="tempo-estimado">Tempo estimado:</span>
-        <span class="tempo">{{ tempoMin }}-{{ tempoMax }} min</span>
+        <span class="tempo">
+          <template v-if="tempoEntregaMin !== null">
+            {{ tempoEntregaMin + 45 }} min
+          </template>
+          <template v-else>
+            {{ tempoMin }}-{{ tempoMax }} min
+          </template>
+        </span>
       </div>
       <div class="taxa-entrega">
         <label for="local">Selecione seu bairro:</label>
@@ -132,6 +147,10 @@ export default {
         <span v-if="taxaEntrega !== null" class="taxa">
           Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
         </span>
+        <span v-if="tempoEntregaMin !== null" class="tempo-real">
+
+        </span>
+        <span v-if="loadingTaxa" class="loading-taxa">Calculando...</span>
       </div>
       <div class="progress-bar">
         <div class="progress" :style="{ width: progresso + '%' }"></div>
@@ -244,6 +263,16 @@ export default {
   font-size: 1.1rem;
   color: #2c3e50;
   font-weight: bold;
+}
+.tempo-real {
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  color: #27ae60;
+}
+.loading-taxa {
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  color: #e67e22;
 }
 .progress-bar {
   width: 240px;
