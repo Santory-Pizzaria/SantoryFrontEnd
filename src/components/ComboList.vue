@@ -32,8 +32,8 @@ const filteredCombos = computed(() => {
 
   <div class="container-tudo">
     <header class="header-logo">
-      <div class="header-status">
-        <button class="status-button">Fechado</button>
+      <div class="perfil-icone" @click="navigateTo('/perfil')">
+        <img src="/src/assets/imagens/perfil.png" alt="Perfil" />
       </div>
     </header>
     <div class="Logo">
@@ -333,6 +333,22 @@ nav a {
   justify-content: flex-end;
   align-items: center;
   margin-left: auto;
+}
+
+.perfil-icone {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.perfil-icone img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e74c3c;
 }
 
 
