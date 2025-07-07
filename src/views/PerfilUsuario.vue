@@ -1,5 +1,8 @@
 <template>
   <div class="perfil-container">
+    <div class="seta-voltar" @click="voltarMenu">
+      <img src="@/assets/imagens/seta.png" alt="Voltar ao menu" />
+    </div>
     <div class="perfil-card">
       <div class="perfil-avatar-area">
         <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar" alt="Avatar do usuário" />
@@ -45,6 +48,9 @@ export default {
     };
   },
   methods: {
+    voltarMenu() {
+      this.$router.push('/menu');
+    },
     editarPerfil() {
       this.usuarioEdit = { ...this.usuario };
       this.editando = true;
@@ -168,5 +174,27 @@ export default {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+}
+.seta-voltar {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  cursor: pointer;
+  z-index: 10;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: none;
+  padding: 0;
+}
+.seta-voltar img {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 1px 2px rgba(44,62,80,0.10));
 }
 </style>
