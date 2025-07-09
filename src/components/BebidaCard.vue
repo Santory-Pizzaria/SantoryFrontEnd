@@ -1,3 +1,7 @@
+<script setup>
+defineProps(['bebida']);
+</script>
+
 <template>
   <div class="bebida-card">
     <img :src="bebida.image" alt="Bebida" class="bebida-image" />
@@ -9,9 +13,6 @@
   </div>
 </template>
 
-<script setup>
-defineProps(['bebida']);
-</script>
 
 <style scoped>
 .bebida-card {

@@ -1,3 +1,7 @@
+<script setup>
+defineProps(['pizza']);
+</script>
+
 <template>
   <div class="pizza-card">
     <img :src="pizza.image" alt="Pizza" class="pizza-image" />
@@ -9,15 +13,12 @@
   </div>
 </template>
 
-<script setup>
-defineProps(['pizza']);
-</script>
 
 <style scoped>
 .pizza-card {
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);

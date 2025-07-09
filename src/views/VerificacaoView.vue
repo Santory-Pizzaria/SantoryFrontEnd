@@ -1,52 +1,3 @@
-<template>
-  <div class="verificacao-container">
-    <header class="verificacao-header">
-      <span class="verificacao-title">Verificação</span>
-    </header>
-    <div class="verificacao-content">
-      <h2 class="verificacao-subtitle">Conferência:</h2>
-      <div class="verificacao-card">
-        <h3 class="pizza-tipo">{{ pedido.pizzaNome }}</h3>
-        <div class="verificacao-info">
-          <b>Sabores:</b>
-          <ul>
-            <li v-for="(sabor, idx) in pedido.saboresSelecionados" :key="idx">
-              -{{ sabor.fracao }} {{ sabor.nome }}
-            </li>
-          </ul>
-          <div><b>Borda:</b> {{ pedido.bordaSelecionada }}</div>
-          <div><b>Valor unitário:</b> {{ pedido.valor }}</div>
-          <div><b>Valor total:</b> {{ calcularValorTotal() }}</div>
-        </div>
-        <div class="verificacao-qtd">
-          <button class="verificacao-btn diminuir" @click="diminuirQuantidade">-</button>
-          <span>{{ pedido.quantidade }}</span>
-          <button class="verificacao-btn" @click="adicionarQuantidade">+</button>
-        </div>
-        <div class="verificacao-actions">
-          <button class="verificacao-pedir" @click="pedirMais">+ Pedir Mais</button>
-          <button
-            class="verificacao-finalizar"
-            @click="finalizarPedido"
-            :disabled="processandoPedido"
-          >
-            {{ processandoPedido ? '⏳ Processando...' : '💳 Ir para Pagamento' }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Toast de Notificação -->
-    <ToastNotification
-      :show="toast.show"
-      :type="toast.type"
-      :title="toast.title"
-      :message="toast.message"
-      @close="toast.show = false"
-    />
-  </div>
-</template>
-
 <script>
 import ToastNotification from '@/components/Toast.vue';
 
@@ -169,6 +120,56 @@ export default {
   }
 }
 </script>
+
+
+<template>
+  <div class="verificacao-container">
+    <header class="verificacao-header">
+      <span class="verificacao-title">Verificação</span>
+    </header>
+    <div class="verificacao-content">
+      <h2 class="verificacao-subtitle">Conferência:</h2>
+      <div class="verificacao-card">
+        <h3 class="pizza-tipo">{{ pedido.pizzaNome }}</h3>
+        <div class="verificacao-info">
+          <b>Sabores:</b>
+          <ul>
+            <li v-for="(sabor, idx) in pedido.saboresSelecionados" :key="idx">
+              -{{ sabor.fracao }} {{ sabor.nome }}
+            </li>
+          </ul>
+          <div><b>Borda:</b> {{ pedido.bordaSelecionada }}</div>
+          <div><b>Valor unitário:</b> {{ pedido.valor }}</div>
+          <div><b>Valor total:</b> {{ calcularValorTotal() }}</div>
+        </div>
+        <div class="verificacao-qtd">
+          <button class="verificacao-btn diminuir" @click="diminuirQuantidade">-</button>
+          <span>{{ pedido.quantidade }}</span>
+          <button class="verificacao-btn" @click="adicionarQuantidade">+</button>
+        </div>
+        <div class="verificacao-actions">
+          <button class="verificacao-pedir" @click="pedirMais">+ Pedir Mais</button>
+          <button
+            class="verificacao-finalizar"
+            @click="finalizarPedido"
+            :disabled="processandoPedido"
+          >
+            {{ processandoPedido ? '⏳ Processando...' : '💳 Ir para Pagamento' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <ToastNotification
+      :show="toast.show"
+      :type="toast.type"
+      :title="toast.title"
+      :message="toast.message"
+      @close="toast.show = false"
+    />
+  </div>
+</template>
 
 <style scoped>
 .verificacao-container {

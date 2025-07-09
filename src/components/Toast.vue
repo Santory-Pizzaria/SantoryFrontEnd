@@ -1,16 +1,3 @@
-<template>
-  <div v-if="show" :class="['toast', type]">
-    <div class="toast-content">
-      <span class="toast-icon">{{ icon }}</span>
-      <div class="toast-message">
-        <h4>{{ title }}</h4>
-        <p>{{ message }}</p>
-      </div>
-      <button class="toast-close" @click="close">×</button>
-    </div>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'ToastNotification',
@@ -64,6 +51,21 @@ export default {
   }
 }
 </script>
+
+
+<template>
+  <div v-if="show" :class="['toast', type]">
+    <div class="toast-content">
+      <span class="toast-icon">{{ icon }}</span>
+      <div class="toast-message">
+        <h4>{{ title }}</h4>
+        <p>{{ message }}</p>
+      </div>
+      <button class="toast-close" @click="close">×</button>
+    </div>
+  </div>
+</template>
+
 
 <style scoped>
 .toast {
