@@ -14,7 +14,10 @@
         <p><strong>Email:</strong> {{ usuario.email }}</p>
         <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
         <p><strong>Endereço:</strong> {{ usuario.endereco }}</p>
-        <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
+        <div class="botoes-perfil">
+          <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
+          <button class="btn-deslogar" @click="Deslogar">Sair da conta</button>
+        </div>
       </div>
       <div v-else class="perfil-edicao">
         <input v-model="usuarioEdit.nome" placeholder="Nome" />
@@ -50,6 +53,9 @@ export default {
   methods: {
     voltarMenu() {
       this.$router.push('/menu');
+    },
+    Deslogar() {
+      this.$router.push('/login');
     },
     editarPerfil() {
       this.usuarioEdit = { ...this.usuario };
@@ -144,6 +150,16 @@ export default {
   font-weight: 600;
   margin-top: 12px;
 }
+.btn-deslogar {
+  background: #e67e22;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 12px;
+}
 .perfil-edicao input {
   width: 100%;
   margin-bottom: 10px;
@@ -196,5 +212,11 @@ export default {
   width: 28px;
   height: 28px;
   filter: drop-shadow(0 1px 2px rgba(44,62,80,0.10));
+}
+.botoes-perfil {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
 }
 </style>
