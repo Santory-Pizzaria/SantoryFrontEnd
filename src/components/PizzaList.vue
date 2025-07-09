@@ -2,6 +2,7 @@
 import PizzaCard from './PizzaCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -15,13 +16,24 @@ const pizzas = [
   { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
   { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
 ];
+
+const searchText = ref('');
+
+const filteredPizzas = computed(() => {
+  if (!searchText.value.trim()) return pizzas;
+  const search = searchText.value.toLowerCase();
+  return pizzas.filter(pizza =>
+    pizza.name.toLowerCase().includes(search) ||
+    pizza.description.toLowerCase().includes(search)
+  );
+});
 </script>
 <template>
 
   <div class="container-tudo">
     <header class="header-logo">
-      <div class="header-status">
-        <button class="status-button">Fechado</button>
+      <div class="perfil-icone" @click="navigateTo('/perfil')">
+        <img src="/src/assets/imagens/perfil.png" alt="Perfil" />
       </div>
     </header>
     <div class="Logo">
@@ -29,14 +41,14 @@ const pizzas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
           <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
           <span>Meus Pedidos</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
@@ -59,7 +71,7 @@ const pizzas = [
 
     <section class="pizza-list">
       <router-link
-        v-for="pizza in pizzas"
+        v-for="pizza in filteredPizzas"
         :key="pizza.name"
         :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
         class="pizza-link"
@@ -120,12 +132,12 @@ span {
 }
 
 header {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 20px 40px;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  height: 80px;
 }
 
 header .logo img {
@@ -237,7 +249,7 @@ body {
 
 
 header {
-  background-color: #e28f11;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -337,6 +349,22 @@ nav a {
 
 .pizza-link {
   text-decoration: none;
+}
+
+.perfil-icone {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.perfil-icone img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e74c3c;
 }
 
 

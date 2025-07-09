@@ -2,6 +2,7 @@
 import BebidaCard from './BebidaCard.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -15,13 +16,24 @@ const bebidas = [
   { name: 'Suco de Laranja', description: 'Natural 500ml', price: 7.90, image: '/src/assets/imagens/fundo.png' },
   { name: 'Água Mineral', description: 'Sem gás 350ml', price: 2.90, image: '/src/assets/imagens/fundo.png' }
 ];
+
+const searchText = ref('');
+
+const filteredBebidas = computed(() => {
+  if (!searchText.value.trim()) return bebidas;
+  const search = searchText.value.toLowerCase();
+  return bebidas.filter(bebida =>
+    bebida.name.toLowerCase().includes(search) ||
+    bebida.description.toLowerCase().includes(search)
+  );
+});
 </script>
 <template>
 
   <div class="container-tudo">
     <header class="header-logo">
-      <div class="header-status">
-        <button class="status-button">Fechado</button>
+      <div class="perfil-icone" @click="navigateTo('/perfil')">
+        <img src="/src/assets/imagens/perfil.png" alt="Perfil" />
       </div>
     </header>
     <div class="Logo">
@@ -29,18 +41,18 @@ const bebidas = [
     </div>
     <div class="header-Button">
       <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Bebidas por Nome ou descrição" />
+        <input type="text" placeholder="Pesquisar Bebidas por Nome ou descrição" v-model="searchText" />
       </div>
       <div class="nav-items">
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
           <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
           <span>Meus Pedidos</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
           <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
           <span>Taxa e Tempo de Entrega</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
           <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
@@ -58,7 +70,7 @@ const bebidas = [
     </div>
 
     <section class="bebida-list">
-      <BebidaCard v-for="bebida in bebidas" :key="bebida.name" :bebida="bebida" />
+      <BebidaCard v-for="bebida in filteredBebidas" :key="bebida.name" :bebida="bebida" />
     </section>
     <FooteRor></FooteRor>
 
@@ -112,12 +124,12 @@ span {
 }
 
 header {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 20px 40px;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  height: 80px;
 }
 
 header .logo img {
@@ -226,7 +238,7 @@ body {
 
 
 header {
-  background-color: #e28f11;
+  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -324,6 +336,21 @@ nav a {
   margin-left: auto;
 }
 
+.perfil-icone {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.perfil-icone img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e74c3c;
+}
 
 @media (max-width: 768px) {
   header {
