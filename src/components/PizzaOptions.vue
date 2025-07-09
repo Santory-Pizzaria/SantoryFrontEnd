@@ -167,7 +167,17 @@ export default {
       return this.saboresSelecionados.some(s => s.nome === sabor.nome);
     },
     finalizarSelecao() {
-      this.$emit('finish');
+      // Criar objeto do pedido com todos os dados selecionados
+      const pedidoSelecionado = {
+        pizzaNome: this.pizzaNome,
+        saboresSelecionados: this.saboresSelecionados,
+        bordaSelecionada: this.bordaSelecionada,
+        qtdSabores: this.qtdSabores,
+        valor: this.calcularValor(),
+        quantidade: 1
+      };
+
+      this.$emit('finish', pedidoSelecionado);
     },
     continuarSabores() {
       if (!this.qtdSabores) {
@@ -184,6 +194,30 @@ export default {
       }
       this.erroSelecaoSabores = '';
       this.finalizarSelecao();
+    },
+    calcularValor() {
+      // Lógica para calcular o valor baseado no tamanho da pizza
+      const nomeLower = this.pizzaNome.toLowerCase();
+      let valorBase = 0;
+
+      if (nomeLower.includes('família')) {
+        valorBase = 45.00;
+      } else if (nomeLower.includes('grande')) {
+        valorBase = 35.00;
+      } else if (nomeLower.includes('média')) {
+        valorBase = 25.00;
+      } else if (nomeLower.includes('pequena')) {
+        valorBase = 18.00;
+      } else {
+        valorBase = 25.00; // valor padrão
+      }
+
+      // Adicionar custo da borda se não for "Sem Borda"
+      if (this.bordaSelecionada !== 'Sem Borda') {
+        valorBase += 5.00;
+      }
+
+      return `R$ ${valorBase.toFixed(2).replace('.', ',')}`;
     }
   }
 }

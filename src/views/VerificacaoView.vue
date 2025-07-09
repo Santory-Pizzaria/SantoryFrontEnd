@@ -15,41 +15,156 @@
             </li>
           </ul>
           <div><b>Borda:</b> {{ pedido.bordaSelecionada }}</div>
-          <div><b>Frete:</b> {{ pedido.frete }}</div>
-          <div><b>Valor:</b> {{ pedido.valor }}</div>
+          <div><b>Valor unitário:</b> {{ pedido.valor }}</div>
+          <div><b>Valor total:</b> {{ calcularValorTotal() }}</div>
         </div>
         <div class="verificacao-qtd">
+          <button class="verificacao-btn diminuir" @click="diminuirQuantidade">-</button>
           <span>{{ pedido.quantidade }}</span>
           <button class="verificacao-btn" @click="adicionarQuantidade">+</button>
         </div>
         <div class="verificacao-actions">
           <button class="verificacao-pedir" @click="pedirMais">+ Pedir Mais</button>
-          <button class="verificacao-finalizar" @click="finalizarPedido">✔ Finalizar Pedido</button>
+          <button
+            class="verificacao-finalizar"
+            @click="finalizarPedido"
+            :disabled="processandoPedido"
+          >
+            {{ processandoPedido ? '⏳ Processando...' : '💳 Ir para Pagamento' }}
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Toast de Notificação -->
+    <ToastNotification
+      :show="toast.show"
+      :type="toast.type"
+      :title="toast.title"
+      :message="toast.message"
+      @close="toast.show = false"
+    />
   </div>
 </template>
 
 <script>
+import ToastNotification from '@/components/Toast.vue';
+
 export default {
   name: 'VerificacaoView',
+  components: {
+    ToastNotification
+  },
   props: {
     pedido: {
       type: Object,
       required: true
     }
   },
+  data() {
+    return {
+      processandoPedido: false,
+      toast: {
+        show: false,
+        type: 'success',
+        title: '',
+        message: ''
+      }
+    };
+  },
   methods: {
     adicionarQuantidade() {
       this.$emit('atualizar-quantidade', this.pedido.quantidade + 1)
+    },
+    diminuirQuantidade() {
+      if (this.pedido.quantidade > 1) {
+        this.$emit('atualizar-quantidade', this.pedido.quantidade - 1)
+      }
+    },
+    calcularValorTotal() {
+      // Extrair valor numérico da pizza
+      const valorPizza = parseFloat(this.pedido.valor.replace('R$ ', '').replace(',', '.'));
+
+      // Sem frete na verificação - só o valor das pizzas
+      const total = valorPizza * this.pedido.quantidade;
+      return `R$ ${total.toFixed(2).replace('.', ',')}`;
     },
     pedirMais() {
       this.$router.push('/menu')
     },
     finalizarPedido() {
-      // lógica para finalizar
-      alert('Pedido finalizado!')
+      // Salvar dados do pedido no localStorage temporariamente para passar para o pagamento
+      const pedidoPagamento = {
+        pizzaNome: this.pedido.pizzaNome,
+        saboresSelecionados: this.pedido.saboresSelecionados,
+        bordaSelecionada: this.pedido.bordaSelecionada,
+        qtdSabores: this.pedido.qtdSabores,
+        valor: this.pedido.valor,
+        quantidade: this.pedido.quantidade,
+        valorTotal: this.calcularValorTotal()
+      };
+
+      // Salvar temporariamente para a tela de pagamento
+      localStorage.setItem('pedido-pagamento', JSON.stringify(pedidoPagamento));
+
+      // Redirecionar para a tela de pagamento
+      this.$router.push('/form');
+    },
+    salvarPedido(pedido) {
+      // Recuperar pedidos existentes ou criar array vazio
+      const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]');
+
+      // Adicionar novo pedido
+      pedidosExistentes.push(pedido);
+
+      // Salvar de volta no localStorage
+      localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes));
+
+      console.log('Pedido salvo:', pedido);
+    },
+    // Método para recuperar pedidos (útil para futuras funcionalidades)
+    obterPedidos() {
+      return JSON.parse(localStorage.getItem('pedidos') || '[]');
+    },
+    // Método para limpar histórico de pedidos (para desenvolvimento/teste)
+    limparHistorico() {
+      localStorage.removeItem('pedidos');
+      console.log('Histórico de pedidos limpo');
+    },
+    // Método para mostrar notificações Toast
+    mostrarToast(type, title, message) {
+      this.toast = {
+        show: true,
+        type,
+        title,
+        message
+      };
+    },
+    // Método para confirmar pedido após pagamento (para ser usado externamente)
+    confirmarPedidoAposPagamento(dadosPedido, dadosPagamento = {}) {
+      // Criar objeto do pedido completo para salvar
+      const pedidoCompleto = {
+        id: Date.now(), // ID único baseado no timestamp
+        data: new Date().toLocaleDateString('pt-BR'),
+        hora: new Date().toLocaleTimeString('pt-BR'),
+        pizza: {
+          nome: dadosPedido.pizzaNome,
+          sabores: dadosPedido.saboresSelecionados,
+          borda: dadosPedido.bordaSelecionada,
+          quantidade: dadosPedido.quantidade
+        },
+        valores: {
+          unitario: dadosPedido.valor,
+          total: dadosPedido.valorTotal
+        },
+        pagamento: dadosPagamento,
+        status: 'Confirmado'
+      };
+
+      // Salvar no localStorage (simulando um backend)
+      this.salvarPedido(pedidoCompleto);
+
+      return pedidoCompleto;
     }
   }
 }
@@ -135,6 +250,10 @@ export default {
   align-items: center;
   justify-content: center;
 }
+.verificacao-btn.diminuir {
+  font-size: 1.5rem;
+  line-height: 1;
+}
 .verificacao-actions {
   display: flex;
   justify-content: space-between;
@@ -161,6 +280,12 @@ export default {
   font-size: 1rem;
   cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.verificacao-finalizar:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 @media (max-width: 600px) {
   .verificacao-card {

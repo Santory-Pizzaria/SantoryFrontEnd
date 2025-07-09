@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const cep = ref('')
 const erroCep = ref('')
@@ -7,7 +10,25 @@ const endereco = ref({
   rua: '',
   bairro: '',
   cidade: '',
-  uf: ''
+  uf: '',
+})
+
+// Dados do pedido vindos da verificação
+const pedidoData = ref(null)
+const metodoPagamento = ref('')
+const processandoPagamento = ref(false)
+const frete = ref(0)
+const calculandoFrete = ref(false)
+
+onMounted(() => {
+  // Recuperar dados do pedido do localStorage
+  const dadosPedido = localStorage.getItem('pedido-pagamento')
+  if (dadosPedido) {
+    pedidoData.value = JSON.parse(dadosPedido)
+  } else {
+    // Se não há dados do pedido, redirecionar para o menu
+    router.push('/menu')
+  }
 })
 
 async function validarCep() {
@@ -32,17 +53,144 @@ async function validarCep() {
         rua: data.logradouro,
         bairro: data.bairro,
         cidade: data.localidade,
-        uf: data.uf
+        uf: data.uf,
       }
+      // Calcular frete após obter o endereço
+      calculandoFrete.value = true
+      setTimeout(() => {
+        calcularFrete()
+        calculandoFrete.value = false
+      }, 1000) // Simula tempo de cálculo
     }
-  } catch (erroCep) {
+  } catch {
     erroCep.value = 'Erro ao consultar o CEP.'
     endereco.value = { rua: '', bairro: '', cidade: '', uf: '' }
   }
 }
 
+function calcularFrete() {
+  // Por enquanto, um valor fixo baseado na cidade
+  // Futuramente aqui será implementado o cálculo de distância
+  const cidade = endereco.value.cidade?.toLowerCase() || ''
+
+  if (cidade.includes('joinville')) {
+    frete.value = 5.0 // Taxa mínima para Joinville
+  } else if (endereco.value.uf === 'SC') {
+    frete.value = 15.0 // Taxa para outras cidades de SC
+  } else {
+    frete.value = 25.0 // Taxa para outros estados
+  }
+
+  console.log(
+    `Frete calculado: R$ ${frete.value.toFixed(2)} para ${endereco.value.cidade}, ${endereco.value.uf}`,
+  )
+}
+
+function obterValorFrete() {
+  return frete.value > 0 ? `R$ ${frete.value.toFixed(2).replace('.', ',')}` : 'A calcular'
+}
+
+function calcularValorTotal() {
+  if (!pedidoData.value) return 'R$ 0,00'
+
+  const valorPizza = parseFloat(pedidoData.value.valor.replace('R$ ', '').replace(',', '.'))
+  const valorTotalPizzas = valorPizza * pedidoData.value.quantidade
+  const valorTotal = valorTotalPizzas + frete.value
+
+  return `R$ ${valorTotal.toFixed(2).replace('.', ',')}`
+}
+
 function submitForm() {
-  alert('Pedido finalizado com sucesso!')
+  // Validações antes do pagamento
+  if (!cep.value || erroCep.value) {
+    alert('Por favor, informe um CEP válido.')
+    return
+  }
+
+  if (!metodoPagamento.value) {
+    alert('Por favor, selecione um método de pagamento.')
+    return
+  }
+
+  if (frete.value === 0) {
+    alert('Por favor, aguarde o cálculo do frete ou verifique se o CEP foi informado corretamente.')
+    return
+  }
+
+  if (calculandoFrete.value) {
+    alert('Aguarde o cálculo do frete finalizar.')
+    return
+  }
+
+  processandoPagamento.value = true
+
+  // Simular processamento do pagamento
+  setTimeout(() => {
+    // Criar objeto do pedido completo
+    const pedidoCompleto = {
+      id: Date.now(),
+      data: new Date().toLocaleDateString('pt-BR'),
+      hora: new Date().toLocaleTimeString('pt-BR'),
+      pizza: {
+        nome: pedidoData.value.pizzaNome,
+        sabores: pedidoData.value.saboresSelecionados,
+        borda: pedidoData.value.bordaSelecionada,
+        quantidade: pedidoData.value.quantidade,
+      },
+      valores: {
+        unitario: pedidoData.value.valor,
+        frete: obterValorFrete(),
+        total: calcularValorTotal(),
+      },
+      endereco: {
+        cep: cep.value,
+        rua: endereco.value.rua,
+        bairro: endereco.value.bairro,
+        cidade: endereco.value.cidade,
+        uf: endereco.value.uf,
+      },
+      pagamento: {
+        metodo: metodoPagamento.value,
+        status: 'Aprovado',
+      },
+      status: 'Confirmado',
+    }
+
+    // Salvar pedido confirmado
+    salvarPedidoConfirmado(pedidoCompleto)
+
+    // Limpar dados temporários
+    localStorage.removeItem('pedido-pagamento')
+
+    processandoPagamento.value = false
+
+    // Mostrar confirmação e redirecionar
+    alert(
+      `🍕 Pagamento aprovado!\n\nPedido #${pedidoCompleto.id} confirmado com sucesso!\nTempo estimado de entrega: 30-45 minutos\n\nVocê será redirecionado para a página inicial.`,
+    )
+
+    setTimeout(() => {
+      router.push('/menu')
+    }, 1000)
+  }, 1000) // Simula tempo de processamento do pagamento
+}
+
+function salvarPedidoConfirmado(pedido) {
+  // Recuperar pedidos existentes
+  const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]')
+
+  // Adicionar novo pedido
+  pedidosExistentes.push(pedido)
+
+  // Salvar de volta
+  localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes))
+
+  console.log('Pedido confirmado e salvo:', pedido)
+}
+
+// Função para voltar à verificação (caso o usuário queira ajustar algo)
+function voltarParaVerificacao() {
+  router.go(-1) // Volta para a página anterior
 }
 </script>
 <template>
@@ -56,8 +204,18 @@ function submitForm() {
       <section class="checkout-form-section">
         <div>
           <div class="Cep" for="cep"><strong>Informe o CEP:</strong></div>
-          <input id="cep" type="text" v-model="cep" @blur="validarCep" placeholder="CEP (ex: 01001000)" class="input" />
+          <input
+            id="cep"
+            type="text"
+            v-model="cep"
+            @blur="validarCep"
+            placeholder="CEP (ex: 01001000)"
+            class="input"
+          />
           <p v-if="erroCep" class="erro">{{ erroCep }}</p>
+          <div class="info-pizzaria">
+            <small>📍 Nossa pizzaria fica em Joinville/SC - R. Francisco Cristofolini, 326</small>
+          </div>
         </div>
         <div v-if="endereco.rua">
           <label><strong>Rua:</strong></label>
@@ -74,25 +232,25 @@ function submitForm() {
           <ul>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="credito" />
+                <input type="radio" name="pagamento" value="credito" v-model="metodoPagamento" />
                 Cartão de crédito
               </label>
             </li>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="boleto" />
+                <input type="radio" name="pagamento" value="boleto" v-model="metodoPagamento" />
                 Boleto
               </label>
             </li>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="debito" />
+                <input type="radio" name="pagamento" value="debito" v-model="metodoPagamento" />
                 Débito online
               </label>
             </li>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="deposito" />
+                <input type="radio" name="pagamento" value="deposito" v-model="metodoPagamento" />
                 Depósito em conta
               </label>
             </li>
@@ -110,31 +268,56 @@ function submitForm() {
       </section>
       <aside class="checkout-summary">
         <h2>Resumo do pedido</h2>
-        <div class="linha">
-          <span><strong>Descrição</strong></span>
-          <span><strong>Valor</strong></span>
+        <div v-if="pedidoData">
+          <div class="linha">
+            <span><strong>Descrição</strong></span>
+            <span><strong>Valor</strong></span>
+          </div>
+          <div class="linha">
+            <span>{{ pedidoData.pizzaNome }}</span>
+            <span>{{ pedidoData.valor }}</span>
+          </div>
+          <div class="pedido-detalhes">
+            <h4>Sabores:</h4>
+            <ul>
+              <li v-for="(sabor, idx) in pedidoData.saboresSelecionados" :key="idx">
+                {{ sabor.fracao }} {{ sabor.nome }}
+              </li>
+            </ul>
+            <p><strong>Borda:</strong> {{ pedidoData.bordaSelecionada }}</p>
+            <p><strong>Quantidade:</strong> {{ pedidoData.quantidade }}</p>
+            <p><strong>Valor do item:</strong> {{ pedidoData.valor }}</p>
+            <p v-if="calculandoFrete"><strong>Frete:</strong> 🔄 Calculando...</p>
+            <p v-else-if="frete > 0"><strong>Frete:</strong> {{ obterValorFrete() }}</p>
+            <p v-else><strong>Frete:</strong> Informe o CEP para calcular</p>
+          </div>
+          <div class="total"><strong>Total a pagar:</strong> {{ calcularValorTotal() }}</div>
+          <div class="buttons-container">
+            <button
+              @click="voltarParaVerificacao"
+              class="back-button"
+              :disabled="processandoPagamento"
+            >
+              ← Voltar
+            </button>
+            <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">
+              {{ processandoPagamento ? '💳 Processando...' : 'Finalizar Pedido' }}
+            </button>
+          </div>
         </div>
-        <div class="linha">
-          <span>Bonde logo</span>
-          <span>R$ 10,00</span>
+        <div v-else>
+          <p>Carregando dados do pedido...</p>
         </div>
-        <p>Quantidade: 1</p>
-        <p>Valor do item: R$ 10,00</p>
-        <div class="total">
-          <strong>Total a pagar:</strong> R$ 10,00
-        </div>
-        <button @click="submitForm" class="submit-button">Finalizar Pedido</button>
       </aside>
     </div>
   </div>
 </template>
 
-
 <style scoped>
 .Cep {
   padding: 5px;
 }
-.title-Pagamento{
+.title-Pagamento {
   padding: 5px;
 }
 .checkout-container {
@@ -254,5 +437,74 @@ function submitForm() {
   font-size: 18px;
   min-width: 140px;
   margin-top: 32px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.pedido-detalhes {
+  margin: 15px 0;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.pedido-detalhes h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.pedido-detalhes ul {
+  margin: 0 0 10px 0;
+  padding-left: 20px;
+}
+
+.pedido-detalhes li {
+  margin-bottom: 4px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.back-button {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 16px 24px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover:not(:disabled) {
+  background-color: #bbb;
+}
+
+.back-button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.info-pizzaria {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #f0f8ff;
+  border-radius: 4px;
+  border-left: 3px solid #ff9800;
+}
+
+.info-pizzaria small {
+  color: #666;
+  font-size: 12px;
 }
 </style>
