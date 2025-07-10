@@ -161,13 +161,20 @@ export default {
   font-weight: 600;
   margin-top: 12px;
 }
+.perfil-edicao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .perfil-edicao input {
-  width: 100%;
+  width: 90%;
   margin-bottom: 10px;
   padding: 7px 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  display: block;
+  text-align: center;
 }
 .botoes-edicao {
   display: flex;
