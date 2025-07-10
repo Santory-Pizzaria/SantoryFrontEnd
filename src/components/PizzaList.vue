@@ -1,10 +1,38 @@
 <script setup>
 import PizzaCard from './PizzaCard.vue';
+import UsuarioInfo from './UsuarioInfo.vue';
 import { useRouter } from 'vue-router';
 import FooteRor from './FooteRor.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const router = useRouter();
+
+// Dados do usuário logado
+const usuario = ref({
+  nome: '',
+  avatar: ''
+});
+const defaultAvatar = '/src/assets/imagens/perfil.png';
+
+// Carregar dados do usuário logado
+onMounted(() => {
+  carregarDadosUsuario();
+});
+
+function carregarDadosUsuario() {
+  const usuarioLogado = localStorage.getItem('usuarioLogado');
+  if (usuarioLogado) {
+    try {
+      const dadosUsuario = JSON.parse(usuarioLogado);
+      usuario.value = {
+        nome: dadosUsuario.nome || '',
+        avatar: dadosUsuario.avatar || ''
+      };
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+    }
+  }
+}
 
 function navigateTo(route) {
   router.push(route);
@@ -33,7 +61,7 @@ const filteredPizzas = computed(() => {
   <div class="container-tudo">
     <header class="header-logo">
       <div class="perfil-icone" @click="navigateTo('/perfil')">
-        <img src="/src/assets/imagens/perfil.png" alt="Perfil" />
+        <img :src="usuario.avatar || defaultAvatar" alt="Perfil" class="avatar-perfil" />
       </div>
     </header>
     <div class="Logo">
@@ -56,6 +84,7 @@ const filteredPizzas = computed(() => {
           <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
           <span>Avaliações</span>
         </a>
+
       </div>
     </div>
     <div class=header>
@@ -132,12 +161,13 @@ span {
 }
 
 header {
-  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
+  background: linear-gradient(90deg, #B90020 0%, #B90020 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
   height: 80px;
+  border-bottom: #fca40c 2px solid;
 }
 
 header .logo img {
@@ -248,14 +278,6 @@ body {
 }
 
 
-header {
-  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  height: 80px;
-}
 
 .logo {
   height: 160px;

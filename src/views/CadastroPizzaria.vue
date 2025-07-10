@@ -12,11 +12,36 @@ const router = useRouter()
 
 async function cadastrarPizzaria() {
   mensagem.value = ''
-  // Simulação de cadastro (troque pela chamada real à API)
+  
   try {
-    // await fetch('https://sua-api.com/cadastro-pizzaria', { ... })
+    // Criar objeto do usuário com os dados do cadastro
+    const novoUsuario = {
+      id: Date.now(), // ID único baseado no timestamp
+      nome: nome.value,
+      email: email.value,
+      senha: senha.value, // Em produção, isso deveria ser hash
+      telefone: telefone.value,
+      endereco: endereco.value,
+      avatar: '',
+      dataCadastro: new Date().toISOString()
+    }
+
+    // Salvar usuário no localStorage (simulando banco de dados)
+    const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]')
+    
+    // Verificar se email já existe
+    const emailJaExiste = usuariosExistentes.find(user => user.email === email.value)
+    if (emailJaExiste) {
+      mensagem.value = 'Este email já está cadastrado!'
+      return
+    }
+
+    usuariosExistentes.push(novoUsuario)
+    localStorage.setItem('usuarios', JSON.stringify(usuariosExistentes))
+
     mensagem.value = 'Cadastro realizado com sucesso!'
     nome.value = email.value = senha.value = telefone.value = endereco.value = ''
+    
     setTimeout(() => {
       router.push('/login')
     }, 1200)
