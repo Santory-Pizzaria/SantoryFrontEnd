@@ -13,6 +13,7 @@ import PerfilUsuario from '../views/PerfilUsuario.vue'
 import PedidosProdutos from '../views/PedidosProdutos.vue'
 import TempoEntrega from '../views/TempoEntrega.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
+import CardapioTela from '@/views/CardapioTela.vue'
 
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginCliente,
+    },
+    {
+      path: '/Cardapio',
+      name: 'CardapioTela',
+      component: CardapioTela,
     },
     {
       path: '/cadastro',
