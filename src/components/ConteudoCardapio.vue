@@ -27,6 +27,7 @@
         <li v-for="bebida in bebidas" :key="bebida.nome" class="cardapio-item bebida-item">
           <span class="item-nome">{{ bebida.nome }}</span>
           <span class="item-desc">{{ bebida.descricao }}</span>
+          <span class="item-preco">{{ bebida.preco }}</span>
         </li>
       </ul>
     </div>
@@ -48,11 +49,11 @@ export default {
         { nome: 'Vegetariana', descricao: 'Mussarela, tomate, cebola, pimentão, champignon, milho.' }
       ],
       bebidas: [
-        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)' },
-        { nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (2L)' },
-        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)' },
-        { nome: 'Suco Natural', descricao: 'Laranja, uva, abacaxi ou maracujá (300ml)' },
-        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)' }
+        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00' },
+        { nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (2L)', preco: 'R$ 13,00' },
+        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)', preco: 'R$ 4,00' },
+        { nome: 'Suco Natural', descricao: 'Laranja, uva, abacaxi ou maracujá (300ml)', preco: 'R$ 7,00' },
+        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)', preco: 'R$ 9,00' }
       ]
     }
   }
@@ -137,6 +138,11 @@ export default {
   color: #444;
   font-size: 1rem;
   margin-top: 0.2rem;
+}
+.item-preco {
+  color: #d72638;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
 }
 .cardapio-bg {
   position: fixed;
