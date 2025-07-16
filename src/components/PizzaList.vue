@@ -1,32 +1,8 @@
 <script setup>
-import PizzaCard from './PizzaCard.vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import FooteRor from './FooteRor.vue';
-import { ref, computed } from 'vue';
 
 const router = useRouter();
-
-function navigateTo(route) {
-  router.push(route);
-}
-
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
-];
-
-const searchText = ref('');
-
-const filteredPizzas = computed(() => {
-  if (!searchText.value.trim()) return pizzas;
-  const search = searchText.value.toLowerCase();
-  return pizzas.filter(pizza =>
-    pizza.name.toLowerCase().includes(search) ||
-    pizza.description.toLowerCase().includes(search)
-  );
-});
 
 const carouselImages = [
   '/src/assets/imagens/fundo.png',
@@ -41,550 +17,261 @@ function nextImage() {
 }
 
 setInterval(nextImage, 3500);
+
+function goToTempoEntrega() {
+  router.push({ name: 'TempoEntrega' });
+}
+function goToCardapioTela() {
+  router.push({ name: 'CardapioTela' });
+}
+function goToFeedBack() {
+  router.push({ name: 'FeedBack' });
+}
 </script>
 <template>
-  <div class="container-tudo">
-    <header class="header-pizza">
-      <div class="header-content">
-        <div class="logo-pizza">
-          <img src="/src/assets/imagens/logo.png" alt="Santory Logo" class="logo-img" />
-          <span class="pizza-title">Santory Pizzaria</span>
-        </div>
-        <div class="perfil-icone" @click="navigateTo('/perfil')">
-          <img src="/src/assets/imagens/perfil.png" alt="Perfil" />
-        </div>
-      </div>
-    </header>
-    <div class="Logo">
-      <div class="carousel carousel-full">
-        <img :src="carouselImages[currentImage]" class="carousel-img carousel-img-full" alt="Pizza Carrossel" />
-      </div>
-    </div>
-    <div class="header-Button">
-      <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
-      </div>
-      <div class="nav-items">
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
-          <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
-          <span>Meus Pedidos</span>
-        </a>
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
-          <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
-          <span>Taxa e Tempo de Entrega</span>
-        </a>
-        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
-          <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
-          <span>Avaliações</span>
-        </a>
-      </div>
-    </div>
-    <div class=header>
-      <nav>
-        <ul>
-          <li><a href="#" @click.prevent="navigateTo('/pizza')">Pizza</a></li>
-          <li><a href="#" @click.prevent="navigateTo('/combo')">Combo</a></li>
-          <li><a href="#" @click.prevent="navigateTo('/bebida')">Bebida</a></li>
-        </ul>
+  <div class="italia-bg">
+    <!-- Header -->
+    <header class="italia-header">
+      <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
+      <nav class="italia-nav">
+        <a href="#" class="italia-nav-link active">HOME</a>
+        <span class="italia-sep">|</span>
+        <a href="#" class="italia-nav-link">RESERVAS</a>
+        <span class="italia-sep">|</span>
+        <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
+        <span class="italia-sep">|</span>
+        <a href="#" class="italia-nav-link" @click.prevent="goToTempoEntrega">TAXA E TEMPO DE ENTREGA</a>
+        <span class="italia-sep">|</span>
+        <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
       </nav>
-
-    </div>
-
-    <section class="pizza-list">
-      <router-link
-        v-for="pizza in filteredPizzas"
-        :key="pizza.name"
-        :to="{ name: 'pizza-options', params: { pizzaNome: pizza.name } }"
-        class="pizza-link"
-      >
-        <PizzaCard :pizza="pizza" />
-      </router-link>
+      <button class="italia-delivery-btn">
+        PEÇA NO DELIVERY
+        <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
+      </button>
+    </header>
+    <!-- Hero -->
+    <section class="italia-hero">
+      <div class="italia-hero-content">
+        <h1 class="italia-hero-title">BEM VINDOS</h1>
+        <hr class="italia-hero-line" />
+        <p class="italia-hero-sub">O sabor da Itália em Joinville</p>
+        <button class="italia-reserva-btn">
+          FAÇA SUA RESERVA
+          <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </button>
+      </div>
     </section>
-
-
+    <!-- Ícone WhatsApp fixo -->
+    <a href="https://wa.me/SEUNUMERO" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+      <img src="/src/assets/imagens/whatsapp.png" alt="WhatsApp" class="whatsapp-icon" />
+    </a>
   </div>
-  <FooteRor></FooteRor>
 </template>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@700&display=swap');
+
+.italia-bg {
+  min-height: 100vh;
+  background: url('/src/assets/imagens/fundo.png') center center/cover no-repeat;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+}
+.italia-header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px 0 40px;
+  background: transparent;
+  font-family: 'Playfair Display', serif;
   box-sizing: border-box;
 }
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+.italia-logo {
+  height: 90px;
+  width: auto;
+  margin-right: 24px;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
 }
-
-.header-pizza {
-  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
-  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.12);
-  border-bottom: 4px solid #e74c3c;
-  padding-bottom: 0;
-  position: relative;
-}
-.header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 32px 0 32px;
-}
-.logo-pizza {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-.logo-img {
-  height: 70px;
-  border-radius: 50%;
-  border: 3px solid #e74c3c;
-  background: #fffbe6;
-  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
-}
-.pizza-title {
-  font-family: 'Pacifico', cursive, Arial, sans-serif;
-  font-size: 2.2rem;
-  color: #e74c3c;
-  letter-spacing: 2px;
-  text-shadow: 1px 2px 0 #fffbe6, 0 2px 8px #ffb34744;
-}
-.carousel {
+.italia-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  margin-top: 10px;
-  max-width: 480px;
-  position: relative;
+  flex: 1;
+  font-size: 1.08rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 1px;
 }
-.carousel-img {
-  width: 420px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 18px;
-  border: 2px solid #e74c3c;
-  box-shadow: 0 2px 12px #ffb34733;
-  background: #fffbe6;
+.italia-nav-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 0 8px;
+  transition: color 0.2s;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.08rem;
 }
-.carousel-large {
-  max-width: 100%;
-  width: 100%;
+.italia-nav-link.active,
+.italia-nav-link:hover {
+  color: #ffb347;
+}
+.italia-sep {
+  color: #fff;
+  opacity: 0.7;
+  font-size: 1.1rem;
+  margin: 0 6px;
+  user-select: none;
+}
+.italia-delivery-btn {
+  border: 1.5px solid #fff;
+  background: transparent;
+  color: #fff;
+  padding: 7px 22px 7px 22px;
+  border-radius: 0;
+  font-size: 1rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: none;
+}
+.italia-delivery-btn:hover {
+  background: #fff;
+  color: #232323;
+}
+.italia-bag {
+  margin-left: 2px;
+  stroke: currentColor;
+}
+.italia-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 0;
+  position: relative;
+  padding-top: 120px;
 }
-.carousel-img-large {
-  width: 100%;
+.italia-hero-content {
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+  width: 100vw;
   max-width: 900px;
-  height: 260px;
-  object-fit: cover;
-  border-radius: 24px;
-  border: 3px solid #e74c3c;
-  box-shadow: 0 4px 24px #ffb34733;
-  background: #fffbe6;
-  display: block;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.carousel-btn {
-  background: #e74c3c;
-  color: #fffbe6;
+.italia-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.italia-hero-line {
+  width: 60%;
+  margin: 0.5rem auto 1.2rem auto;
   border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin: 0 10px;
-  box-shadow: 0 2px 8px #e74c3c33;
-  transition: background 0.2s;
+  border-top: 1.5px solid #fff;
+  opacity: 0.3;
 }
-.carousel-btn:hover {
-  background: #ff9800;
+.italia-hero-sub {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin-bottom: 2.2rem;
   color: #fff;
 }
-
-.header-Button {
+.italia-reserva-btn {
+  background: #fff;
+  color: #232323;
+  border: none;
+  border-radius: 0;
+  padding: 12px 38px;
+  font-size: 1.1rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   display: flex;
   align-items: center;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  padding: 20px;
+  gap: 8px;
+  box-shadow: none;
+  transition: background 0.2s, color 0.2s;
+  margin: 0 auto;
 }
-
-.header-Button .nav-items {
+.italia-reserva-btn:hover {
+  background: #ffb347;
+  color: #fff;
+}
+.italia-clock {
+  margin-left: 2px;
+  stroke: currentColor;
+}
+.whatsapp-float {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #0002;
+  width: 76px;
+  height: 76px;
   display: flex;
   align-items: center;
-}
-
-.header-Button .nav-items a {
-  display: flex;
-  align-items: center;
-  color: red;
-  text-decoration: none;
-
-}
-
-.header-Button .nav-items span {
-  margin-left: 5px;
-}
-
-span {
-  margin-right: 40px;
-}
-
-.nav-items .nav-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 5px;
-}
-
-header {
-  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  height: 80px;
-}
-
-header .logo img {
-  height: 40px;
-}
-
-header .logo {
-  background-color: aqua;
-}
-
-nav ul {
-  list-style-type: none;
-  display: flex;
-  gap: 20px;
-}
-
-
-nav a:hover {
-  color: #f30;
-}
-
-.search-bar input {
-  padding: 10px;
-  width: 500px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: left;
-  margin-right: 20px;
-}
-
-
-.category-tabs {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.category-tabs button {
-  background-color: #f8f8f8;
-  border: 1px solid #ccc;
-  padding: 10px 20px;
-  margin: 0 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.category-tabs button:hover {
-  background-color: #f0f0f0;
-}
-
-
-.pizza-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin: 20px;
-}
-
-.pizza-item {
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-}
-
-.pizza-item img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.pizza-info {
-  padding: 15px;
-  text-decoration: none;
-}
-
-.pizza-info h3 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-
-}
-
-.pizza-info p {
-  font-size: 14px;
-  color: #777;
-  margin: 5px 0;
-}
-
-.pizza-info span {
-  font-size: 16px;
-  font-weight: bold;
-  color: #f30;
-}
-
-.header {
-  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  padding: 16px 24px;
-
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background-color: #f5f6f7;
-  color: #333;
-}
-
-
-header {
-  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  height: 80px;
-}
-
-.logo {
-  height: 160px;
-
-}
-
-.Logo {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100vw;
-  max-width: 100%;
-  margin-bottom: 20px;
-  margin-top: 30px;
-  margin-bottom: 50px;
-  padding: 0;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  transform: translateX(-50%);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-.carousel-full {
-  width: 100vw;
-  max-width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.whatsapp-float:hover {
+  box-shadow: 0 4px 16px #25d36688;
+  transform: scale(1.08);
 }
-.carousel-img-full {
-  width: 70%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 32px;
-  border: 4px solid #e74c3c;
-  box-shadow: 0 8px 32px #ffb34733;
-  background: #fffbe6;
-  display: block;
+.whatsapp-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 @media (max-width: 900px) {
-  .carousel-img-full {
-    height: 200px;
-    border-radius: 18px;
-  }
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-}
-
-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #000000;
-  font-weight: bold;
-  font-size: 16px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin: 0 5px;
-}
-
-.pizza-list {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
-}
-
-.pizza-card {
-  background-color: #fafafa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  transition: box-shadow 0.3s;
-  height: 130px;
-  width: 90%;
-}
-
-.pizza-card:hover {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-}
-
-.pizza-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  object-fit: cover;
-  background-color: #eee;
-}
-
-.status-button {
-  background-color: #FFE4E9;
-  color: rgb(211, 53, 53);
-  border-color: rgb(211, 53, 53);
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  align-items: left;
-}
-
-.status-button:hover {
-  background-color: rgb(231, 83, 83);
-  color: #fff;
-}
-
-.header-status {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-left: auto;
-}
-
-.pizza-link {
-  text-decoration: none;
-}
-
-.perfil-icone {
-  position: absolute;
-  top: 18px;
-  right: 24px;
-  cursor: pointer;
-  z-index: 20;
-}
-
-.perfil-icone img {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e74c3c;
-}
-
-
-@media (max-width: 768px) {
-  .header-content {
+  .italia-header {
     flex-direction: column;
     gap: 10px;
-    padding: 10px 8px 0 8px;
+    padding: 12px 8px 0 8px;
   }
-  .logo-img {
-    height: 48px;
+  .italia-logo {
+    height: 60px;
   }
-  .pizza-title {
-    font-size: 1.3rem;
+  .italia-nav {
+    font-size: 0.95rem;
+    gap: 2px;
   }
-  .carousel-img {
-    width: 95vw;
-    height: 80px;
+  .italia-hero-title {
+    font-size: 2rem;
   }
-
-  header {
-    flex-direction: column;
-    text-align: center;
+  .italia-hero-sub {
+    font-size: 1.2rem;
   }
-
-  .logo {
-    height: 48px;
-    margin-bottom: 16px;
-  }
-
-  .pizza-list {
-    padding: 16px;
-    grid-template-columns: 1fr;
-    text-decoration: none;
-
-  }
-
-  .pizza-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .pizza-image {
-    margin-bottom: 16px;
-  }
-
-  .pizza-info {
-    margin-left: 0;
-  }
-
-  .header-status {
-    justify-content: center;
-    margin-left: 0;
-  }
-
-  .status-button {
-    width: 100%;
-    text-align: center;
-  }
-
-  .nav-items {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-items a {
-    margin-bottom: 10px;
-  }
-
-  nav {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  nav a {
-    margin: 5px 0;
-  }
-
-  .search-bar input {
-    width: 100%;
-    margin-bottom: 10px;
+  .italia-reserva-btn {
+    padding: 8px 18px;
+    font-size: 0.95rem;
   }
 }
-
 </style>
