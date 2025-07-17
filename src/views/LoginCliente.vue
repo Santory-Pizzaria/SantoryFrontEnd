@@ -9,32 +9,43 @@ const router = useRouter()
 
 async function login() {
   erro.value = ''
+
   try {
-    // Simulação de chamada à API de autenticação
-    // Troque a URL abaixo pela sua API real
-    // Para teste, sempre considera login válido:
-    // Remova o bloco abaixo e use sua API real depois
-    if (email.value && senha.value) {
-      localStorage.setItem('token', 'fake-token')
-      console.log('Login bem-sucedido, redirecionando para /menu')
-      router.push('/menu')
+    if (!email.value || !senha.value) {
+      erro.value = 'Por favor, preencha email e senha'
       return
     }
-    // ---
-    // Código para autenticação API
-    /*
-    const response = await fetch('https://sua-api.com/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, senha: senha.value })
-    })
-    if (!response.ok) {
-      throw new Error('E-mail ou senha inválidos')
+
+    // Buscar usuários cadastrados
+    const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]')
+
+    // Verificar credenciais
+    const usuarioEncontrado = usuariosExistentes.find(user =>
+      user.email === email.value && user.senha === senha.value
+    )
+
+    if (!usuarioEncontrado) {
+      erro.value = 'Email ou senha inválidos'
+      return
     }
-    const data = await response.json()
-    localStorage.setItem('token', data.token)
+
+    // Salvar dados do usuário logado (sem a senha)
+    const usuarioLogado = {
+      id: usuarioEncontrado.id,
+      nome: usuarioEncontrado.nome,
+      email: usuarioEncontrado.email,
+      telefone: usuarioEncontrado.telefone,
+      endereco: usuarioEncontrado.endereco,
+      avatar: usuarioEncontrado.avatar || '',
+      dataCadastro: usuarioEncontrado.dataCadastro
+    }
+
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado))
+    localStorage.setItem('token', `token-${usuarioEncontrado.id}`)
+
+    console.log('Login bem-sucedido, redirecionando para /menu')
     router.push('/menu')
-    */
+
   } catch (e) {
     erro.value = e.message || 'Erro ao autenticar'
   }
