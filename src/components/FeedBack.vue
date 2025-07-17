@@ -71,7 +71,7 @@ export default {
 <style scoped>
 .feedback-pizza-bg {
   min-height: 100vh;
-  background: linear-gradient(135deg, #beb16c 0%, #ffe0b2 100%);
+  background: #fffdf7;
   padding: 0 0 40px 0;
 }
 .feedback-header {
@@ -90,7 +90,7 @@ export default {
 .pizza-title {
   font-size: 2.1rem;
   font-weight: 800;
-  color: #d35400;
+  color: #143642;
   margin-bottom: 2px;
   letter-spacing: 1px;
   text-shadow: 0 2px 8px #fff3e0;
@@ -101,17 +101,17 @@ export default {
   margin-bottom: 0;
 }
 .feedback-card-form {
-  background: #fff3e0;
+  background: #f7f3e9;
   border-radius: 18px;
+  border: 1.5px solid #b33c1a;
   box-shadow: 0 4px 24px #ffb86c33;
   max-width: 420px;
   margin: 0 auto 28px auto;
   padding: 28px 20px 20px 20px;
-  border: 2px solid #ffb86c;
 }
 .feedback-label {
   font-weight: 600;
-  color: #d35400;
+  color: #b33c1a;
   margin-bottom: 6px;
   display: block;
 }
@@ -127,13 +127,13 @@ export default {
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
-  background: #fffbe6;
-  color: #a04000;
+  background: #f3e9dc;
+  color: #143642;
   resize: none;
   transition: border 0.2s;
 }
 .feedback-form textarea:focus {
-  border-color: #d35400;
+  border-color: #b33c1a;
 }
 .pizza-stars {
   display: flex;
@@ -149,9 +149,8 @@ export default {
   user-select: none;
 }
 .pizza-stars span.selected,
-.pizza-stars span:hover,
-.pizza-stars span:hover~span.selected {
-  color: #FFD700;
+.pizza-stars span:hover {
+  color: #b33c1a;
   transform: scale(1.18);
 }
 .pizza-stars span:hover~span {
@@ -159,7 +158,7 @@ export default {
 }
 .feedback-form button {
   padding: 12px 0;
-  background: linear-gradient(90deg, #ffb86c 0%, #d35400 100%);
+  background: #b33c1a;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -171,12 +170,12 @@ export default {
   margin-top: 8px;
 }
 .feedback-form button:hover {
-  background: linear-gradient(90deg, #d35400 0%, #ffb86c 100%);
+  background: #143642;
   transform: translateY(-2px) scale(1.04);
 }
 .feedback-list-title {
   text-align: center;
-  color: #d35400;
+  color: #143642;
   font-size: 1.3rem;
   font-weight: 700;
   margin: 18px 0 10px 0;
@@ -193,8 +192,8 @@ export default {
   gap: 16px;
 }
 .pizza-feedback-item {
-  background: #fffbe6;
-  border: 2px solid #ffb86c;
+  background: #f7f3e9;
+  border: 1.5px solid #b33c1a;
   border-radius: 14px;
   padding: 16px 18px;
   box-shadow: 0 2px 8px #ffb86c22;
@@ -210,7 +209,7 @@ export default {
 .avatar {
   width: 38px;
   height: 38px;
-  background: #ffd180;
+  background: #143642;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -220,7 +219,7 @@ export default {
 }
 .pizza-opinion {
   font-size: 1.08rem;
-  color: #a04000;
+  color: #b33c1a;
   margin-top: 2px;
   font-style: italic;
 }
