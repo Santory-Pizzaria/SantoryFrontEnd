@@ -1,3 +1,4 @@
+
 <template>
   <div class="perfil-container">
     <div class="seta-voltar" @click="voltarMenu">
@@ -32,6 +33,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -80,6 +82,9 @@ export default {
     },
     voltarMenu() {
       this.$router.push('/menu');
+    },
+    Deslogar() {
+      this.$router.push('/login');
     },
     editarPerfil() {
       this.usuarioEdit = { ...this.usuario };
@@ -183,6 +188,42 @@ export default {
 };
 </script>
 
+<template>
+  <div class="perfil-container">
+    <div class="seta-voltar" @click="voltarMenu">
+      <img src="@/assets/imagens/seta.png" alt="Voltar ao menu" />
+    </div>
+    <div class="perfil-card">
+      <div class="perfil-avatar-area">
+        <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar" alt="Avatar do usuário" />
+        <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
+        <button class="btn-avatar" @click="abrirInputAvatar">Alterar Foto</button>
+      </div>
+      <div v-if="!editando" class="perfil-info">
+        <h2>{{ usuario.nome }}</h2>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
+        <p><strong>Endereço:</strong> {{ usuario.endereco }}</p>
+        <div class="botoes-perfil">
+          <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
+          <button class="btn-deslogar" @click="Deslogar">Sair da conta</button>
+        </div>
+      </div>
+      <div v-else class="perfil-edicao">
+        <input v-model="usuarioEdit.nome" placeholder="Nome" />
+        <input v-model="usuarioEdit.email" placeholder="Email" />
+        <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
+        <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
+        <div class="botoes-edicao">
+          <button class="btn-salvar" @click="salvarPerfil">Salvar</button>
+          <button class="btn-cancelar" @click="cancelarEdicao">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
 <style scoped>
 .perfil-container {
   min-height: 100vh;
@@ -256,13 +297,30 @@ export default {
 .btn-editar:hover {
   background: #d35400;
 }
+.btn-deslogar {
+  background: #e67e22;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.perfil-edicao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .perfil-edicao input {
-  width: 100%;
+  width: 90%;
   margin-bottom: 10px;
   padding: 7px 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  display: block;
+  text-align: center;
 }
 .botoes-edicao {
   display: flex;
@@ -308,5 +366,11 @@ export default {
   width: 28px;
   height: 28px;
   filter: drop-shadow(0 1px 2px rgba(44,62,80,0.10));
+}
+.botoes-perfil {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
 }
 </style>

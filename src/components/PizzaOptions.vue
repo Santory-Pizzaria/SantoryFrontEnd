@@ -1,59 +1,3 @@
-<template>
-  <div class="pizza-options-container">
-    <header class="header">
-      <button class="back-btn" @click="$emit('voltar')">
-        <img src="/src/assets/imagens/seta.png" alt="Voltar" />
-      </button>
-      <span class="pizza-title">{{ pizzaNome }}</span>
-    </header>
-    <section v-if="step === 1" class="section">
-      <h2 class="section-title">Quantos Sabores?</h2>
-      <div class="options-list">
-        <label v-for="q in opcoesSabores" :key="q" class="option-card">
-          <input type="radio" name="qtdSabores" :value="q" v-model="qtdSabores" />
-          <span>{{ q }} Sabor{{ q > 1 ? 'es' : '' }}</span>
-        </label>
-      </div>
-      <div v-if="erroSabores" class="erro-msg">{{ erroSabores }}</div>
-      <button class="nav-btn" @click="continuarSabores">Continuar</button>
-    </section>
-    <section v-if="step === 2" class="section">
-      <h2 class="section-title">Bordas:</h2>
-      <div class="options-list">
-        <label v-for="borda in bordas" :key="borda" class="option-card">
-          <input type="radio" name="borda" :value="borda" v-model="bordaSelecionada" />
-          <span>{{ borda }}</span>
-        </label>
-      </div>
-      <div class="step-buttons">
-        <button class="nav-btn secondary" @click="step = 1">Voltar</button>
-        <button class="nav-btn" @click="step = 3">Continuar</button>
-      </div>
-    </section>
-    <section v-if="step === 3" class="section">
-      <h2 class="section-title">Sabores:</h2>
-      <div class="tabs">
-        <button v-for="tab in tabs" :key="tab" :class="['tab', {active: tab === abaSelecionada}]" @click="abaSelecionada = tab">{{ tab }}</button>
-      </div>
-      <div class="options-list">
-        <div v-for="(sabor, i) in sabores[abaSelecionada]" :key="i" :class="['option-card', 'sabor-card', { 'adicionado': isSaborAdicionado(sabor), 'desabilitado': !isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores }]">
-          <button class="plus-btn" @click="adicionarSabor(sabor)" :disabled="!isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores">+</button>
-          <div class="sabor-info">
-            <span class="sabor-nome">{{ sabor.nome }}</span>
-            <span class="sabor-desc">{{ sabor.desc }}</span>
-          </div>
-          <button class="minus-btn" @click="removerSabor(sabor)" :disabled="!isSaborAdicionado(sabor)">-</button>
-        </div>
-      </div>
-      <div v-if="erroSelecaoSabores" class="erro-msg">{{ erroSelecaoSabores }}</div>
-      <div class="step-buttons">
-        <button class="nav-btn secondary" @click="step = 2">Voltar</button>
-        <button class="nav-btn" @click="continuarFinalizar">Finalizar</button>
-      </div>
-    </section>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'PizzaOptions',
@@ -222,6 +166,63 @@ export default {
   }
 }
 </script>
+
+
+<template>
+  <div class="pizza-options-container">
+    <header class="header">
+      <button class="back-btn" @click="$emit('voltar')">
+        <img src="/src/assets/imagens/seta.png" alt="Voltar" />
+      </button>
+      <span class="pizza-title">{{ pizzaNome }}</span>
+    </header>
+    <section v-if="step === 1" class="section">
+      <h2 class="section-title">Quantos Sabores?</h2>
+      <div class="options-list">
+        <label v-for="q in opcoesSabores" :key="q" class="option-card">
+          <input type="radio" name="qtdSabores" :value="q" v-model="qtdSabores" />
+          <span>{{ q }} Sabor{{ q > 1 ? 'es' : '' }}</span>
+        </label>
+      </div>
+      <div v-if="erroSabores" class="erro-msg">{{ erroSabores }}</div>
+      <button class="nav-btn" @click="continuarSabores">Continuar</button>
+    </section>
+    <section v-if="step === 2" class="section">
+      <h2 class="section-title">Bordas:</h2>
+      <div class="options-list">
+        <label v-for="borda in bordas" :key="borda" class="option-card">
+          <input type="radio" name="borda" :value="borda" v-model="bordaSelecionada" />
+          <span>{{ borda }}</span>
+        </label>
+      </div>
+      <div class="step-buttons">
+        <button class="nav-btn secondary" @click="step = 1">Voltar</button>
+        <button class="nav-btn" @click="step = 3">Continuar</button>
+      </div>
+    </section>
+    <section v-if="step === 3" class="section">
+      <h2 class="section-title">Sabores:</h2>
+      <div class="tabs">
+        <button v-for="tab in tabs" :key="tab" :class="['tab', {active: tab === abaSelecionada}]" @click="abaSelecionada = tab">{{ tab }}</button>
+      </div>
+      <div class="options-list">
+        <div v-for="(sabor, i) in sabores[abaSelecionada]" :key="i" :class="['option-card', 'sabor-card', { 'adicionado': isSaborAdicionado(sabor), 'desabilitado': !isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores }]">
+          <button class="plus-btn" @click="adicionarSabor(sabor)" :disabled="!isSaborAdicionado(sabor) && saboresSelecionados.length >= qtdSabores">+</button>
+          <div class="sabor-info">
+            <span class="sabor-nome">{{ sabor.nome }}</span>
+            <span class="sabor-desc">{{ sabor.desc }}</span>
+          </div>
+          <button class="minus-btn" @click="removerSabor(sabor)" :disabled="!isSaborAdicionado(sabor)">-</button>
+        </div>
+      </div>
+      <div v-if="erroSelecaoSabores" class="erro-msg">{{ erroSelecaoSabores }}</div>
+      <div class="step-buttons">
+        <button class="nav-btn secondary" @click="step = 2">Voltar</button>
+        <button class="nav-btn" @click="continuarFinalizar">Finalizar</button>
+      </div>
+    </section>
+  </div>
+</template>
 
 <style scoped>
 .pizza-options-container {

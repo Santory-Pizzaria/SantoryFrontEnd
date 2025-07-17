@@ -1,20 +1,3 @@
-<template>
-  <div>
-    <PizzaOptions
-      v-if="!mostrarVerificacao"
-      ref="pizzaOptions"
-      :pizzaNome="$route.params.pizzaNome"
-      @finish="onFinishPizzaOptions"
-      @voltar="voltar"
-    />
-    <VerificacaoView
-      v-if="mostrarVerificacao"
-      :pedido="pedido"
-      @atualizar-quantidade="atualizarQuantidade"
-    />
-  </div>
-</template>
-
 <script>
 import PizzaOptions from '@/components/PizzaOptions.vue';
 import VerificacaoView from './VerificacaoView.vue';
@@ -49,3 +32,22 @@ export default {
   }
 };
 </script>
+
+
+<template>
+  <div>
+    <PizzaOptions
+      v-if="!mostrarVerificacao"
+      ref="pizzaOptions"
+      :pizzaNome="$route.params.pizzaNome"
+      @finish="onFinishPizzaOptions"
+      @voltar="voltar"
+    />
+    <VerificacaoView
+      v-if="mostrarVerificacao"
+      :pedido="pedido"
+      @atualizar-quantidade="atualizarQuantidade"
+    />
+  </div>
+</template>
+

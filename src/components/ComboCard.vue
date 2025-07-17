@@ -1,3 +1,7 @@
+<script setup>
+defineProps(['combo']);
+</script>
+
 <template>
   <div class="combo-card">
     <img :src="combo.image" alt="Combo" class="combo-image" />
@@ -9,9 +13,6 @@
   </div>
 </template>
 
-<script setup>
-defineProps(['combo']);
-</script>
 
 <style scoped>
 .combo-card {

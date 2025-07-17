@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PizzaList from '@/components/PizzaList.vue';
 
+
 const router = useRouter()
 
 onMounted(() => {
@@ -15,6 +16,7 @@ onMounted(() => {
     router.push('/login')
   }
 })
+
 
 
 
