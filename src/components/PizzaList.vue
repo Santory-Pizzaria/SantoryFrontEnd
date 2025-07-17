@@ -162,7 +162,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 40px 0 40px;
+  padding: 4px 40px 0 40px;
   background: transparent;
   font-family: 'Playfair Display', serif;
   box-sizing: border-box;
@@ -240,7 +240,7 @@ header {
   justify-content: space-between;
   padding: 16px 24px;
   height: 80px;
-  border-bottom: #fca40c 2px solid;
+
 }
 
 header .logo img {
