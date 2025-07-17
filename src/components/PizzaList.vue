@@ -27,6 +27,9 @@ function goToCardapioTela() {
 function goToFeedBack() {
   router.push({ name: 'FeedBack' });
 }
+function goToPizzaCard() {
+  router.push({ name: 'PizzaCard' });
+}
 </script>
 <template>
   <div class="italia-bg">
@@ -44,7 +47,7 @@ function goToFeedBack() {
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
       </nav>
-      <button class="italia-delivery-btn">
+      <button class="italia-delivery-btn" @click.prevent="goToPizzaCard">
         PEÇA NO DELIVERY
         <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
       </button>

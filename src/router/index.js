@@ -14,6 +14,7 @@ import PedidosProdutos from '../views/PedidosProdutos.vue'
 import TempoEntrega from '../views/TempoEntrega.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import CardapioTela from '@/views/CardapioTela.vue'
+import PizzaCard from '../components/PizzaCard.vue'
 
 
 const router = createRouter({
@@ -94,6 +95,11 @@ const router = createRouter({
       path: '/admin',
       name: 'AdminDashboard',
       component: AdminDashboard,
+    },
+    {
+      path: '/pizza-card',
+      name: 'PizzaCard',
+      component: PizzaCard,
     },
   ],
 })
