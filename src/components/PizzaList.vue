@@ -4,12 +4,10 @@ const carouselImages = [
   '/src/assets/imagens/Sabores.png',
   '/src/assets/imagens/SaboresOpc.png',
   '/src/assets/imagens/Borda.png',
+]
 
-import PizzaCard from './PizzaCard.vue';
-import UsuarioInfo from './UsuarioInfo.vue';
 import { useRouter } from 'vue-router';
-import FooteRor from './FooteRor.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter();
 
@@ -18,7 +16,6 @@ const usuario = ref({
   nome: '',
   avatar: ''
 });
-const defaultAvatar = '/src/assets/imagens/perfil.png';
 
 // Carregar dados do usuário logado
 onMounted(() => {
@@ -40,17 +37,7 @@ function carregarDadosUsuario() {
   }
 }
 
-function navigateTo(route) {
-  router.push(route);
-}
 
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
-
-];
 const currentImage = ref(0);
 
 function nextImage() {
@@ -74,6 +61,17 @@ function goToPizzaCard() {
 </script>
 <template>
   <div class="italia-bg">
+    <!-- Pizza List -->
+    <section class="pizza-grid">
+      <div v-for="pizza in pizzas" :key="pizza.name" class="pizza-item">
+        <img :src="pizza.image" :alt="pizza.name" />
+        <div class="pizza-info">
+          <h3>{{ pizza.name }}</h3>
+          <p>{{ pizza.description }}</p>
+          <p>Price: ${{ pizza.price.toFixed(2) }}</p>
+        </div>
+      </div>
+    </section>
     <!-- Header -->
     <header class="italia-header">
       <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
@@ -226,6 +224,7 @@ body {
   gap: 8px;
   transition: background 0.2s, color 0.2s;
   box-shadow: none;
+}
 
 
 .nav-items .nav-icon {
@@ -331,6 +330,7 @@ nav a:hover {
   min-height: 100vh;
   display: flex;
   align-items: center;
+}
 
 
 body {
