@@ -1,13 +1,50 @@
+
+<template>
+  <div class="perfil-container">
+    <div class="seta-voltar" @click="voltarMenu">
+      <img src="@/assets/imagens/seta.png" alt="Voltar ao menu" />
+    </div>
+    <div class="perfil-card">
+      <div class="perfil-avatar-area">
+        <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar" alt="Avatar do usuário" />
+        <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
+        <button class="btn-avatar" @click="abrirInputAvatar">Alterar Foto</button>
+      </div>
+      <div v-if="!editando" class="perfil-info">
+        <h2>{{ usuario.nome }}</h2>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
+        <p><strong>Endereço:</strong> {{ usuario.endereco }}</p>
+        <div class="botoes-perfil">
+          <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
+          <button class="btn-logout" @click="logout">Sair</button>
+        </div>
+      </div>
+      <div v-else class="perfil-edicao">
+        <input v-model="usuarioEdit.nome" placeholder="Nome" />
+        <input v-model="usuarioEdit.email" placeholder="Email" />
+        <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
+        <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
+        <div class="botoes-edicao">
+          <button class="btn-salvar" @click="salvarPerfil">Salvar</button>
+          <button class="btn-cancelar" @click="cancelarEdicao">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
 <script>
 export default {
   name: 'PerfilUsuario',
   data() {
     return {
       usuario: {
-        nome: 'Cliente Pizzaria',
-        email: 'cliente@email.com',
-        telefone: '(11) 99999-9999',
-        endereco: 'Rua das Pizzas, 123',
+        nome: '',
+        email: '',
+        telefone: '',
+        endereco: '',
         avatar: '',
       },
       usuarioEdit: {},
@@ -15,7 +52,34 @@ export default {
       defaultAvatar: new URL('@/assets/imagens/logo.png', import.meta.url).href,
     };
   },
+  mounted() {
+    this.carregarDadosUsuario();
+  },
   methods: {
+    carregarDadosUsuario() {
+      // Verificar se usuário está logado
+      const usuarioLogado = localStorage.getItem('usuarioLogado');
+
+      if (!usuarioLogado) {
+        // Se não estiver logado, redirecionar para login
+        this.$router.push('/login');
+        return;
+      }
+
+      try {
+        const dadosUsuario = JSON.parse(usuarioLogado);
+        this.usuario = {
+          nome: dadosUsuario.nome || '',
+          email: dadosUsuario.email || '',
+          telefone: dadosUsuario.telefone || '',
+          endereco: dadosUsuario.endereco || '',
+          avatar: dadosUsuario.avatar || '',
+        };
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        this.$router.push('/login');
+      }
+    },
     voltarMenu() {
       this.$router.push('/menu');
     },
@@ -27,8 +91,48 @@ export default {
       this.editando = true;
     },
     salvarPerfil() {
-      this.usuario = { ...this.usuarioEdit };
-      this.editando = false;
+      try {
+        // Atualizar dados no componente
+        this.usuario = { ...this.usuarioEdit };
+
+        // Atualizar dados no localStorage
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const usuarioAtualizado = {
+          ...usuarioLogado,
+          nome: this.usuario.nome,
+          email: this.usuario.email,
+          telefone: this.usuario.telefone,
+          endereco: this.usuario.endereco,
+          avatar: this.usuario.avatar,
+        };
+
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+
+        // Atualizar também na lista de usuários
+        const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        const indiceUsuario = usuarios.findIndex(user => user.id === usuarioLogado.id);
+
+        if (indiceUsuario !== -1) {
+          usuarios[indiceUsuario] = {
+            ...usuarios[indiceUsuario],
+            nome: this.usuario.nome,
+            email: this.usuario.email,
+            telefone: this.usuario.telefone,
+            endereco: this.usuario.endereco,
+            avatar: this.usuario.avatar,
+          };
+          localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+
+        this.editando = false;
+
+        // Mostrar feedback de sucesso
+        alert('Perfil atualizado com sucesso!');
+
+      } catch (error) {
+        console.error('Erro ao salvar perfil:', error);
+        alert('Erro ao salvar perfil. Tente novamente.');
+      }
     },
     cancelarEdicao() {
       this.editando = false;
@@ -45,11 +149,41 @@ export default {
             this.usuarioEdit.avatar = ev.target.result;
           } else {
             this.usuario.avatar = ev.target.result;
+            // Salvar avatar imediatamente se não estiver editando
+            this.salvarAvatarImediato();
           }
         };
         reader.readAsDataURL(file);
       }
     },
+    salvarAvatarImediato() {
+      try {
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const usuarioAtualizado = {
+          ...usuarioLogado,
+          avatar: this.usuario.avatar,
+        };
+
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+
+        // Atualizar também na lista de usuários
+        const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        const indiceUsuario = usuarios.findIndex(user => user.id === usuarioLogado.id);
+
+        if (indiceUsuario !== -1) {
+          usuarios[indiceUsuario].avatar = this.usuario.avatar;
+          localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+
+      } catch (error) {
+        console.error('Erro ao salvar avatar:', error);
+      }
+    },
+    logout() {
+      localStorage.removeItem('usuarioLogado');
+      localStorage.removeItem('token');
+      this.$router.push('/login');
+    }
   },
 };
 </script>
@@ -141,15 +275,27 @@ export default {
   margin: 4px 0;
   color: #333;
 }
-.btn-editar {
-  background: #e67e22;
+.botoes-perfil {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.btn-logout {
+  background: #e74c3c;
   color: #fff;
   border: none;
   padding: 8px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 12px;
+}
+.btn-logout:hover {
+  background: #c0392b;
+}
+.btn-editar:hover {
+  background: #d35400;
 }
 .btn-deslogar {
   background: #e67e22;

@@ -1,14 +1,55 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
 const carouselImages = [
   '/src/assets/imagens/fundo.png',
   '/src/assets/imagens/Sabores.png',
   '/src/assets/imagens/SaboresOpc.png',
   '/src/assets/imagens/Borda.png',
+
+import PizzaCard from './PizzaCard.vue';
+import UsuarioInfo from './UsuarioInfo.vue';
+import { useRouter } from 'vue-router';
+import FooteRor from './FooteRor.vue';
+import { ref, computed, onMounted } from 'vue';
+
+const router = useRouter();
+
+// Dados do usuário logado
+const usuario = ref({
+  nome: '',
+  avatar: ''
+});
+const defaultAvatar = '/src/assets/imagens/perfil.png';
+
+// Carregar dados do usuário logado
+onMounted(() => {
+  carregarDadosUsuario();
+});
+
+function carregarDadosUsuario() {
+  const usuarioLogado = localStorage.getItem('usuarioLogado');
+  if (usuarioLogado) {
+    try {
+      const dadosUsuario = JSON.parse(usuarioLogado);
+      usuario.value = {
+        nome: dadosUsuario.nome || '',
+        avatar: dadosUsuario.avatar || ''
+      };
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+    }
+  }
+}
+
+function navigateTo(route) {
+  router.push(route);
+}
+
+const pizzas = [
+  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
+  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
+
 ];
 const currentImage = ref(0);
 
@@ -62,6 +103,36 @@ function goToPizzaCard() {
           FAÇA SUA RESERVA
           <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>
+
+<!--
+  <div class="container-tudo">
+    <header class="header-logo">
+      <div class="perfil-icone" @click="navigateTo('/perfil')">
+        <img :src="usuario.avatar || defaultAvatar" alt="Perfil" class="avatar-perfil" />
+      </div>
+    </header>
+    <div class="Logo">
+      <img src="/src/assets/imagens/logo.png" alt="Santory Logo" class="logo" />
+    </div>
+    <div class="header-Button">
+      <div class="search-bar">
+        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
+      </div>
+      <div class="nav-items">
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
+          <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
+          <span>Meus Pedidos</span>
+        </a>
+        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
+          <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
+          <span>Taxa e Tempo de Entrega</span>
+        </a>
+        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
+          <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
+          <span>Avaliações</span>
+        </a>
+-->
+
       </div>
     </section>
     <!-- Ícone WhatsApp fixo -->
@@ -131,6 +202,7 @@ body {
 .italia-nav-link:hover {
   color: #ffb347;
 }
+
 .italia-sep {
   color: #fff;
   opacity: 0.7;
@@ -154,6 +226,97 @@ body {
   gap: 8px;
   transition: background 0.2s, color 0.2s;
   box-shadow: none;
+
+
+.nav-items .nav-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+header {
+  background: linear-gradient(90deg, #B90020 0%, #B90020 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  height: 80px;
+  border-bottom: #fca40c 2px solid;
+}
+
+header .logo img {
+  height: 40px;
+}
+
+header .logo {
+  background-color: aqua;
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  gap: 20px;
+}
+
+
+nav a:hover {
+  color: #f30;
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: left;
+  margin-right: 20px;
+}
+
+
+.category-tabs {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.category-tabs button {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.category-tabs button:hover {
+  background-color: #f0f0f0;
+}
+
+
+.pizza-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 20px;
+}
+
+.pizza-item {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+.pizza-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.pizza-info {
+  padding: 15px;
+  text-decoration: none;
+
 }
 .italia-delivery-btn:hover {
   background: #fff;
@@ -163,10 +326,30 @@ body {
   margin-left: 2px;
   stroke: currentColor;
 }
+
 .italia-hero {
   min-height: 100vh;
   display: flex;
   align-items: center;
+
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background-color: #f5f6f7;
+  color: #333;
+}
+
+
+
+.logo {
+  height: 160px;
+
+}
+
+.Logo {
+  display: flex;
+
   justify-content: center;
   position: relative;
   padding-top: 120px;
