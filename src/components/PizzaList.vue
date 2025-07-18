@@ -58,6 +58,9 @@ function goToFeedBack() {
 function goToPizzaCard() {
   router.push({ name: 'PizzaCard' });
 }
+function goToReserva() {
+  router.push('/reserva');
+}
 </script>
 <template>
   <div class="italia-bg">
@@ -97,7 +100,7 @@ function goToPizzaCard() {
         <h1 class="italia-hero-title">BEM VINDOS</h1>
         <hr class="italia-hero-line" />
         <p class="italia-hero-sub">O sabor da Itália em Joinville</p>
-        <button class="italia-reserva-btn">
+        <button class="italia-reserva-btn" @click="goToReserva">
           FAÇA SUA RESERVA
           <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>

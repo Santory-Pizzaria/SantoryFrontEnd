@@ -15,7 +15,7 @@ import TempoEntrega from '../views/TempoEntrega.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import CardapioTela from '@/views/CardapioTela.vue'
 import PizzaCard from '../components/PizzaCard.vue'
-
+import ReservasLocal from '@/components/ReservasLocal.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +29,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginCliente,
+    },
+    {
+      path: '/reserva',
+      name: 'ReservasLocal',
+      component: ReservasLocal,
     },
     {
       path: '/Cardapio',
