@@ -81,7 +81,7 @@ function goToReserva() {
       <nav class="italia-nav">
         <a href="#" class="italia-nav-link active">HOME</a>
         <span class="italia-sep">|</span>
-        <a href="#" class="italia-nav-link">RESERVAS</a>
+        <a href="#" class="italia-nav-link" @click.prevent="goToReserva">RESERVAS</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
         <span class="italia-sep">|</span>
