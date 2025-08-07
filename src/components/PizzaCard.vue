@@ -1,22 +1,19 @@
 <template>
-  <div class="pizza-minimal-bg">
-    <header class="pizza-minimal-header">
-      <img src="/src/assets/imagens/logo.png" alt="Logo" class="pizza-minimal-logo" />
-      <h2 class="pizza-minimal-title">Escolha o tamanho da sua pizza</h2>
+  <div class="pizza-tamanhos-bg">
+    <header class="pizza-tamanhos-header">
+      <img src="/src/assets/imagens/logo.png" alt="Logo" class="pizza-tamanhos-logo" />
+      <h2 class="pizza-tamanhos-title">Escolha o tamanho da sua pizza</h2>
     </header>
-    <div class="pizza-minimal-grid">
-      <div v-for="pizza in pizzas" :key="pizza.nome" class="pizza-minimal-card">
-        <img :src="pizza.img" alt="Pizza" class="pizza-minimal-img" />
-        <div class="pizza-minimal-info">
-          <h3 class="pizza-minimal-nome">{{ pizza.nome }}</h3>
-          <p class="pizza-minimal-desc">{{ pizza.descricao }}</p>
-          <div class="pizza-minimal-tamanhos">
-            <div v-for="t in pizza.tamanhos" :key="t.nome" class="pizza-minimal-tamanho">
-              <span class="pizza-minimal-tam">{{ t.nome }}</span>
-              <span class="pizza-minimal-preco">R$ {{ t.preco.toFixed(2) }}</span>
-            </div>
-          </div>
-        </div>
+    <div class="pizza-tamanhos-lista">
+      <div
+        v-for="t in tamanhos"
+        :key="t.nome"
+        class="pizza-tamanhos-card"
+      >
+        <img :src="t.img" :alt="t.nome" class="pizza-tamanhos-card-img" />
+        <span class="pizza-tamanhos-card-nome">{{ t.nome }}</span>
+        <span class="pizza-tamanhos-card-preco">R$ {{ t.preco.toFixed(2) }}</span>
+        <span class="pizza-tamanhos-card-desc">{{ t.descricao }}</span>
       </div>
     </div>
   </div>
@@ -27,26 +24,24 @@ export default {
   name: 'PizzaCard',
   data() {
     return {
-      pizzas: [
+      tamanhos: [
         {
-          nome: 'Calabresa',
-          descricao: 'Mussarela, calabresa, cebola e orégano.',
-          img: '/src/assets/imagens/carrosel1.png',
-          tamanhos: [
-            { nome: 'Pequena', preco: 25.00 },
-            { nome: 'Média', preco: 35.00 },
-            { nome: 'Grande', preco: 45.00 }
-          ]
+          nome: 'Pequena',
+          preco: 25.00,
+          img: '/src/assets/imagens/fundo.png',
+          descricao: '12cm •4 fatias • Serve até 1 pessoa'
         },
         {
-          nome: 'Quatro Queijos',
-          descricao: 'Mussarela, provolone, parmesão, catupiry.',
-          img: '/src/assets/imagens/carrosel2.png',
-          tamanhos: [
-            { nome: 'Pequena', preco: 28.00 },
-            { nome: 'Média', preco: 38.00 },
-            { nome: 'Grande', preco: 48.00 }
-          ]
+          nome: 'Média',
+          preco: 35.00,
+          img: '/src/assets/imagens/pizza-media.png',
+          descricao: '18cm •8 fatias • Serve até 2 pessoas'
+        },
+        {
+          nome: 'Grande',
+          preco: 45.00,
+          img: '/src/assets/imagens/pizza-grande.png',
+          descricao: '22cm •12 fatias • Serve até 4 pessoas'
         }
       ]
     };
@@ -55,111 +50,114 @@ export default {
 </script>
 
 <style scoped>
-.pizza-minimal-bg {
+.pizza-tamanhos-bg {
   background: #faf8f5;
   min-height: 100vh;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.pizza-minimal-header {
+.pizza-tamanhos-header {
   text-align: center;
   padding: 2.5rem 0 1.2rem 0;
 }
-.pizza-minimal-logo {
+.pizza-tamanhos-logo {
   width: 70px;
   margin-bottom: 0.7rem;
 }
-.pizza-minimal-title {
+.pizza-tamanhos-title {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   color: #b33c1a;
   margin-bottom: 0.5rem;
   letter-spacing: 1px;
 }
-.pizza-minimal-grid {
+.pizza-tamanhos-lista {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 2.5rem;
+  align-items: flex-start;
   justify-content: center;
-  padding: 2rem 0;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
-.pizza-minimal-card {
+.pizza-tamanhos-card {
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px #b33c1a11;
-  border: 1.5px solid #e7e7e7;
-  min-width: 260px;
-  max-width: 320px;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #b33c1a18;
+  border: 2px solid #ffe5d0;
+  width: 220px;
+  min-height: 310px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  padding: 2rem 1.2rem 1.5rem 1.2rem;
+  font-family: 'Playfair Display', serif;
   transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
 }
-.pizza-minimal-card:hover {
-  box-shadow: 0 8px 32px #b33c1a22;
-  transform: scale(1.03);
+.pizza-tamanhos-card:hover {
+  box-shadow: 0 8px 32px #b33c1a33;
+  transform: translateY(-8px) scale(1.04);
+  border-color: #b33c1a;
 }
-.pizza-minimal-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  object-fit: cover;
-  margin-bottom: 1rem;
+.pizza-tamanhos-card-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #fff7f0;
+  border: 2px solid #ffe5d0;
+  margin-bottom: 1.2rem;
 }
-.pizza-minimal-info {
+.pizza-tamanhos-card-nome {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #b33c1a;
+  margin-bottom: 0.5rem;
   text-align: center;
 }
-.pizza-minimal-nome {
-  font-size: 1.15rem;
-  font-weight: bold;
-  color: #b33c1a;
-  margin-bottom: 0.3rem;
-  font-family: 'Playfair Display', serif;
-}
-.pizza-minimal-desc {
-  font-size: 1rem;
-  color: #444;
-  margin-bottom: 0.7rem;
-  font-family: 'Dancing Script', cursive;
-}
-.pizza-minimal-tamanhos {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-.pizza-minimal-tamanho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f8f8f8;
-  border-radius: 8px;
-  padding: 0.4rem 1.2rem;
-  font-size: 1.08rem;
-  color: #b33c1a;
-  font-family: 'Playfair Display', serif;
-  margin-bottom: 0.2rem;
-}
-.pizza-minimal-tam {
-  font-weight: 600;
-}
-.pizza-minimal-preco {
+.pizza-tamanhos-card-preco {
+  font-size: 1.1rem;
   font-weight: 700;
   color: #d72638;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
-@media (max-width: 700px) {
-  .pizza-minimal-grid {
-    flex-direction: column;
+.pizza-tamanhos-card-desc {
+  font-size: 1rem;
+  color: #7a5c3e;
+  text-align: center;
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+@media (max-width: 900px) {
+  .pizza-tamanhos-lista {
     gap: 1.2rem;
+  }
+  .pizza-tamanhos-card {
+    width: 44vw;
+    min-width: 170px;
+    max-width: 240px;
+    padding: 1.2rem 0.7rem 1rem 0.7rem;
+  }
+  .pizza-tamanhos-card-img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 0.7rem;
+  }
+}
+@media (max-width: 600px) {
+  .pizza-tamanhos-lista {
+    flex-direction: column;
     align-items: center;
+    gap: 1rem;
   }
-  .pizza-minimal-card {
-    min-width: 90vw;
+  .pizza-tamanhos-card {
+    width: 90vw;
+    min-width: 0;
     max-width: 98vw;
-    padding: 1rem 0.5rem 1rem 0.5rem;
-  }
-  .pizza-minimal-img {
-    width: 60px;
-    height: 60px;
   }
 }
 </style>
