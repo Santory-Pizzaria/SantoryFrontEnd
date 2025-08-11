@@ -31,6 +31,12 @@ export default {
 
 <template>
   <div class="pizza-tamanhos-bg">
+    <img
+      src="@/assets/imagens/seta-preta.png"
+      alt="Voltar ao Menu"
+      class="seta-voltar"
+      @click="$router.push('/menu')"
+    />
     <header class="pizza-tamanhos-header">
       <img src="/src/assets/imagens/logo.png" alt="Logo" class="pizza-tamanhos-logo" />
       <h2 class="pizza-tamanhos-title">Escolha o tamanho da sua pizza</h2>
@@ -132,6 +138,14 @@ export default {
   text-align: center;
   margin-top: 0.2rem;
   font-weight: 500;
+}
+.seta-voltar {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
 }
 @media (max-width: 900px) {
   .pizza-tamanhos-lista {

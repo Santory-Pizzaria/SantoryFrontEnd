@@ -108,11 +108,11 @@ export default {
     <h2>Reserva de Mesas</h2>
     <div v-if="!formularioVisivel" class="mesas-grid">
       <MesaCard v-for="mesa in mesas" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
-      <div class="mesa-card montar-mesa" @click="selecionarMontarMesa">
-        <div class="mesa-circular especial">
-          <span class="numero-mesa">+</span>
-        </div>
-        <div class="qtd-cadeiras">Montar Mesa</div>
+      <div class="novo-montar-mesa-btn" @click="selecionarMontarMesa">
+        <span class="montar-mesa-icone-wrapper">
+          <img src="@/assets/imagens/adicionar.png" alt="Montar" class="montar-mesa-icone" />
+        </span>
+        <span class="montar-mesa-label">Montar Mesa</span>
       </div>
     </div>
     <div v-else>
@@ -306,5 +306,40 @@ export default {
 .seta-voltar img {
   width: 32px;
   height: 32px;
+}
+.montar-mesa-icone {
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin: 0 auto;
+}
+.novo-montar-mesa-btn {
+  cursor: pointer;
+  opacity: 0.85;
+  border: none;
+  background: #e63946;
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+.novo-montar-mesa-btn:hover {
+  background: #b71c1c;
+  box-shadow: 0 4px 16px rgba(230,57,70,0.13);
+}
+.montar-mesa-icone-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 }
 </style>

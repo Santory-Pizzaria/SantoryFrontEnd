@@ -28,7 +28,7 @@ export default {
 <template>
   <div class="feedback-pizza-bg">
     <img
-      src="@/assets/imagens/seta.png"
+      src="@/assets/imagens/seta-preta.png"
       alt="Voltar ao Menu"
       class="seta-voltar"
       @click="$router.push('/menu')"
