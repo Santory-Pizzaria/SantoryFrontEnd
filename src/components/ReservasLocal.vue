@@ -1,67 +1,6 @@
-<template>
-  <div class="reserva-container">
-    <h2>Reserva de Mesas</h2>
-    <div v-if="!formularioVisivel" class="mesas-grid">
-      <MesaCard v-for="mesa in mesas" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
-      <div class="mesa-card montar-mesa" @click="selecionarMontarMesa">
-        <div class="mesa-circular especial">
-          <span class="numero-mesa">+</span>
-        </div>
-        <div class="qtd-cadeiras">Montar Mesa</div>
-      </div>
-    </div>
-    <div v-else>
-      <form @submit.prevent="enviarReserva" class="reserva-form" novalidate>
-        <div v-if="montandoMesa" class="form-group">
-          <label for="cadeiras">Quantidade de Cadeiras</label>
-          <div class="input-wrapper">
-            <input type="number" id="cadeiras" v-model.number="reserva.pessoas" min="1" max="20" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <div class="input-wrapper">
-            <input type="text" id="nome" v-model="reserva.nome" :class="{'erro': erros.nome}" placeholder="Digite seu nome completo" autocomplete="off" />
-            <span v-if="erros.nome" class="erro-msg">{{ erros.nome }}</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="telefone">Telefone</label>
-          <div class="input-wrapper">
-            <input type="tel" id="telefone" v-model="reserva.telefone" :class="{'erro': erros.telefone}" placeholder="(99) 99999-9999" maxlength="15" autocomplete="off" />
-            <span v-if="erros.telefone" class="erro-msg">{{ erros.telefone }}</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="data">Data</label>
-          <div class="input-wrapper">
-            <input type="date" id="data" v-model="reserva.data" :class="{'erro': erros.data}" :min="dataMinima" />
-            <span v-if="erros.data" class="erro-msg">{{ erros.data }}</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="hora">Horário</label>
-          <div class="input-wrapper">
-            <input type="time" id="hora" v-model="reserva.hora" :class="{'erro': erros.hora}" />
-            <span v-if="erros.hora" class="erro-msg">{{ erros.hora }}</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="observacao">Observação</label>
-          <div class="input-wrapper">
-            <textarea id="observacao" v-model="reserva.observacao" placeholder="Alguma observação? (opcional)" rows="2"></textarea>
-          </div>
-        </div>
-        <button type="submit" class="btn-reservar">Reservar Mesa</button>
-        <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
-      </form>
-      <div v-if="mensagem" class="mensagem">{{ mensagem }}</div>
-    </div>
-  </div>
-</template>
-
 <script>
 import MesaCard from './MesaCard.vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'ReservasLocal',
@@ -149,10 +88,79 @@ export default {
       } else {
         this.mensagem = '';
       }
+    },
+    irParaMenu() {
+      this.$router.push({ name: 'menu' });
     }
   }
 }
 </script>
+
+
+<template>
+  <div class="reserva-container">
+    <div v-if="(!formularioVisivel) || (formularioVisivel && montandoMesa)" class="seta-voltar" @click="formularioVisivel && montandoMesa ? voltarEscolha() : irParaMenu()">
+      <img src="@/assets/imagens/seta-preta.png" alt="Voltar" />
+    </div>
+    <h2>Reserva de Mesas</h2>
+    <div v-if="!formularioVisivel" class="mesas-grid">
+      <MesaCard v-for="mesa in mesas" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
+      <div class="mesa-card montar-mesa" @click="selecionarMontarMesa">
+        <div class="mesa-circular especial">
+          <span class="numero-mesa">+</span>
+        </div>
+        <div class="qtd-cadeiras">Montar Mesa</div>
+      </div>
+    </div>
+    <div v-else>
+      <form @submit.prevent="enviarReserva" class="reserva-form" novalidate>
+        <div v-if="montandoMesa" class="form-group">
+          <label for="cadeiras">Quantidade de Cadeiras</label>
+          <div class="input-wrapper">
+            <input type="number" id="cadeiras" v-model.number="reserva.pessoas" min="1" max="20" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <div class="input-wrapper">
+            <input type="text" id="nome" v-model="reserva.nome" :class="{'erro': erros.nome}" placeholder="Digite seu nome completo" autocomplete="off" />
+            <span v-if="erros.nome" class="erro-msg">{{ erros.nome }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <div class="input-wrapper">
+            <input type="tel" id="telefone" v-model="reserva.telefone" :class="{'erro': erros.telefone}" placeholder="(99) 99999-9999" maxlength="15" autocomplete="off" />
+            <span v-if="erros.telefone" class="erro-msg">{{ erros.telefone }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="data">Data</label>
+          <div class="input-wrapper">
+            <input type="date" id="data" v-model="reserva.data" :class="{'erro': erros.data}" :min="dataMinima" />
+            <span v-if="erros.data" class="erro-msg">{{ erros.data }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="hora">Horário</label>
+          <div class="input-wrapper">
+            <input type="time" id="hora" v-model="reserva.hora" :class="{'erro': erros.hora}" />
+            <span v-if="erros.hora" class="erro-msg">{{ erros.hora }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="observacao">Observação</label>
+          <div class="input-wrapper">
+            <textarea id="observacao" v-model="reserva.observacao" placeholder="Alguma observação? (opcional)" rows="2"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn-reservar">Reservar Mesa</button>
+        <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
+      </form>
+      <div v-if="mensagem" class="mensagem">{{ mensagem }}</div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .reserva-container {
@@ -284,5 +292,16 @@ export default {
   font-size: 15px;
   background: #fafafa;
   resize: vertical;
+}
+.seta-voltar {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  cursor: pointer;
+  z-index: 10;
+}
+.seta-voltar img {
+  width: 32px;
+  height: 32px;
 }
 </style>
