@@ -117,6 +117,12 @@ export default {
 
 <template>
   <div class="tempo-entrega-container">
+    <img
+      src="@/assets/imagens/seta-preta.png"
+      alt="Voltar ao Menu"
+      class="seta-voltar-tempo"
+      @click="voltarMenu"
+    />
     <div class="tempo-header">
       <img src="@/assets/imagens/fundo.png" alt="Fundo" class="header-bg" />
       <div class="header-content">
@@ -178,6 +184,15 @@ export default {
   min-height: 100vh;
   background: var(--color-background);
   color: var(--color-text);
+}
+.seta-voltar-tempo {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 10;
 }
 .tempo-header {
   width: 100%;
