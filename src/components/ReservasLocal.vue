@@ -99,8 +99,11 @@ export default {
 
 <template>
   <div class="reserva-container">
-    <div v-if="(!formularioVisivel) || (formularioVisivel && montandoMesa)" class="seta-voltar" @click="formularioVisivel && montandoMesa ? voltarEscolha() : irParaMenu()">
+    <div v-if="formularioVisivel" class="seta-voltar" @click="voltarEscolha">
       <img src="@/assets/imagens/seta-preta.png" alt="Voltar" />
+    </div>
+    <div v-if="!formularioVisivel" class="seta-voltar" @click="irParaMenu">
+      <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
     </div>
     <h2>Reserva de Mesas</h2>
     <div v-if="!formularioVisivel" class="mesas-grid">

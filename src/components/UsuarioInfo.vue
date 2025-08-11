@@ -1,14 +1,3 @@
-<template>
-  <div v-if="usuarioLogado" class="usuario-info">
-    <img
-      :src="usuarioLogado.avatar || defaultAvatar"
-      alt="Avatar"
-      class="usuario-avatar"
-    />
-    <span class="usuario-nome">{{ usuarioLogado.nome }}</span>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'UsuarioInfo',
@@ -43,6 +32,18 @@ export default {
   }
 }
 </script>
+
+
+<template>
+  <div v-if="usuarioLogado" class="usuario-info">
+    <img
+      :src="usuarioLogado.avatar || defaultAvatar"
+      alt="Avatar"
+      class="usuario-avatar"
+    />
+    <span class="usuario-nome">{{ usuarioLogado.nome }}</span>
+  </div>
+</template>
 
 <style scoped>
 .usuario-info {

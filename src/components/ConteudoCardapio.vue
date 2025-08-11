@@ -1,3 +1,30 @@
+<script>
+export default {
+  name: 'CardapioPizzaria',
+  data() {
+    return {
+      pizzas: [
+        { nome: 'Margherita', descricao: 'Molho de tomate, mussarela, tomate, manjericão e azeite.' },
+        { nome: 'Calabresa', descricao: 'Mussarela, calabresa, cebola e orégano.' },
+        { nome: 'Portuguesa', descricao: 'Mussarela, presunto, ovo, cebola, pimentão, azeitona.' },
+        { nome: 'Quatro Queijos', descricao: 'Mussarela, provolone, parmesão, catupiry.' },
+        { nome: 'Frango com Catupiry', descricao: 'Frango desfiado, catupiry, mussarela.' },
+        { nome: 'Pepperoni', descricao: 'Mussarela, pepperoni, orégano.' },
+        { nome: 'Vegetariana', descricao: 'Mussarela, tomate, cebola, pimentão, champignon, milho.' }
+      ],
+      bebidas: [
+        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00' },
+        { nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (2L)', preco: 'R$ 13,00' },
+        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)', preco: 'R$ 4,00' },
+        { nome: 'Suco Natural', descricao: 'Laranja, uva, abacaxi ou maracujá (300ml)', preco: 'R$ 7,00' },
+        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)', preco: 'R$ 9,00' }
+      ]
+    }
+  }
+}
+</script>
+
+
 <template>
   <div class="cardapio-bg"></div>
   <img
@@ -33,32 +60,6 @@
     </div>
   </section>
 </template>
-
-<script>
-export default {
-  name: 'CardapioPizzaria',
-  data() {
-    return {
-      pizzas: [
-        { nome: 'Margherita', descricao: 'Molho de tomate, mussarela, tomate, manjericão e azeite.' },
-        { nome: 'Calabresa', descricao: 'Mussarela, calabresa, cebola e orégano.' },
-        { nome: 'Portuguesa', descricao: 'Mussarela, presunto, ovo, cebola, pimentão, azeitona.' },
-        { nome: 'Quatro Queijos', descricao: 'Mussarela, provolone, parmesão, catupiry.' },
-        { nome: 'Frango com Catupiry', descricao: 'Frango desfiado, catupiry, mussarela.' },
-        { nome: 'Pepperoni', descricao: 'Mussarela, pepperoni, orégano.' },
-        { nome: 'Vegetariana', descricao: 'Mussarela, tomate, cebola, pimentão, champignon, milho.' }
-      ],
-      bebidas: [
-        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00' },
-        { nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (2L)', preco: 'R$ 13,00' },
-        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)', preco: 'R$ 4,00' },
-        { nome: 'Suco Natural', descricao: 'Laranja, uva, abacaxi ou maracujá (300ml)', preco: 'R$ 7,00' },
-        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)', preco: 'R$ 9,00' }
-      ]
-    }
-  }
-}
-</script>
 
 <style scoped>
 .seta-voltar {

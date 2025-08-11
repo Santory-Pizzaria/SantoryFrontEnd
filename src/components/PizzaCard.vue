@@ -1,24 +1,3 @@
-<template>
-  <div class="pizza-tamanhos-bg">
-    <header class="pizza-tamanhos-header">
-      <img src="/src/assets/imagens/logo.png" alt="Logo" class="pizza-tamanhos-logo" />
-      <h2 class="pizza-tamanhos-title">Escolha o tamanho da sua pizza</h2>
-    </header>
-    <div class="pizza-tamanhos-lista">
-      <div
-        v-for="t in tamanhos"
-        :key="t.nome"
-        class="pizza-tamanhos-card"
-      >
-        <img :src="t.img" :alt="t.nome" class="pizza-tamanhos-card-img" />
-        <span class="pizza-tamanhos-card-nome">{{ t.nome }}</span>
-        <span class="pizza-tamanhos-card-preco">R$ {{ t.preco.toFixed(2) }}</span>
-        <span class="pizza-tamanhos-card-desc">{{ t.descricao }}</span>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'PizzaCard',
@@ -48,6 +27,28 @@ export default {
   }
 };
 </script>
+
+
+<template>
+  <div class="pizza-tamanhos-bg">
+    <header class="pizza-tamanhos-header">
+      <img src="/src/assets/imagens/logo.png" alt="Logo" class="pizza-tamanhos-logo" />
+      <h2 class="pizza-tamanhos-title">Escolha o tamanho da sua pizza</h2>
+    </header>
+    <div class="pizza-tamanhos-lista">
+      <div
+        v-for="t in tamanhos"
+        :key="t.nome"
+        class="pizza-tamanhos-card"
+      >
+        <img :src="t.img" :alt="t.nome" class="pizza-tamanhos-card-img" />
+        <span class="pizza-tamanhos-card-nome">{{ t.nome }}</span>
+        <span class="pizza-tamanhos-card-preco">R$ {{ t.preco.toFixed(2) }}</span>
+        <span class="pizza-tamanhos-card-desc">{{ t.descricao }}</span>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .pizza-tamanhos-bg {

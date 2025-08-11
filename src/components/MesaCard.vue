@@ -1,3 +1,14 @@
+<script>
+export default {
+  name: 'MesaCard',
+  props: {
+    numero: { type: Number, required: true },
+    cadeiras: { type: Number, required: true }
+  }
+}
+</script>
+
+
 <template>
   <div class="mesa-card">
     <div class="mesa-circular">
@@ -12,15 +23,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'MesaCard',
-  props: {
-    numero: { type: Number, required: true },
-    cadeiras: { type: Number, required: true }
-  }
-}
-</script>
 
 <style scoped>
 .mesa-card {
