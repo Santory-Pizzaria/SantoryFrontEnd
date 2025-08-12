@@ -84,7 +84,7 @@ function toggleMenu() {
     <header class="italia-header">
       <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
       <!-- Ícone hambúrguer -->
-      <button class="hamburger" @click="toggleMenu" aria-label="Abrir menu">
+      <button class="hamburger" :class="{ active: showMenu }" @click="toggleMenu" aria-label="Abrir menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
@@ -465,6 +465,10 @@ body {
   height: 38px;
   cursor: pointer;
   z-index: 1200;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.hamburger.active {
+  transform: rotate(90deg) scale(1.15);
 }
 .hamburger .bar {
   width: 26px;
@@ -484,15 +488,22 @@ body {
     top: 60px;
     left: 0;
     width: 100vw;
-    background: #B90020;
+    background: transparent; /* fundo transparente */
     flex-direction: column;
     align-items: flex-start;
     padding: 18px 0 18px 24px;
     z-index: 1100;
     box-shadow: 0 4px 16px #0002;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
   }
   .italia-nav.show-mobile {
     display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
   .italia-delivery-btn {
     margin-top: 8px;
@@ -539,107 +550,23 @@ body {
     flex-direction: column;
     gap: 6px;
     padding: 8px 2px 0 2px;
+    position: relative;
   }
   .italia-logo {
-    height: 40px;
+    height: 160px !important;
     margin-top: 6px;
   }
-  .italia-nav {
-    font-size: 0.8rem;
-    gap: 1px;
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1300;
+    display: flex !important;
   }
-  .italia-hero-title {
-    font-size: 1.2rem;
-  }
-  .italia-hero-sub {
-    font-size: 0.9rem;
-  }
-  .italia-reserva-btn {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-  }
-  .pizza-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: 8px;
-  }
-  .pizza-item img {
-    height: 80px;
-  }
-  .pizza-info {
-    padding: 8px;
-    font-size: 0.95rem;
-  }
-  .adicionar-footer {
-    padding: 7px 0 6px 0;
-  }
-  .whatsapp-float {
-    width: 54px;
-    height: 54px;
-    left: 10px;
-    bottom: 10px;
-  }
-  .whatsapp-icon {
-    width: 32px;
-    height: 32px;
+  .italia-hero-content {
+    margin-top: -400px !important;
+    padding-top: 0 !important;
   }
 }
-@media (max-width: 450px) {
-  .italia-header {
-    flex-direction: column;
-    gap: 4px;
-    padding: 4px 1px 0 1px;
-  }
-  .italia-logo {
-    height: 32px;
-    margin-top: 2px;
-  }
-  .italia-nav {
-    font-size: 0.7rem;
-    gap: 0;
-  }
-  .italia-hero-title {
-    font-size: 1rem;
-  }
-  .italia-hero-sub {
-    font-size: 0.7rem;
-  }
-  .italia-reserva-btn {
-    padding: 4px 6px;
-    font-size: 0.7rem;
-  }
-  .pizza-grid {
-    grid-template-columns: 1fr;
-    gap: 5px;
-    margin: 4px;
-  }
-  .pizza-item img {
-    height: 54px;
-  }
-  .pizza-info {
-    padding: 4px;
-    font-size: 0.85rem;
-  }
-  .adicionar-footer {
-    padding: 4px 0 4px 0;
-  }
-  .adicionar-btn {
-    padding: 7px 12px;
-    font-size: 0.9rem;
-  }
-  .adicionar-icon {
-    width: 18px;
-    height: 18px;
-  }
-  .whatsapp-float {
-    width: 38px;
-    height: 38px;
-    left: 4px;
-    bottom: 4px;
-  }
-  .whatsapp-icon {
-    width: 18px;
-    height: 18px;
-  }
-}
+
 </style>
