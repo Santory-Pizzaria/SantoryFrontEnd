@@ -28,6 +28,7 @@
             <h2>{{ t.nome }}</h2>
             <p class="pizza-card-desc">{{ t.descricao }}</p>
             <span class="pizza-card-preco">R$ {{ t.preco.toFixed(2) }}</span>
+            <button class="pizza-card-add-btn" @click="adicionarItem(t)">Adicionar</button>
           </div>
         </div>
       </div>
@@ -36,6 +37,7 @@
           <div class="pizza-card-info">
             <h2>{{ combo.nome }}</h2>
             <p class="pizza-card-desc">{{ combo.descricao }}</p>
+            <button class="pizza-card-add-btn" @click="adicionarItem(combo)">Adicionar</button>
           </div>
         </div>
       </div>
@@ -45,6 +47,7 @@
             <h2>{{ bebida.nome }}</h2>
             <p class="pizza-card-desc">{{ bebida.descricao }}</p>
             <span class="pizza-card-preco">{{ bebida.preco }}</span>
+            <button class="pizza-card-add-btn" @click="adicionarItem(bebida)">Adicionar</button>
           </div>
         </div>
       </div>
@@ -79,6 +82,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    adicionarItem(item) {
+      this.$router.push({ name: 'pizza-options', params: { pizzaNome: item.nome } });
+    }
   }
 };
 </script>
@@ -222,6 +230,24 @@ export default {
   top: 1rem;
   left: 1rem;
   cursor: pointer;
+}
+.pizza-card-add-btn {
+  margin-top: 10px;
+  background: #b33c1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  width: 100%;
+  font-size: 1.08rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px #b33c1a22;
+}
+.pizza-card-add-btn:hover {
+  background: #d72638;
+  transform: translateY(-2px) scale(1.04);
 }
 @media (max-width: 700px) {
   .pizza-card-layout {
