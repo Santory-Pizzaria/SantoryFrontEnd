@@ -12,6 +12,12 @@ export default {
         { nome: 'Pepperoni', descricao: 'Mussarela, pepperoni, orégano.' },
         { nome: 'Vegetariana', descricao: 'Mussarela, tomate, cebola, pimentão, champignon, milho.' }
       ],
+      combos: [
+        { nome: 'Combo 1', descricao: '1 Pizza Média + 1 Refrigerante 350ml' },
+        { nome: 'Combo 2', descricao: '1 Pizza Grande + 1 Refrigerante 2L' },
+        { nome: 'Combo 3', descricao: '2 Pizzas Médias + 2 Refrigerantes 350ml' },
+        { nome: 'Combo Família', descricao: '2 Pizzas Grandes + 1 Refrigerante 2L + 1 Porção de Batata Frita' }
+      ],
       bebidas: [
         { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00' },
         { nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (2L)', preco: 'R$ 13,00' },
@@ -28,7 +34,7 @@ export default {
 <template>
   <div class="cardapio-bg"></div>
   <img
-    src="/src/assets/imagens/seta.png"
+    src="/src/assets/imagens/seta-preta.png"
     alt="Voltar ao menu"
     class="seta-voltar"
     @click="$router.push('/menu')"
@@ -45,6 +51,15 @@ export default {
         <li v-for="pizza in pizzas" :key="pizza.nome" class="cardapio-item pizza-item">
           <span class="item-nome">{{ pizza.nome }}</span>
           <span class="item-desc">{{ pizza.descricao }}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="cardapio-section">
+      <h2>Combos</h2>
+      <ul class="cardapio-list">
+        <li v-for="combo in combos" :key="combo.nome" class="cardapio-item combo-item">
+          <span class="item-nome">{{ combo.nome }}</span>
+          <span class="item-desc">{{ combo.descricao }}</span>
         </li>
       </ul>
     </div>
@@ -66,8 +81,8 @@ export default {
   position: absolute;
   top: 24px;
   left: 24px;
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   z-index: 10;
   transition: transform 0.15s;
@@ -173,6 +188,44 @@ export default {
   }
   .cardapio-item {
     padding: 0.7rem 0.5rem;
+  }
+}
+@media (max-width: 500px) {
+  .cardapio-pizzaria {
+    padding: 0.5rem 0.1rem;
+    max-width: 99vw;
+  }
+  .cardapio-header {
+    margin-bottom: 1.2rem;
+  }
+  .cardapio-img {
+    width: 54px;
+  }
+  .cardapio-header h1 {
+    font-size: 1.1rem;
+  }
+  .cardapio-header p {
+    font-size: 0.95rem;
+  }
+  .cardapio-section h2 {
+    font-size: 0.95rem;
+    padding-left: 0.4rem;
+  }
+  .cardapio-item {
+    padding: 0.5rem 0.2rem;
+    font-size: 0.95rem;
+  }
+  .item-nome {
+    font-size: 1rem;
+  }
+  .item-desc, .item-preco {
+    font-size: 0.92rem;
+  }
+  .seta-voltar {
+    top: 10px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
   }
 }
 </style>
