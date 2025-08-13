@@ -1,3 +1,56 @@
+<script>
+export default {
+  name: 'PizzaCard',
+  data() {
+    return {
+      activeTab: 'pizza',
+      tamanhos: [
+        {
+          nome: 'Pequena',
+          preco: 25.00,
+          img: '/src/assets/imagens/Pizzaex.png',
+          descricao: '12cm •4 fatias • Serve até 1 pessoa'
+        },
+        {
+          nome: 'Média',
+          preco: 35.00,
+          img: '/src/assets/imagens/Pizzaex.png',
+          descricao: '18cm •8 fatias • Serve até 2 pessoas'
+        },
+        {
+          nome: 'Grande',
+          preco: 45.00,
+          img: '/src/assets/imagens/Pizzaex.png',
+          descricao: '22cm •12 fatias • Serve até 4 pessoas'
+        },
+        {
+          nome: 'Família',
+          preco: 65.00,
+          img: '/src/assets/imagens/Pizzaex.png',
+          descricao: '22cm •18 fatias • Serve até 4 pessoas'
+        }
+        ],
+      combos: [
+        { nome: 'Combo Solteiro', descricao: '1 Pizza Média + 1 Refrigerante 350ml', preco: 'R$ 39,90', img: '/src/assets/imagens/ComboExjpg.jpg' },
+        { nome: 'Combo Casal', descricao: '1 Pizza Grande + 1 Refrigerante 2L', preco: 'R$ 54,90', img: '/src/assets/imagens/ComboExjpg.jpg' },
+        { nome: 'Combo Família', descricao: '2 Pizzas Grandes + 1 Refrigerante 2L + 1 Porção de Batata Frita', preco: 'R$ 99,90', img: '/src/assets/imagens/ComboExjpg.jpg' }
+      ],
+      bebidas: [
+        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00', img: '/src/assets/imagens/Coca.png' },
+        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)', preco: 'R$ 4,00', img: '/src/assets/imagens/Agua.png' },
+        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)', preco: 'R$ 9,00', img: '/src/assets/imagens/Cerveja.png' }
+      ]
+    };
+  },
+  methods: {
+    adicionarItem(item) {
+      this.$router.push({ name: 'pizza-options', params: { pizzaNome: item.nome } });
+    }
+  }
+};
+</script>
+
+
 <template>
   <div class="pizza-card-bg"></div>
   <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-voltar" @click="$router.push('/menu')" />
@@ -34,15 +87,18 @@
       </div>
       <div v-else-if="activeTab === 'combos'" class="pizza-card-list">
         <div v-for="combo in combos" :key="combo.nome" class="pizza-card-item pizza-card-combo">
+          <img :src="combo.img" :alt="combo.nome" class="pizza-card-img" />
           <div class="pizza-card-info">
             <h2>{{ combo.nome }}</h2>
             <p class="pizza-card-desc">{{ combo.descricao }}</p>
+            <span class="pizza-card-preco">{{ combo.preco }}</span>
             <button class="pizza-card-add-btn" @click="adicionarItem(combo)">Adicionar</button>
           </div>
         </div>
       </div>
       <div v-else-if="activeTab === 'bebidas'" class="pizza-card-list">
         <div v-for="bebida in bebidas" :key="bebida.nome" class="pizza-card-item pizza-card-bebida">
+          <img :src="bebida.img" :alt="bebida.nome" class="pizza-card-img" />
           <div class="pizza-card-info">
             <h2>{{ bebida.nome }}</h2>
             <p class="pizza-card-desc">{{ bebida.descricao }}</p>
@@ -54,42 +110,6 @@
     </section>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'PizzaCard',
-  data() {
-    return {
-      activeTab: 'pizza',
-      tamanhos: [
-        {
-          nome: 'Pequena',
-          preco: 25.00,
-          img: '/src/assets/imagens/fundo.png',
-          descricao: '12cm •4 fatias • Serve até 1 pessoa'
-        },
-        {
-          nome: 'Média',
-          preco: 35.00,
-          img: '/src/assets/imagens/pizza-media.png',
-          descricao: '18cm •8 fatias • Serve até 2 pessoas'
-        },
-        {
-          nome: 'Grande',
-          preco: 45.00,
-          img: '/src/assets/imagens/pizza-grande.png',
-          descricao: '22cm •12 fatias • Serve até 4 pessoas'
-        }
-      ]
-    };
-  },
-  methods: {
-    adicionarItem(item) {
-      this.$router.push({ name: 'pizza-options', params: { pizzaNome: item.nome } });
-    }
-  }
-};
-</script>
 
 <style scoped>
 .pizza-card-bg {
