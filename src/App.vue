@@ -1,11 +1,16 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
+
+const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/CadastroPizzaria'];
+const mostrarCarrinho = computed(() => {
+  return !rotasSemCarrinho.includes(router.currentRoute.value.path.toLowerCase());
+});
 
 function openGoogleMaps() {
   window.open('https://maps.app.goo.gl/vFo8n8Xm1pSBPbwY7', '_blank');
@@ -39,6 +44,25 @@ function irParaCarrinho() {
   router.push('/carrinho');
 }
 
+function removerItem(idx) {
+  const carrinhoStorage = JSON.parse(localStorage.getItem('carrinho') || '[]');
+  if (carrinhoStorage[idx]?.qtd && carrinhoStorage[idx].qtd > 1) {
+    carrinhoStorage[idx].qtd--;
+  } else {
+    carrinhoStorage.splice(idx, 1);
+  }
+  localStorage.setItem('carrinho', JSON.stringify(carrinhoStorage));
+  atualizarQtdCarrinho();
+}
+
+function adicionarMais(idx) {
+  const carrinhoStorage = JSON.parse(localStorage.getItem('carrinho') || '[]');
+  if (!carrinhoStorage[idx].qtd) carrinhoStorage[idx].qtd = 1;
+  carrinhoStorage[idx].qtd++;
+  localStorage.setItem('carrinho', JSON.stringify(carrinhoStorage));
+  atualizarQtdCarrinho();
+}
+
 // Atualiza ao montar
 atualizarQtdCarrinho()
 window.addEventListener('storage', atualizarQtdCarrinho)
@@ -66,18 +90,25 @@ window.addEventListener('storage', atualizarQtdCarrinho)
         </div>
       </div>
     </div>
-    <div class="carrinho-float" @click="toggleMiniCart">
+    <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleMiniCart">
       <img src="/src/assets/imagens/carrinho.png" alt="Carrinho" class="carrinho-icon" />
       <span v-if="qtdCarrinho > 0" class="carrinho-badge">{{ qtdCarrinho }}</span>
     </div>
     <transition name="mini-cart-fade">
-      <div v-if="showMiniCart" class="mini-cart-modal" @click.self="toggleMiniCart">
+      <div v-if="showMiniCart && mostrarCarrinho" class="mini-cart-modal" @click.self="toggleMiniCart">
         <div class="mini-cart-content">
           <h3>Seu Carrinho</h3>
           <ul v-if="carrinho.length">
-            <li v-for="(item, idx) in carrinho" :key="idx">
-              <span>{{ item.nome }}</span>
-              <span v-if="item.preco">{{ item.preco }}</span>
+            <li v-for="(item, idx) in carrinho" :key="idx" class="mini-cart-item">
+              <div class="mini-cart-item-info">
+                <span class="mini-cart-item-nome">{{ item.nome }}</span>
+                <span v-if="item.preco" class="mini-cart-item-preco">{{ item.preco }}</span>
+              </div>
+              <div class="mini-cart-item-actions">
+                <button class="mini-cart-btn-action" @click.stop="removerItem(idx)">-</button>
+                <span class="mini-cart-item-qtd">{{ item.qtd || 1 }}</span>
+                <button class="mini-cart-btn-action" @click.stop="adicionarMais(idx)">+</button>
+              </div>
             </li>
           </ul>
           <p v-else>Carrinho vazio.</p>
@@ -243,6 +274,7 @@ nav a:first-of-type {
   justify-content: center;
   cursor: pointer;
   transition: box-shadow 0.2s, transform 0.2s;
+  border: 2.5px solid #222;
 }
 .carrinho-float:hover {
   box-shadow: 0 4px 16px #b33c1a44;
@@ -285,6 +317,7 @@ nav a:first-of-type {
   box-shadow: 0 8px 32px #b33c1a33;
   width: 340px;
   max-width: 95vw;
+  min-width: 220px;
   padding: 24px 18px 18px 18px;
   margin: 0 24px 24px 0;
   animation: miniCartIn 0.35s cubic-bezier(.4,0,.2,1);
@@ -342,5 +375,81 @@ nav a:first-of-type {
   text-align: center;
   color: #888;
   margin: 18px 0 0 0;
+}
+.mini-cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  flex-wrap: wrap;
+}
+.mini-cart-item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.mini-cart-item-nome {
+  font-weight: 600;
+  color: #b33c1a;
+  word-break: break-word;
+}
+.mini-cart-item-preco {
+  color: #222;
+  font-size: 0.98rem;
+}
+.mini-cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mini-cart-btn-action {
+  background: #eee;
+  border: none;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #b33c1a;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mini-cart-btn-action:hover {
+  background: #ffd6c2;
+}
+.mini-cart-item-qtd {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+@media (max-width: 600px) {
+  .mini-cart-content {
+    width: 98vw;
+    min-width: 0;
+    padding: 16px 4vw 16px 4vw;
+    margin: 0 2vw 12vw 0;
+  }
+  .mini-cart-item {
+    font-size: 0.95rem;
+    gap: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .mini-cart-item-actions {
+    gap: 4px;
+  }
+  .mini-cart-btn-action {
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
 }
 </style>
