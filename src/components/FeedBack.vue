@@ -230,13 +230,13 @@ export default {
   font-style: italic;
 }
 .seta-voltar {
-  position: absolute;
+  position: fixed;
   top: 18px;
   left: 18px;
   width: 28px;
   height: 28px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10000;
   transition: filter 0.2s, transform 0.2s;
   filter: drop-shadow(0 2px 6px #00000044);
 }
@@ -290,6 +290,8 @@ export default {
   .seta-voltar {
     width: 20px;
     height: 20px;
+    top: 8px;
+    left: 8px;
   }
 }
 </style>

@@ -31,10 +31,11 @@ onMounted(() => {
 
 <template>
   <div class="pedidos-timeline-container">
+    <!-- Seta fixa no topo esquerdo -->
+    <button class="back-btn" @click="$router.push('/menu')" aria-label="Voltar ao menu">
+      <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-icon" />
+    </button>
     <header class="pedidos-header novo-header">
-      <button class="back-btn" @click="$router.push('/menu')" aria-label="Voltar ao menu">
-        <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-icon" />
-      </button>
       <div class="header-center">
         <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
         <h1>Meus Pedidos</h1>
@@ -84,25 +85,30 @@ onMounted(() => {
   border-bottom: 2px solid #ff9800;
   display: flex;
   align-items: center;
-  padding: 0 0 0 8px;
   min-height: 64px;
   justify-content: center;
+  position: relative;
 }
 .back-btn {
-  background: none;
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 9999;
+  background: #fff;
   border: none;
-  padding: 0;
-  margin-right: 10px;
-  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #0002;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
-  position: absolute;
-  left: 12px;
-  z-index: 2;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
 }
 .seta-icon {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 .header-center {
@@ -112,8 +118,8 @@ onMounted(() => {
   justify-content: center;
 }
 .logo {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 .novo-header h1 {
@@ -244,6 +250,23 @@ onMounted(() => {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
+  }
+  .novo-header {
+    padding-left: 54px;
+  }
+  .back-btn {
+    top: 8px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+  }
+  .seta-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .logo {
+    width: 32px;
+    height: 32px;
   }
   .novo-valor {
     font-size: 1rem;

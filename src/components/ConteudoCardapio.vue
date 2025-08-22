@@ -78,13 +78,13 @@ export default {
 
 <style scoped>
 .seta-voltar {
-  position: absolute;
+  position: fixed;
   top: 24px;
   left: 24px;
   width: 28px;
   height: 28px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10000;
   transition: transform 0.15s;
 }
 .seta-voltar:hover {
