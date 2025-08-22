@@ -244,12 +244,21 @@ export default {
   text-align: center;
 }
 .seta-voltar {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
+  z-index: 10000;
+  border-radius: 50%;
+  padding: 4px;
+  background: transparent;
+  transition: filter 0.2s, transform 0.2s;
+}
+.seta-voltar:hover {
+  filter: brightness(1.2) drop-shadow(0 4px 12px #00000066);
+  transform: scale(1.08);
 }
 .pizza-card-add-btn {
   margin-top: 10px;
@@ -285,6 +294,13 @@ export default {
   .pizza-card-logo {
     width: 60px;
     height: 60px;
+  }
+  .seta-voltar {
+    width: 22px;
+    height: 22px;
+    top: 8px;
+    left: 8px;
+    padding: 2px;
   }
 }
 @media (max-width: 1020px) {
