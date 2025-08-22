@@ -30,10 +30,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pedidos-container">
-    <header class="pedidos-header">
-      <button class="back-btn" @click="$router.push('/menu')">
-        <img src="/src/assets/imagens/seta.png" alt="Voltar ao menu" class="seta-icon" />
+  <div class="pedidos-timeline-container">
+    <header class="pedidos-header novo-header">
+      <button class="back-btn" @click="$router.push('/menu')" aria-label="Voltar ao menu">
+        <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-icon" />
       </button>
       <div class="header-center">
         <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
@@ -43,23 +43,26 @@ onMounted(() => {
     <div v-if="pedidos.length === 0" class="sem-pedidos">
       Você ainda não fez nenhum pedido.
     </div>
-    <div v-else class="lista-pedidos">
-      <div v-for="pedido in pedidos" :key="pedido.id" class="pedido-card">
-        <div class="pedido-info">
-          <div><strong>Pedido #{{ pedido.id }}</strong></div>
-          <div><b>Data:</b> {{ pedido.data }}</div>
-          <div><b>Status:</b> <span :class="['status', pedido.status.toLowerCase().replace(' ', '-') ]">{{ pedido.status }}</span></div>
-        </div>
-        <div class="pedido-itens">
-          <b>Itens:</b>
-          <ul>
-            <li v-for="(item, idx) in pedido.itens" :key="idx">
-              {{ item.qtd }}x {{ item.nome }} <span v-if="item.detalhes">- {{ item.detalhes }}</span>
-            </li>
-          </ul>
-        </div>
-        <div class="pedido-valor">
-          <b>Total:</b> R$ {{ pedido.valor.toFixed(2) }}
+    <div v-else class="timeline">
+      <div v-for="pedido in pedidos" :key="pedido.id" class="timeline-item">
+        <div class="timeline-dot" :class="pedido.status.toLowerCase().replace(' ', '-')"></div>
+        <div class="timeline-content">
+          <div class="pedido-top">
+            <span class="pedido-id">#{{ pedido.id }}</span>
+            <span class="pedido-data">{{ pedido.data }}</span>
+            <span class="status-pill" :class="pedido.status.toLowerCase().replace(' ', '-')">{{ pedido.status }}</span>
+          </div>
+          <div class="pedido-itens novo-itens">
+            <b>Itens:</b>
+            <ul>
+              <li v-for="(item, idx) in pedido.itens" :key="idx">
+                {{ item.qtd }}x {{ item.nome }} <span v-if="item.detalhes">- {{ item.detalhes }}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pedido-valor novo-valor">
+            <b>Total:</b> R$ {{ pedido.valor.toFixed(2) }}
+          </div>
         </div>
       </div>
     </div>
@@ -68,111 +71,159 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.pedidos-container {
+.pedidos-timeline-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #f7f6f3;
 }
-.pedidos-header {
-  background: linear-gradient(90deg, #ff9800 0%, #ffb86c 100%);
-  color: #fff;
-  text-align: center;
-  padding: 16px 0 8px 0;
-  font-size: 1.3rem;
-  font-weight: bold;
+.novo-header {
+  background: #fff;
+  color: #ff9800;
+  box-shadow: 0 2px 12px #0001;
+  border-bottom: 2px solid #ff9800;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
-  position: relative;
+  padding: 0 0 0 8px;
+  min-height: 64px;
+  justify-content: center;
 }
 .back-btn {
   background: none;
   border: none;
+  padding: 0;
+  margin-right: 10px;
   cursor: pointer;
-  margin-right: 8px;
   display: flex;
   align-items: center;
-  height: 100%;
+  position: absolute;
+  left: 12px;
+  z-index: 2;
 }
 .seta-icon {
-  width: 36px;
-  height: 36px;
-  filter: drop-shadow(0 1px 4px #0002);
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 .header-center {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 12px;
   justify-content: center;
-  flex: 1;
 }
 .logo {
-  width: 64px;
-  margin-bottom: 0;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  background: #fff;
-  padding: 3px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
-.pedidos-header h1 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+.novo-header h1 {
+  font-size: 1.6rem;
   margin: 0;
-  text-shadow: 0 2px 8px #0002;
-  align-self: center;
+  font-weight: bold;
+  color: #ff9800;
 }
-.lista-pedidos {
-  max-width: 520px;
-  margin: 32px auto 32px auto; /* Espaço acima e abaixo dos cards */
+.timeline {
+  position: relative;
+  margin: 40px auto 40px auto;
+  max-width: 600px;
+  padding-left: 30px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 36px;
 }
-.pedido-card {
+.timeline:before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #ff9800 0%, #ffb86c 100%);
+  border-radius: 2px;
+}
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+.timeline-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 24px 20px 16px 20px;
-  border-left: 6px solid #ff9800;
+  border: 4px solid #ff9800;
+  margin-right: 18px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px #0002;
+  z-index: 2;
+  transition: background 0.2s;
+}
+.timeline-dot.entregue {
+  background: #388e3c;
+  border-color: #388e3c;
+}
+.timeline-dot.em-andamento {
+  background: #ff9800;
+  border-color: #ff9800;
+}
+.timeline-content {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px #0001;
+  padding: 22px 28px 16px 22px;
+  min-width: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border-left: 6px solid #ff9800;
 }
-.pedido-info {
+.pedido-top {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 6px;
+}
+.pedido-id {
   font-size: 1.1rem;
+  font-weight: bold;
+  color: #ff9800;
 }
-.pedido-itens {
-  margin: 10px 0 0 0;
+.pedido-data {
   font-size: 1rem;
+  color: #888;
+  font-weight: 500;
 }
-.pedido-itens ul {
+.status-pill {
+  padding: 4px 16px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 2px 8px #0001;
+  letter-spacing: 0.5px;
+}
+.status-pill.entregue {
+  background: #388e3c;
+}
+.status-pill.em-andamento {
+  background: #ff9800;
+}
+.novo-itens {
+  margin: 8px 0 0 0;
+  font-size: 1.02rem;
+}
+.novo-itens ul {
   margin: 0;
   padding-left: 18px;
 }
-.pedido-valor {
+.novo-valor {
   margin-top: 8px;
-  font-size: 1.1rem;
+  font-size: 1.13rem;
   color: #388e3c;
   font-weight: bold;
-}
-.status {
-  padding: 2px 10px;
-  border-radius: 8px;
-  font-size: 0.98rem;
-  font-weight: bold;
-  color: #fff;
-}
-.status.entregue {
-  background: #388e3c;
-}
-.status.em-andamento {
-  background: #ff9800;
+  text-align: right;
 }
 .sem-pedidos {
   text-align: center;
@@ -181,31 +232,21 @@ onMounted(() => {
   color: #888;
 }
 @media (max-width: 600px) {
-  .pedidos-header {
+  .timeline {
+    max-width: 99vw;
+    padding-left: 12px;
+    gap: 22px;
+  }
+  .timeline-content {
+    padding: 12px 8px 10px 10px;
+  }
+  .pedido-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .novo-valor {
     font-size: 1rem;
-    padding: 8px 0 4px 0;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    gap: 8px;
-  }
-  .seta-icon {
-    width: 26px;
-    height: 26px;
-  }
-  .logo {
-    width: 40px;
-    padding: 1px;
-  }
-  .pedidos-header h1 {
-    font-size: 1rem;
-  }
-  .lista-pedidos {
-    max-width: 98vw;
-    padding: 0 2vw;
-    margin: 18px auto 18px auto; /* Espaço menor em telas pequenas */
-  }
-  .pedido-card {
-    padding: 14px 6px 10px 10px;
   }
 }
 </style>
