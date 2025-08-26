@@ -7,19 +7,24 @@ export default {
       novoFeedback: {
         opiniao: '',
         estrelas: 0
-      }
+      },
+      aviso: ''
     }
   },
   methods: {
     addFeedback() {
-      if (this.novoFeedback.opiniao.trim() !== '' && this.novoFeedback.estrelas > 0) {
-        this.feedbacks.push({
-          opiniao: this.novoFeedback.opiniao.trim(),
-          estrelas: this.novoFeedback.estrelas
-        });
-        this.novoFeedback.opiniao = '';
-        this.novoFeedback.estrelas = 0;
+      if (this.novoFeedback.opiniao.trim() === '' || this.novoFeedback.estrelas === 0) {
+        this.aviso = 'Por favor, escreva sua opinião e selecione uma quantidade de estrelas para avaliar.';
+        setTimeout(() => { this.aviso = ''; }, 3000);
+        return;
       }
+      this.feedbacks.push({
+        opiniao: this.novoFeedback.opiniao.trim(),
+        estrelas: this.novoFeedback.estrelas
+      });
+      this.novoFeedback.opiniao = '';
+      this.novoFeedback.estrelas = 0;
+      this.aviso = '';
     }
   }
 }
@@ -28,11 +33,12 @@ export default {
 <template>
   <div class="feedback-pizza-bg">
     <img
-      src="@/assets/imagens/seta.png"
+      src="@/assets/imagens/seta-preta.png"
       alt="Voltar ao Menu"
       class="seta-voltar"
       @click="$router.push('/menu')"
     />
+    <div v-if="aviso" class="feedback-aviso">{{ aviso }}</div>
     <div class="feedback-header">
       <img src="/logo.ico" alt="Logo Pizzaria" class="pizza-logo" />
       <h1 class="pizza-title">Avalie sua Experiência!</h1>
@@ -224,19 +230,37 @@ export default {
   font-style: italic;
 }
 .seta-voltar {
-  position: absolute;
+  position: fixed;
   top: 18px;
   left: 18px;
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10000;
   transition: filter 0.2s, transform 0.2s;
   filter: drop-shadow(0 2px 6px #00000044);
 }
 .seta-voltar:hover {
   filter: brightness(1.2) drop-shadow(0 4px 12px #00000066);
   transform: scale(1.08);
+}
+.feedback-aviso {
+  background: #ffe0b2;
+  color: #b33c1a;
+  border: 1.5px solid #b33c1a;
+  border-radius: 8px;
+  padding: 10px 18px;
+  margin: 12px auto 18px auto;
+  max-width: 420px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px #ffb86c44;
+  animation: avisoFadeIn 0.3s;
+}
+@keyframes avisoFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 600px) {
   .feedback-pizza-bg {
@@ -262,6 +286,12 @@ export default {
     width: 28px;
     height: 28px;
     font-size: 1.1rem;
+  }
+  .seta-voltar {
+    width: 20px;
+    height: 20px;
+    top: 8px;
+    left: 8px;
   }
 }
 </style>

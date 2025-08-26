@@ -171,7 +171,7 @@ export default {
 <template>
   <div class="pizza-options-container">
     <header class="header">
-      <button class="back-btn" @click="$emit('voltar')">
+      <button class="back-btn" @click="$router.push('/pizza-card')">
         <img src="/src/assets/imagens/seta.png" alt="Voltar" />
       </button>
       <span class="pizza-title">{{ pizzaNome }}</span>

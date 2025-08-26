@@ -4,12 +4,10 @@ const carouselImages = [
   '/src/assets/imagens/Sabores.png',
   '/src/assets/imagens/SaboresOpc.png',
   '/src/assets/imagens/Borda.png',
+]
 
-import PizzaCard from './PizzaCard.vue';
-import UsuarioInfo from './UsuarioInfo.vue';
 import { useRouter } from 'vue-router';
-import FooteRor from './FooteRor.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter();
 
@@ -18,7 +16,6 @@ const usuario = ref({
   nome: '',
   avatar: ''
 });
-const defaultAvatar = '/src/assets/imagens/perfil.png';
 
 // Carregar dados do usuário logado
 onMounted(() => {
@@ -40,17 +37,7 @@ function carregarDadosUsuario() {
   }
 }
 
-function navigateTo(route) {
-  router.push(route);
-}
 
-const pizzas = [
-  { name: 'Pizza Família', description: '50cm, 20 fatias, 4 sabores', price: 14.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Grande', description: '45cm, 16 fatias, 4 sabores', price: 19.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Média', description: '30cm, 8 fatias, 2 sabores', price: 10.00, image: '/src/assets/imagens/fundo.png' },
-  { name: 'Pizza Pequena', description: '25cm, 6 fatias, 1 sabor', price: 19.00, image: '/src/assets/imagens/fundo.png' }
-
-];
 const currentImage = ref(0);
 
 function nextImage() {
@@ -71,16 +58,42 @@ function goToFeedBack() {
 function goToPizzaCard() {
   router.push({ name: 'PizzaCard' });
 }
+function goToReserva() {
+  router.push('/reserva');
+}
+
+const showMenu = ref(false);
+function toggleMenu() {
+  showMenu.value = !showMenu.value;
+}
 </script>
 <template>
   <div class="italia-bg">
+    <!-- Pizza List -->
+    <section class="pizza-grid">
+      <div v-for="pizza in pizzas" :key="pizza.name" class="pizza-item">
+        <img :src="pizza.image" :alt="pizza.name" />
+        <div class="pizza-info">
+          <h3>{{ pizza.name }}</h3>
+          <p>{{ pizza.description }}</p>
+          <p>Price: ${{ pizza.price.toFixed(2) }}</p>
+        </div>
+      </div>
+    </section>
     <!-- Header -->
     <header class="italia-header">
       <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
-      <nav class="italia-nav">
+      <!-- Ícone hambúrguer -->
+      <button class="hamburger" :class="{ active: showMenu }" @click="toggleMenu" aria-label="Abrir menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <!-- Menu tradicional -->
+      <nav class="italia-nav" :class="{ 'show-mobile': showMenu }">
         <a href="#" class="italia-nav-link active">HOME</a>
         <span class="italia-sep">|</span>
-        <a href="#" class="italia-nav-link">RESERVAS</a>
+        <a href="#" class="italia-nav-link" @click.prevent="goToReserva">RESERVAS</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
         <span class="italia-sep">|</span>
@@ -99,7 +112,7 @@ function goToPizzaCard() {
         <h1 class="italia-hero-title">BEM VINDOS</h1>
         <hr class="italia-hero-line" />
         <p class="italia-hero-sub">O sabor da Itália em Joinville</p>
-        <button class="italia-reserva-btn">
+        <button class="italia-reserva-btn" @click="goToReserva">
           FAÇA SUA RESERVA
           <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>
@@ -164,7 +177,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 40px 0 40px;
+  padding: 4px 40px 0 40px;
   background: transparent;
   font-family: 'Playfair Display', serif;
   box-sizing: border-box;
@@ -176,6 +189,7 @@ body {
   background: none;
   border-radius: 0;
   box-shadow: none;
+  margin-top: 24px;
 }
 .italia-nav {
   display: flex;
@@ -226,6 +240,7 @@ body {
   gap: 8px;
   transition: background 0.2s, color 0.2s;
   box-shadow: none;
+}
 
 
 .nav-items .nav-icon {
@@ -241,7 +256,7 @@ header {
   justify-content: space-between;
   padding: 16px 24px;
   height: 80px;
-  border-bottom: #fca40c 2px solid;
+
 }
 
 header .logo img {
@@ -331,6 +346,7 @@ nav a:hover {
   min-height: 100vh;
   display: flex;
   align-items: center;
+}
 
 
 body {
@@ -436,6 +452,63 @@ body {
   height: 48px;
   object-fit: contain;
 }
+
+/* HAMBURGUER MENU */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  z-index: 1200;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.hamburger.active {
+  transform: rotate(90deg) scale(1.15);
+}
+.hamburger .bar {
+  width: 26px;
+  height: 4px;
+  background: #fff;
+  margin: 3px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+@media (max-width: 620px) {
+  .hamburger {
+    display: flex;
+  }
+  .italia-nav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    background: transparent; /* fundo transparente */
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 0 18px 24px;
+    z-index: 1100;
+    box-shadow: 0 4px 16px #0002;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  .italia-nav.show-mobile {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .italia-delivery-btn {
+    margin-top: 8px;
+  }
+}
 @media (max-width: 900px) {
   .italia-header {
     flex-direction: column;
@@ -444,6 +517,7 @@ body {
   }
   .italia-logo {
     height: 60px;
+    margin-top: 12px;
   }
   .italia-nav {
     font-size: 0.95rem;
@@ -459,5 +533,40 @@ body {
     padding: 8px 18px;
     font-size: 0.95rem;
   }
+  .pizza-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 12px;
+  }
+  .pizza-item img {
+    height: 120px;
+  }
+  .adicionar-footer {
+    padding: 10px 0 8px 0;
+  }
 }
+@media (max-width: 600px) {
+  .italia-header {
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 2px 0 2px;
+    position: relative;
+  }
+  .italia-logo {
+    height: 160px !important;
+    margin-top: 6px;
+  }
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .italia-hero-content {
+    margin-top: -400px !important;
+    padding-top: 0 !important;
+  }
+}
+
 </style>

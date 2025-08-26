@@ -194,7 +194,8 @@ function voltarParaVerificacao() {
 }
 </script>
 <template>
-  <div class="checkout-container">
+  <div class="checkout-bg"></div>
+  <div class="checkout-container checkout-card-style">
     <header class="header-Pag">
       <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
       <div class="titulo-Pag"><h1>Pizzaria Santory</h1></div>
@@ -314,55 +315,74 @@ function voltarParaVerificacao() {
 </template>
 
 <style scoped>
-.Cep {
-  padding: 5px;
+.checkout-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: url('/src/assets/imagens/fundo.png') no-repeat center center fixed;
+  background-size: cover;
+  opacity: 0.42;
+  pointer-events: none;
 }
-.title-Pagamento {
-  padding: 5px;
-}
-.checkout-container {
-  border: 8px solid orange;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: white;
+.checkout-card-style {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #b33c1a18;
+  padding: 2rem 1rem 2.5rem 1rem;
   max-width: 1000px;
-  margin: 0 auto;
-}
-.titulo-Pag {
-  text-align: center;
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 20px;
-  padding-left: 20px;
+  margin: 32px auto;
 }
 .header-Pag {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  justify-content: center;
+  gap: 18px;
 }
-
 .logo {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
 }
-
+.titulo-Pag {
+  text-align: center;
+  font-size: 24px;
+  color: #b33c1a;
+  margin-bottom: 0;
+  padding-left: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
 .test-environment {
   background-color: #d2f9d2;
   padding: 10px;
   font-size: 14px;
   text-align: center;
+  border-radius: 8px;
+  margin-bottom: 18px;
 }
-
 .checkout-main-content {
   display: flex;
   gap: 30px;
 }
-
 .checkout-form-section {
   flex: 2;
 }
-
+.checkout-summary {
+  flex: 1;
+  background: #f7f3e9;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 2px 8px #b33c1a22;
+}
 .input {
   width: 100%;
   padding: 8px;
@@ -370,52 +390,35 @@ function voltarParaVerificacao() {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
 .erro {
   color: red;
   font-size: 13px;
   margin-bottom: 10px;
 }
-
 .payment-methods ul {
   list-style: none;
   padding-left: 0;
   font-size: 14px;
   margin-bottom: 20px;
 }
-
 .banks {
   margin-top: 10px;
 }
-
 .banks-grid {
   display: flex;
   gap: 10px;
 }
-
 .bank-icon {
   width: 50px;
   height: 50px;
   background-color: #aaa;
   border-radius: 4px;
 }
-
-.checkout-summary {
-  flex: 1;
-  background: #d2f9d2;
-  padding: 20px;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 .linha {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
 }
-
 .total {
   background-color: #28c76f;
   color: white;
@@ -425,7 +428,6 @@ function voltarParaVerificacao() {
   margin-top: 15px;
   border-radius: 4px;
 }
-
 .submit-button {
   background-color: #28c76f;
   color: white;
@@ -439,40 +441,33 @@ function voltarParaVerificacao() {
   margin-top: 32px;
   transition: background-color 0.3s ease;
 }
-
 .submit-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
   opacity: 0.7;
 }
-
 .pedido-detalhes {
   margin: 15px 0;
   padding: 10px;
   background: #f9f9f9;
   border-radius: 4px;
 }
-
 .pedido-detalhes h4 {
   margin: 0 0 8px 0;
   color: #333;
 }
-
 .pedido-detalhes ul {
   margin: 0 0 10px 0;
   padding-left: 20px;
 }
-
 .pedido-detalhes li {
   margin-bottom: 4px;
 }
-
 .buttons-container {
   display: flex;
   gap: 10px;
   margin-top: 20px;
 }
-
 .back-button {
   background-color: #ccc;
   color: #333;
@@ -480,21 +475,20 @@ function voltarParaVerificacao() {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  padding: 16px 24px;
-  font-size: 16px;
+  padding: 16px 32px;
+  font-size: 18px;
+  min-width: 140px;
+  margin-top: 32px;
   transition: background-color 0.3s ease;
 }
-
 .back-button:hover:not(:disabled) {
   background-color: #bbb;
 }
-
 .back-button:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
   opacity: 0.7;
 }
-
 .info-pizzaria {
   margin-top: 8px;
   padding: 8px;
@@ -502,9 +496,39 @@ function voltarParaVerificacao() {
   border-radius: 4px;
   border-left: 3px solid #ff9800;
 }
-
 .info-pizzaria small {
   color: #666;
   font-size: 12px;
+}
+@media (max-width: 900px) {
+  .checkout-main-content {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .checkout-summary {
+    margin-top: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .checkout-card-style {
+    padding: 0.5rem 0.2rem 1rem 0.2rem;
+    border-radius: 0;
+    margin: 0;
+  }
+  .header-Pag {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+  .titulo-Pag {
+    font-size: 18px;
+  }
+  .checkout-summary {
+    padding: 10px;
+    border-radius: 8px;
+  }
 }
 </style>

@@ -1,40 +1,3 @@
-
-<template>
-  <div class="perfil-container">
-    <div class="seta-voltar" @click="voltarMenu">
-      <img src="@/assets/imagens/seta.png" alt="Voltar ao menu" />
-    </div>
-    <div class="perfil-card">
-      <div class="perfil-avatar-area">
-        <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar" alt="Avatar do usuário" />
-        <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
-        <button class="btn-avatar" @click="abrirInputAvatar">Alterar Foto</button>
-      </div>
-      <div v-if="!editando" class="perfil-info">
-        <h2>{{ usuario.nome }}</h2>
-        <p><strong>Email:</strong> {{ usuario.email }}</p>
-        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
-        <p><strong>Endereço:</strong> {{ usuario.endereco }}</p>
-        <div class="botoes-perfil">
-          <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
-          <button class="btn-logout" @click="logout">Sair</button>
-        </div>
-      </div>
-      <div v-else class="perfil-edicao">
-        <input v-model="usuarioEdit.nome" placeholder="Nome" />
-        <input v-model="usuarioEdit.email" placeholder="Email" />
-        <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
-        <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
-        <div class="botoes-edicao">
-          <button class="btn-salvar" @click="salvarPerfil">Salvar</button>
-          <button class="btn-cancelar" @click="cancelarEdicao">Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-
 <script>
 export default {
   name: 'PerfilUsuario',
@@ -187,6 +150,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <div class="perfil-container">

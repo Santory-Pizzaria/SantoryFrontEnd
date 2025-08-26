@@ -15,7 +15,10 @@ import TempoEntrega from '../views/TempoEntrega.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import CardapioTela from '@/views/CardapioTela.vue'
 import PizzaCard from '../components/PizzaCard.vue'
-
+import ReservasLocal from '@/components/ReservasLocal.vue'
+import Carrinho from '../views/CarrinhoView.vue'
+import CarrinhoItem from '@/components/CarrinhoItem.vue'
+import CarrinhoItemDemo from '@/components/CarrinhoItem.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,9 +29,31 @@ const router = createRouter({
       component: PerfilUsuario,
     },
     {
+      path: '/ItemCarrinho',
+      name: 'ItemCarrinho',
+      component: CarrinhoItem,
+
+    },
+    {
+      path: '/ItemCarrinhoDemo',
+      name: 'ItemCarrinhoDemo',
+      component: CarrinhoItemDemo,
+    },
+    {
+      path: '/carrinho',
+      name: 'carrinho',
+      component: Carrinho,
+
+    },
+    {
       path: '/login',
       name: 'login',
       component: LoginCliente,
+    },
+    {
+      path: '/reserva',
+      name: 'ReservasLocal',
+      component: ReservasLocal,
     },
     {
       path: '/Cardapio',
