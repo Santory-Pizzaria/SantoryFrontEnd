@@ -19,6 +19,7 @@ import ReservasLocal from '@/components/ReservasLocal.vue'
 import Carrinho from '../views/CarrinhoView.vue'
 import CarrinhoItem from '@/components/CarrinhoItem.vue'
 import CarrinhoItemDemo from '@/components/CarrinhoItem.vue';
+import ControleEstoque from '../components/ControleEstoque.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       name: 'ItemCarrinho',
       component: CarrinhoItem,
 
+    },
+    {
+      path: '/Estoque',
+      name: 'ControleEstoque',
+      component: ControleEstoque,
     },
     {
       path: '/ItemCarrinhoDemo',
