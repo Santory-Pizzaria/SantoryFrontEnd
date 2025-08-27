@@ -1,3 +1,46 @@
+<script>
+export default {
+  name: 'ControleEstoque',
+  data() {
+    return {
+      estoque: [], // Começa vazio, será carregado do localStorage
+      novoItem: { nome: '', quantidade: 0, categoria: '' },
+    };
+  },
+  mounted() {
+    // Carregar estoque salvo no localStorage ao iniciar
+    const salvo = localStorage.getItem('estoque');
+    if (salvo) {
+      try {
+        this.estoque = JSON.parse(salvo);
+      } catch (e) {
+        this.estoque = [];
+      }
+    }
+  },
+  methods: {
+    adicionarItem() {
+      if (!this.novoItem.nome || this.novoItem.quantidade < 0 || !this.novoItem.categoria) return;
+      this.estoque.push({ ...this.novoItem, editando: false });
+      localStorage.setItem('estoque', JSON.stringify(this.estoque));
+      this.novoItem = { nome: '', quantidade: 0, categoria: '' };
+    },
+    removerItem(index) {
+      this.estoque.splice(index, 1);
+      localStorage.setItem('estoque', JSON.stringify(this.estoque));
+    },
+    editarItem(index) {
+      this.estoque[index].editando = true;
+    },
+    salvarEdicao(index) {
+      this.estoque[index].editando = false;
+      localStorage.setItem('estoque', JSON.stringify(this.estoque));
+    },
+  },
+};
+</script>
+
+
 <template>
   <div class="estoque-container">
     <button class="btn-voltar" @click="$router.push('/admin')" title="Voltar para o painel admin">
@@ -61,36 +104,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ControleEstoque',
-  data() {
-    return {
-      estoque: [
-        { nome: 'Pizza Margherita', quantidade: 10, categoria: 'Pizza', editando: false },
-        { nome: 'Coca-Cola', quantidade: 20, categoria: 'Bebida', editando: false },
-      ],
-      novoItem: { nome: '', quantidade: 0, categoria: '' },
-    };
-  },
-  methods: {
-    adicionarItem() {
-      if (!this.novoItem.nome || this.novoItem.quantidade < 0 || !this.novoItem.categoria) return;
-      this.estoque.push({ ...this.novoItem, editando: false });
-      this.novoItem = { nome: '', quantidade: 0, categoria: '' };
-    },
-    removerItem(index) {
-      this.estoque.splice(index, 1);
-    },
-    editarItem(index) {
-      this.estoque[index].editando = true;
-    },
-    salvarEdicao(index) {
-      this.estoque[index].editando = false;
-    },
-  },
-};
-</script>
 
 <style scoped>
 .estoque-container {

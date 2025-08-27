@@ -176,16 +176,27 @@ function submitForm() {
 }
 
 function salvarPedidoConfirmado(pedido) {
+  // Monta o pedido no formato esperado pelo painel admin
+  const novoPedido = {
+    id: pedido.id,
+    data: pedido.data,
+    status: pedido.status || 'Confirmado',
+    valor: typeof pedido.valores === 'object' && pedido.valores.total ? parseFloat(pedido.valores.total.replace('R$','').replace(',','.')) : 0,
+    itens: [
+      {
+        nome: pedido.pizza?.nome || pedido.pizzaNome || 'Pizza',
+        detalhes: `${pedido.pizza?.sabores?.map(s=>s.fracao+ ' ' + s.nome).join(', ') || ''}${pedido.pizza?.borda ? ' | Borda: ' + pedido.pizza.borda : ''}${pedido.bordaSelecionada ? ' | Borda: ' + pedido.bordaSelecionada : ''}`,
+        qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
+      },
+      // Adiciona bebida se existir
+      ...(pedido.bebida ? [{ nome: pedido.bebida.nome, detalhes: pedido.bebida.detalhes || '', qtd: pedido.bebida.quantidade || 1 }] : [])
+    ]
+  };
   // Recuperar pedidos existentes
   const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]')
-
-  // Adicionar novo pedido
-  pedidosExistentes.push(pedido)
-
-  // Salvar de volta
+  pedidosExistentes.push(novoPedido)
   localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes))
-
-  console.log('Pedido confirmado e salvo:', pedido)
+  console.log('Pedido confirmado e salvo:', novoPedido)
 }
 
 // Função para voltar à verificação (caso o usuário queira ajustar algo)

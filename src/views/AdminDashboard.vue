@@ -1,12 +1,12 @@
 <script>
-import PedidosProdutos from './PedidosProdutos.vue';
-const ProdutosAdmin = { template: '<div>Gerenciamento de Produtos (implementar)</div>' };
-const UsuariosAdmin = { template: '<div>Gerenciamento de Usuários (implementar)</div>' };
-const RelatoriosAdmin = { template: '<div>Relatórios (implementar)</div>' };
+import AdminPedidos from '@/components/AdminPedidos.vue';
+import ProdutosAdmin from '@/components/ProdutosAdmin.vue';
+import UsuariosAdmin from '@/components/UsuariosAdmin.vue';
+import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue';
 
 export default {
   name: 'AdminDashboard',
-  components: { PedidosProdutos, ProdutosAdmin, UsuariosAdmin, RelatoriosAdmin },
+  components: { AdminPedidos, ProdutosAdmin, UsuariosAdmin, RelatoriosAdmin },
   data() {
     return {
       section: 'pedidos',
@@ -16,6 +16,19 @@ export default {
     goTo(sec) {
       this.section = sec;
     },
+    atualizarPedidos() {
+      // Força atualização do componente PedidosProdutos
+      if (this.section === 'pedidos' && this.$refs.pedidosComp && this.$refs.pedidosComp.carregarPedidos) {
+        this.$refs.pedidosComp.carregarPedidos();
+      }
+    }
+  },
+  mounted() {
+    // Atualização automática a cada 5 segundos
+    this._intervalPedidos = setInterval(this.atualizarPedidos, 5000);
+  },
+  beforeUnmount() {
+    clearInterval(this._intervalPedidos);
   },
 };
 </script>
@@ -37,7 +50,7 @@ export default {
         <p>Gerencie o sistema da pizzaria de forma centralizada.</p>
       </header>
       <section class="content-area">
-        <PedidosProdutos v-if="section === 'pedidos'" />
+        <AdminPedidos v-if="section === 'pedidos'" />
         <ProdutosAdmin v-if="section === 'produtos'" />
         <UsuariosAdmin v-if="section === 'usuarios'" />
         <RelatoriosAdmin v-if="section === 'relatorios'" />

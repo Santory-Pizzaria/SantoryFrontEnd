@@ -7,7 +7,7 @@ const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
 
-const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/CadastroPizzaria'];
+const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/reserva', '/CadastroPizzaria', '/admin'];
 const mostrarCarrinho = computed(() => {
   return !rotasSemCarrinho.includes(router.currentRoute.value.path.toLowerCase());
 });

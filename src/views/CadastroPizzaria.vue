@@ -12,7 +12,7 @@ const router = useRouter()
 
 async function cadastrarPizzaria() {
   mensagem.value = ''
-  
+
   try {
     // Criar objeto do usuário com os dados do cadastro
     const novoUsuario = {
@@ -28,7 +28,7 @@ async function cadastrarPizzaria() {
 
     // Salvar usuário no localStorage (simulando banco de dados)
     const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]')
-    
+
     // Verificar se email já existe
     const emailJaExiste = usuariosExistentes.find(user => user.email === email.value)
     if (emailJaExiste) {
@@ -38,10 +38,12 @@ async function cadastrarPizzaria() {
 
     usuariosExistentes.push(novoUsuario)
     localStorage.setItem('usuarios', JSON.stringify(usuariosExistentes))
+    // Salvar também o usuário logado
+    localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario))
 
     mensagem.value = 'Cadastro realizado com sucesso!'
     nome.value = email.value = senha.value = telefone.value = endereco.value = ''
-    
+
     setTimeout(() => {
       router.push('/login')
     }, 1200)
@@ -52,7 +54,7 @@ async function cadastrarPizzaria() {
 function irParaLogin() {
   router.push('/login')
 }
-</script> 
+</script>
 
 <template>
   <div class="cadastro-pizzaria-container">

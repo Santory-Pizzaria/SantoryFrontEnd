@@ -20,6 +20,9 @@ import Carrinho from '../views/CarrinhoView.vue'
 import CarrinhoItem from '@/components/CarrinhoItem.vue'
 import CarrinhoItemDemo from '@/components/CarrinhoItem.vue';
 import ControleEstoque from '../components/ControleEstoque.vue';
+import ProdutosAdmin from '@/components/ProdutosAdmin.vue';
+import UsuariosAdmin from '@/components/UsuariosAdmin.vue';
+import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +31,26 @@ const router = createRouter({
       path: '/perfil',
       name: 'perfil',
       component: PerfilUsuario,
+    },
+    {
+      path: '/ProdutosAdmin',
+      name: 'ProdutosAdmin',
+      component: ProdutosAdmin,
+    },
+    {
+      path: '/UsuariosAdmin',
+      name: 'UsuariosAdmin',
+      component: UsuariosAdmin,
+    },
+    {
+      path: '/RelatoriosAdmin',
+      name: 'RelatoriosAdmin',
+      component: RelatoriosAdmin,
+    },
+    {
+      path: '/pedidosAdmin',
+      name: 'pedidosAdmin',
+      component: PedidosProdutos,
     },
     {
       path: '/ItemCarrinho',

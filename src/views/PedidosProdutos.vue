@@ -4,29 +4,16 @@ import FooteRor from '@/components/FooteRor.vue'
 
 const pedidos = ref([])
 
+function carregarPedidos() {
+  pedidos.value = JSON.parse(localStorage.getItem('pedidos') || '[]')
+}
+
 onMounted(() => {
-  pedidos.value = [
-    {
-      id: 1,
-      data: '20/06/2025',
-      status: 'Entregue',
-      valor: 85.00,
-      itens: [
-        { nome: 'Pizza Família', detalhes: '4 Sabores, Borda Cheddar', qtd: 1 },
-        { nome: 'Coca-Cola 2L', detalhes: '', qtd: 1 }
-      ]
-    },
-    {
-      id: 2,
-      data: '25/06/2025',
-      status: 'Em andamento',
-      valor: 49.90,
-      itens: [
-        { nome: 'Combo Família', detalhes: '2 Pizzas Grandes + 1 Refri 2L', qtd: 1 }
-      ]
-    }
-  ]
+  carregarPedidos()
 })
+
+// Permite atualização automática pelo AdminDashboard
+defineExpose({ carregarPedidos })
 </script>
 
 <template>
@@ -62,7 +49,10 @@ onMounted(() => {
             </ul>
           </div>
           <div class="pedido-valor novo-valor">
-            <b>Total:</b> R$ {{ pedido.valor.toFixed(2) }}
+            <b>Total:</b>
+            <span v-if="typeof pedido.valor === 'number'">R$ {{ pedido.valor.toFixed(2) }}</span>
+            <span v-else-if="pedido.valor">R$ {{ Number(pedido.valor).toFixed(2) }}</span>
+            <span v-else>R$ 0,00</span>
           </div>
         </div>
       </div>
