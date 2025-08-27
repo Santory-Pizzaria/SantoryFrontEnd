@@ -23,7 +23,7 @@ function getTodosMesesPedidos() {
   // Retorna meses únicos no formato MM/YYYY
   const datas = getTodasDatasPedidos()
   const meses = datas.map(data => {
-    const [dia, mes, ano] = data.split('/')
+    const [, mes, ano] = data.split('/')
     return `${mes}/${ano}`
   })
   return [...new Set(meses)].sort((a, b) => {

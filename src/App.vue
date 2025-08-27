@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -23,9 +23,6 @@ function goToLogin() {
   router.push('/Login');
 }
 
-function abrirCarrinho() {
-  router.push('/carrinho');
-}
 
 // Exemplo: recarrega quantidade do carrinho do localStorage
 function atualizarQtdCarrinho() {

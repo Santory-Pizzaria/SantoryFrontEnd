@@ -13,7 +13,7 @@ export default {
     if (salvo) {
       try {
         this.estoque = JSON.parse(salvo);
-      } catch (e) {
+      } catch {
         this.estoque = [];
       }
     }
