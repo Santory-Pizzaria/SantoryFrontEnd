@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -7,7 +7,7 @@ const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
 
-const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/CadastroPizzaria'];
+const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/reserva', '/CadastroPizzaria', '/admin'];
 const mostrarCarrinho = computed(() => {
   return !rotasSemCarrinho.includes(router.currentRoute.value.path.toLowerCase());
 });
@@ -23,9 +23,6 @@ function goToLogin() {
   router.push('/Login');
 }
 
-function abrirCarrinho() {
-  router.push('/carrinho');
-}
 
 // Exemplo: recarrega quantidade do carrinho do localStorage
 function atualizarQtdCarrinho() {
