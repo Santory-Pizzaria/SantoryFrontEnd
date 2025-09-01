@@ -60,7 +60,7 @@ function irParaCadastro() {
   <div class="login-container">
     <div class="login-box">
       <img src="/src/assets/imagens/logo.png" alt="Logo da Pizzaria" class="logo" />
-      <h2>Login do Cliente</h2>
+      <h2>Faça Login</h2>
       <form @submit.prevent="login">
         <div class="form-group">
           <label for="email">E-mail</label>

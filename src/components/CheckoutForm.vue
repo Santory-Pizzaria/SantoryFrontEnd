@@ -1,3 +1,5 @@
+// Campo para inserir a PUBLIC_KEY do Mercado Pago depois
+// Exemplo: const MERCADO_PAGO_PUBLIC_KEY = 'SUA_PUBLIC_KEY_AQUI';
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
