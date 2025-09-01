@@ -26,6 +26,25 @@ export default {
       this.novoFeedback.estrelas = 0;
       this.aviso = '';
     }
+  },
+  mounted() {
+    // Carregar feedbacks do localStorage ao iniciar
+    const salvos = localStorage.getItem('feedbacks');
+    if (salvos) {
+      try {
+        this.feedbacks = JSON.parse(salvos);
+      } catch (e) {
+        this.feedbacks = [];
+      }
+    }
+  },
+  watch: {
+    feedbacks: {
+      handler(novo) {
+        localStorage.setItem('feedbacks', JSON.stringify(novo));
+      },
+      deep: true
+    }
   }
 }
 </script>
