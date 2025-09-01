@@ -1,6 +1,5 @@
 <script>
 import MesaCard from './MesaCard.vue';
-import { useRouter } from 'vue-router';
 
 export default {
   name: 'ReservasLocal',

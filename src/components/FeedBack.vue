@@ -33,7 +33,7 @@ export default {
     if (salvos) {
       try {
         this.feedbacks = JSON.parse(salvos);
-      } catch (e) {
+      } catch {
         this.feedbacks = [];
       }
     }
