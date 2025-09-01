@@ -1,24 +1,32 @@
 <template>
-  <div class="carrinho-layout">
-    <div class="carrinho-lista">
-      <h1>Carrinho de Compras</h1>
-      <div v-if="carrinho.length === 0" class="carrinho-vazio">
-        Seu carrinho está vazio.
-      </div>
-      <ul v-else class="lista-carrinho">
-        <CarrinhoItem
-          v-for="(item, index) in carrinho"
-          :key="item.id"
-          :item="item"
-          @remover="removerItem(index)"
-          @alterar-quantidade="valor => alterarQuantidade(index, valor)"
-        />
-      </ul>
-      <div v-if="carrinho.length" class="total-carrinho">
-        <span>Total:</span>
-        <strong>R$ {{ totalCarrinho.toFixed(2) }}</strong>
-      </div>
-      <button v-if="carrinho.length" class="finalizar" @click="finalizarCompra">Finalizar Compra</button>
+  <div class="carrinho-bg-novo">
+    <div class="carrinho-card-novo">
+      <header class="carrinho-header-novo">
+        <img src="@/assets/imagens/seta-preta.png" alt="Voltar" class="seta-voltar-novo" @click="$router.push('/menu')" />
+        <h1 class="carrinho-title-novo">Seu Carrinho</h1>
+      </header>
+      <main class="carrinho-main-novo">
+        <ul v-if="carrinho.length" class="lista-carrinho-novo">
+          <CarrinhoItem
+            v-for="(item, index) in carrinho"
+            :key="item.id"
+            :item="item"
+            @remover="removerItem(index)"
+            @alterar-quantidade="valor => alterarQuantidade(index, valor)"
+          />
+        </ul>
+        <div v-else class="carrinho-vazio-novo">
+          <img src="@/assets/imagens/carrinho.png" alt="Carrinho vazio" class="carrinho-vazio-img-novo" />
+          <p>Seu carrinho está vazio.</p>
+        </div>
+        <div v-if="carrinho.length" class="carrinho-footer-novo">
+          <div class="total-carrinho-novo">
+            <span>Total:</span>
+            <strong>R$ {{ totalCarrinho.toFixed(2) }}</strong>
+          </div>
+          <button class="finalizar-novo" @click="finalizarCompra">Finalizar Compra</button>
+        </div>
+      </main>
     </div>
   </div>
 </template>
@@ -80,158 +88,122 @@ export default {
 </script>
 
 <style scoped>
-.carrinho-layout {
+.carrinho-bg-novo {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+}
+.carrinho-card-novo {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #64748b22;
+  max-width: 480px;
+  width: 100%;
+  padding: 0 0 24px 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  min-height: 520px;
 }
-@media (min-width: 900px) {
-  .carrinho-layout {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 48px;
-  }
+.carrinho-header-novo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 32px 12px 32px;
+  border-bottom: 2px solid #e2e8f0;
+  background: #f1f5f9;
+  border-radius: 18px 18px 0 0;
 }
-.carrinho-lista {
-  flex: 2;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 32px 24px;
+.seta-voltar-novo {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 6px #64748b44);
+  transition: filter 0.2s, transform 0.2s;
 }
-.carrinho-vazio {
-  text-align: center;
-  color: #888;
-  font-size: 1.2em;
+.seta-voltar-novo:hover {
+  filter: brightness(1.2) drop-shadow(0 4px 12px #64748b66);
+  transform: scale(1.08);
 }
-.lista-carrinho {
+.carrinho-title-novo {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #334155;
+  margin: 0;
+  letter-spacing: 1px;
+}
+.carrinho-main-novo {
+  flex: 1;
+  padding: 24px 32px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.lista-carrinho-novo {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-.item-carrinho {
-  display: flex;
-  align-items: flex-start;
-  border-bottom: 1px solid #eee;
-  padding: 20px 0 16px 0;
-  gap: 18px;
-}
-.imagem-produto {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-.info-produto {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 18px;
 }
-.linha-produto {
+.carrinho-vazio-novo {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 48px 0 32px 0;
 }
-.detalhes-produto {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.preco-unitario {
-  color: #888;
-  font-size: 0.98em;
-}
-.quantidade-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f5f5f5;
-  border-radius: 6px;
-  padding: 2px 10px;
-}
-.quantidade-box button {
-  background: #eee;
-  border: none;
-  border-radius: 4px;
-  width: 28px;
-  height: 28px;
-  font-size: 1.2em;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.quantidade-box button:disabled {
+.carrinho-vazio-img-novo {
+  width: 80px;
   opacity: 0.5;
-  cursor: not-allowed;
-}
-.subtotal {
-  font-weight: 500;
-  color: #222;
-}
-.remover {
-  background: transparent;
-  color: #ff4d4f;
-  border: none;
-  font-size: 1.3em;
-  cursor: pointer;
-  padding: 0 8px;
-  transition: color 0.2s;
-}
-.remover:hover {
-  color: #b71c1c;
-}
-.carrinho-resumo {
-  flex: 1;
-  background: #fafafa;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 28px 22px;
-  min-width: 260px;
-  max-width: 340px;
-  position: sticky;
-  top: 32px;
-  height: fit-content;
-}
-.carrinho-resumo h3 {
-  margin-top: 0;
-  margin-bottom: 18px;
-  font-size: 1.2em;
-  color: #222;
-}
-.carrinho-resumo ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 18px 0;
-}
-.carrinho-resumo li {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 8px;
-  color: #444;
-  font-size: 1em;
 }
-.total-carrinho {
+.carrinho-footer-novo {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+}
+.total-carrinho-novo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 1.2em;
-  margin: 18px 0 20px 0;
   color: #222;
+  width: 100%;
+  max-width: 320px;
 }
-.finalizar {
+.finalizar-novo {
   background: #27ae60;
   color: #fff;
   border: none;
-  padding: 14px 0;
-  border-radius: 6px;
-  font-size: 1.1em;
+  padding: 16px 0;
+  border-radius: 8px;
+  font-size: 1.15em;
   cursor: pointer;
   width: 100%;
+  max-width: 320px;
+  font-weight: 700;
   transition: background 0.2s;
+  box-shadow: 0 2px 8px #27ae6022;
 }
-.finalizar:hover {
+.finalizar-novo:hover {
   background: #219150;
+}
+@media (max-width: 600px) {
+  .carrinho-card-novo {
+    max-width: 98vw;
+    min-height: 0;
+    padding: 0 0 12px 0;
+  }
+  .carrinho-header-novo, .carrinho-main-novo {
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
 }
 </style>
