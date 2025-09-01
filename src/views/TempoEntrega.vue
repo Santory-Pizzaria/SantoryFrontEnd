@@ -28,7 +28,8 @@ export default {
       ],
       taxaEntrega: null,
       tempoEntregaMin: null,
-      loadingTaxa: false
+      loadingTaxa: false,
+      showAjuda: false,
     }
   },
   watch: {
@@ -108,235 +109,246 @@ export default {
       this.$router.push({ name: 'PedidosProdutos' })
     },
     abrirAjuda() {
-      alert('Entre em contato pelo WhatsApp: (47) 998804-2804')
+      this.showAjuda = true;
+      setTimeout(() => {
+        this.showAjuda = false;
+      }, 4000);
     }
   }
 }
 </script>
 
-
 <template>
-  <div class="tempo-entrega-container">
-    <img
-      src="@/assets/imagens/seta-preta.png"
-      alt="Voltar ao Menu"
-      class="seta-voltar-tempo"
-      @click="voltarMenu"
-    />
-    <div class="tempo-header">
-      <img src="@/assets/imagens/fundo.png" alt="Fundo" class="header-bg" />
-      <div class="header-content">
-        <img src="@/assets/imagens/logo.png" alt="Logo" class="logo" />
-        <h1>Tempo de Entrega</h1>
+  <div class="tempo-entrega-novo">
+    <header class="tempo-header-novo">
+      <img
+        src="@/assets/imagens/seta-preta.png"
+        alt="Voltar ao Menu"
+        class="seta-voltar-tempo-novo"
+        @click="voltarMenu"
+      />
+      <div class="header-center-novo">
+        <img src="@/assets/imagens/logo.png" alt="Logo" class="logo-novo" />
+        <h1 class="titulo-novo">Tempo de Entrega</h1>
       </div>
-    </div>
-    <div class="tempo-box">
-      <div class="tempo-info">
-        <span class="tempo-estimado">Tempo estimado:</span>
-        <span class="tempo">
-          <template v-if="tempoEntregaMin !== null">
-            {{ tempoEntregaMin + 45 }} min
-          </template>
-          <template v-else>
-            {{ tempoMin }}-{{ tempoMax }} min
-          </template>
-        </span>
-      </div>
-      <div class="taxa-entrega">
-        <label for="local">Selecione seu bairro:</label>
-        <select id="local" v-model="bairroSelecionado">
-          <option disabled value="">Selecione</option>
-          <option v-for="bairro in bairros" :key="bairro.nome" :value="bairro.nome">
-            {{ bairro.nome }}
-          </option>
-        </select>
-        <span v-if="taxaEntrega !== null" class="taxa">
-          Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
-        </span>
-        <span v-if="tempoEntregaMin !== null" class="tempo-real">
-
-        </span>
-        <span v-if="loadingTaxa" class="loading-taxa">Calculando...</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress" :style="{ width: progresso + '%' }"></div>
-      </div>
-      <div class="status-list">
-        <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item" :class="{ ativo: idx <= etapaAtual }">
-          <img :src="etapa.icone" :alt="etapa.nome" class="status-icone" />
-          <span>{{ etapa.nome }}</span>
+    </header>
+    <main class="tempo-main-novo">
+      <section class="tempo-box-novo">
+        <div class="tempo-info-novo">
+          <span class="tempo-estimado-novo">Tempo estimado:</span>
+          <span class="tempo-novo">
+            <template v-if="tempoEntregaMin !== null">
+              {{ tempoEntregaMin + 45 }} min
+            </template>
+            <template v-else>
+              {{ tempoMin }}-{{ tempoMax }} min
+            </template>
+          </span>
         </div>
-      </div>
-      <div class="opcoes">
-        <button class="voltar" @click="voltarMenu">Voltar ao Menu</button>
-        <button class="detalhes" @click="verDetalhes">Ver Detalhes do Pedido</button>
-        <button class="ajuda" @click="abrirAjuda">Precisa de Ajuda?</button>
-      </div>
-    </div>
+        <div class="taxa-entrega-novo">
+          <label for="local">Selecione seu bairro:</label>
+          <select id="local" v-model="bairroSelecionado">
+            <option disabled value="">Selecione</option>
+            <option v-for="bairro in bairros" :key="bairro.nome" :value="bairro.nome">
+              {{ bairro.nome }}
+            </option>
+          </select>
+          <span v-if="taxaEntrega !== null" class="taxa-novo">
+            Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
+          </span>
+          <span v-if="loadingTaxa" class="loading-taxa-novo">Calculando...</span>
+        </div>
+        <div class="progress-bar-novo">
+          <div class="progress-novo" :style="{ width: progresso + '%' }"></div>
+        </div>
+        <div class="status-list-novo">
+          <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item-novo" :class="{ ativo: idx <= etapaAtual }">
+            <img :src="etapa.icone" :alt="etapa.nome" class="status-icone-novo" />
+            <span>{{ etapa.nome }}</span>
+          </div>
+        </div>
+        <div class="opcoes-novo">
+          <button class="voltar-novo" @click="voltarMenu">Voltar ao Menu</button>
+          <button class="detalhes-novo" @click="verDetalhes">Ver Detalhes do Pedido</button>
+          <button class="ajuda-novo" @click="abrirAjuda">Precisa de Ajuda?</button>
+        </div>
+        <transition name="ajuda-fade">
+          <div v-if="showAjuda" class="mensagem-ajuda-novo mensagem-ajuda-topo">
+            <img src="@/assets/imagens/whatsapp.png" alt="WhatsApp" class="ajuda-icone-novo" />
+            <span>Entre em contato pelo <b>WhatsApp</b>: <a href="https://wa.me/55479988042804" target="_blank">(47) 99880-42804</a></span>
+          </div>
+        </transition>
+      </section>
+    </main>
   </div>
 </template>
 
 <style scoped>
-.tempo-entrega-container {
+.tempo-entrega-novo {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
+  display: flex;
+  flex-direction: column;
+}
+.tempo-header-novo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 32px 12px 32px;
+  background: #fff;
+  border-bottom: 2px solid #64748b;
+  box-shadow: 0 2px 12px #64748b22;
+  gap: 1.5rem;
+}
+.seta-voltar-tempo-novo {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 6px #64748b44);
+  transition: filter 0.2s, transform 0.2s;
+}
+.seta-voltar-tempo-novo:hover {
+  filter: brightness(1.2) drop-shadow(0 4px 12px #64748b66);
+  transform: scale(1.08);
+}
+.header-center-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  background: var(--color-background);
-  color: var(--color-text);
+  flex: 1;
+  gap: 0.2rem;
 }
-.seta-voltar-tempo {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  z-index: 10;
-}
-.tempo-header {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-.header-bg {
-  width: 100vw;
-  height: 120px;
-  object-fit: cover;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  opacity: 0.15;
-}
-.header-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.logo {
+.logo-novo {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--color-background-soft);
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  box-shadow: 0 2px 8px #64748b22;
+  margin: 0 auto 8px auto;
+  display: block;
+  background: #fff;
 }
-.tempo-box {
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
+.titulo-novo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.tempo-main-novo {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  padding: 2rem 0;
+}
+.tempo-box-novo {
+  background: #fff;
+  border: 1.5px solid #64748b;
   border-radius: 20px;
   padding: 2.5rem 3.5rem;
-  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
+  box-shadow: 0 4px 16px #64748b22;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 340px;
+  max-width: 420px;
 }
-.tempo-info {
+.tempo-info-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
 }
-.tempo-estimado {
+.tempo-estimado-novo {
   font-size: 1.1rem;
-  color: var(--color-text);
-  opacity: 0.7;
+  color: #64748b;
+  opacity: 0.8;
 }
-.tempo {
+.tempo-novo {
   font-size: 2.2rem;
   font-weight: bold;
-  color: var(--color-heading);
+  color: #334155;
 }
-.taxa-entrega {
+.taxa-entrega-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
   gap: 0.3rem;
 }
-.taxa-entrega label {
+.taxa-entrega-novo label {
   font-size: 1rem;
-  color: var(--color-text);
-  opacity: 0.8;
+  color: #64748b;
+  opacity: 0.9;
 }
-.taxa-entrega select {
+.taxa-entrega-novo select {
   padding: 0.3rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background-mute);
-  color: var(--color-text);
+  border: 1px solid #64748b;
+  background: #f1f5f9;
+  color: #334155;
   font-size: 1rem;
 }
-.taxa {
+.taxa-novo {
   margin-top: 0.3rem;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #334155;
   font-weight: bold;
 }
-.tempo-real {
+.loading-taxa-novo {
   margin-top: 0.3rem;
   font-size: 1rem;
-  color: #27ae60;
+  color: #f59e42;
 }
-.loading-taxa {
-  margin-top: 0.3rem;
-  font-size: 1rem;
-  color: #e67e22;
-}
-.progress-bar {
+.progress-bar-novo {
   width: 240px;
   height: 18px;
-  background: var(--color-background-mute);
+  background: #e2e8f0;
   border-radius: 9px;
   overflow: hidden;
   margin-bottom: 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid #64748b;
 }
-.progress {
+.progress-novo {
   height: 100%;
-  background: linear-gradient(90deg, #2c3e50 60%, #f2c94c 100%);
+  background: linear-gradient(90deg, #334155 60%, #fbbf24 100%);
   transition: width 0.5s;
 }
-.status-list {
+.status-list-novo {
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin: 1.5rem 0 1rem 0;
   gap: 0.5rem;
 }
-.status-item {
+.status-item-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 0.95rem;
-  color: var(--color-text);
+  color: #64748b;
   opacity: 0.5;
   transition: opacity 0.3s, color 0.3s;
 }
-.status-item.ativo {
-  color: #2c3e50;
+.status-item-novo.ativo {
+  color: #334155;
   opacity: 1;
   font-weight: bold;
 }
-.status-icone {
+.status-icone-novo {
   width: 32px;
   height: 32px;
   margin-bottom: 0.3rem;
 }
-.opcoes {
+.opcoes-novo {
   display: flex;
   gap: 1rem;
   margin-top: 1.5rem;
 }
-.voltar, .detalhes, .ajuda {
-  background: var(--color-heading);
-  color: var(--color-background);
+.voltar-novo, .detalhes-novo, .ajuda-novo {
+  background: #334155;
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.2rem;
@@ -344,26 +356,85 @@ export default {
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
-.detalhes {
-  background: #f2c94c;
-  color: #2c3e50;
+.detalhes-novo {
+  background: #fbbf24;
+  color: #334155;
 }
-.ajuda {
-  background: #e74c3c;
+.ajuda-novo {
+  background: #f87171;
   color: #fff;
 }
-.voltar:hover, .detalhes:hover, .ajuda:hover {
+.voltar-novo:hover, .detalhes-novo:hover, .ajuda-novo:hover {
   filter: brightness(0.95);
   opacity: 0.85;
 }
+.mensagem-ajuda-novo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fbbf24;
+  color: #334155;
+  border: 2px solid #f59e42;
+  border-radius: 12px;
+  padding: 16px 22px;
+  margin-top: 1.5rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px #fbbf2433;
+  animation: ajudaPopIn 0.4s;
+}
+.mensagem-ajuda-topo {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 90vw;
+  justify-content: center;
+  box-shadow: 0 6px 24px #fbbf2433, 0 1.5px 8px #64748b22;
+}
 @media (max-width: 600px) {
-  .tempo-box {
+  .mensagem-ajuda-topo {
+    top: 12px;
+    min-width: 0;
+    max-width: 98vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
+  }
+}
+.ajuda-icone-novo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.ajuda-fade-enter-active, .ajuda-fade-leave-active {
+  transition: opacity 0.4s;
+}
+.ajuda-fade-enter-from, .ajuda-fade-leave-to {
+  opacity: 0;
+}
+@keyframes ajudaPopIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 600px) {
+  .tempo-box-novo {
     min-width: 90vw;
     padding: 1.2rem 0.5rem;
   }
-  .progress-bar {
+  .progress-bar-novo {
     width: 90vw;
     min-width: 120px;
+  }
+  .tempo-header-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 18px 8px 8px 8px;
+  }
+  .header-center-novo {
+    align-items: flex-start;
   }
 }
 </style>
