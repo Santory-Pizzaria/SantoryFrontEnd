@@ -95,7 +95,7 @@ export default {
           this.tempoEntregaMin = null
           alert('Não foi possível calcular a taxa de entrega. Dados insuficientes.')
         }
-      } catch (e) {
+      } catch {
         this.taxaEntrega = null
         this.tempoEntregaMin = null
         alert('Não foi possível calcular a taxa de entrega.')
@@ -397,26 +397,13 @@ export default {
 @media (max-width: 600px) {
   .mensagem-ajuda-topo {
     top: 12px;
+    left: 50%;
     min-width: 0;
     max-width: 98vw;
     padding: 10px 4vw;
     font-size: 0.98rem;
+    transform: translateX(-50%);
   }
-}
-.ajuda-icone-novo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-.ajuda-fade-enter-active, .ajuda-fade-leave-active {
-  transition: opacity 0.4s;
-}
-.ajuda-fade-enter-from, .ajuda-fade-leave-to {
-  opacity: 0;
-}
-@keyframes ajudaPopIn {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @media (max-width: 600px) {
   .tempo-box-novo {
@@ -436,5 +423,20 @@ export default {
   .header-center-novo {
     align-items: flex-start;
   }
+}
+.ajuda-icone-novo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.ajuda-fade-enter-active, .ajuda-fade-leave-active {
+  transition: opacity 0.4s;
+}
+.ajuda-fade-enter-from, .ajuda-fade-leave-to {
+  opacity: 0;
+}
+@keyframes ajudaPopIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 </style>
