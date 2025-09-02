@@ -193,29 +193,33 @@ export default {
 .tempo-header-novo {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 24px 32px 12px 32px;
   background: #fff;
   border-bottom: 2px solid #64748b;
   box-shadow: 0 2px 12px #64748b22;
   gap: 1.5rem;
+  position: relative;
 }
 .seta-voltar-tempo-novo {
+  position: absolute;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 32px;
   height: 32px;
   cursor: pointer;
   filter: drop-shadow(0 2px 6px #64748b44);
-  transition: filter 0.2s, transform 0.2s;
+  transition: filter 0.2s;
 }
 .seta-voltar-tempo-novo:hover {
   filter: brightness(1.2) drop-shadow(0 4px 12px #64748b66);
-  transform: scale(1.08);
 }
 .header-center-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  flex: none;
   gap: 0.2rem;
 }
 .logo-novo {
@@ -393,6 +397,79 @@ export default {
   max-width: 90vw;
   justify-content: center;
   box-shadow: 0 6px 24px #fbbf2433, 0 1.5px 8px #64748b22;
+}
+@media (max-width: 900px) {
+  .tempo-box-novo {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 1.5rem 2vw;
+  }
+  .tempo-header-novo {
+    padding: 18px 2vw 8px 2vw;
+  }
+}
+@media (max-width: 600px) {
+  .tempo-header-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 4vw 8px 4vw;
+  }
+  .seta-voltar-tempo-novo {
+    position: static;
+    transform: none;
+    margin-bottom: 6px;
+    left: unset;
+    top: unset;
+  }
+  .header-center-novo {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  .logo-novo {
+    margin: 0 auto 8px auto;
+    display: block;
+  }
+  .titulo-novo {
+    text-align: center;
+    width: 100%;
+  }
+  .tempo-main-novo {
+    padding: 1rem 0;
+  }
+  .tempo-box-novo {
+    min-width: 0;
+    max-width: 99vw;
+    padding: 1rem 2vw;
+  }
+  .progress-bar-novo {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .status-icone-novo {
+    width: 24px;
+    height: 24px;
+  }
+  .opcoes-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .voltar-novo, .detalhes-novo, .ajuda-novo {
+    width: 100%;
+    font-size: 0.98rem;
+    padding: 0.5rem 0;
+  }
+  .mensagem-ajuda-topo {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
+    top: 12px;
+  }
 }
 @media (max-width: 600px) {
   .mensagem-ajuda-topo {

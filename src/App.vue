@@ -72,7 +72,34 @@ window.addEventListener('storage', atualizarQtdCarrinho)
 
     </header>
     <router-view />
-
+    <template v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/cadastro' && $route.path !== '/admin' && $route.path !== '/CadastroPizzaria' && $route.path !== '/Login'">
+      <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleMiniCart">
+        <img src="/src/assets/imagens/carrinho.png" alt="Carrinho" class="carrinho-icon" />
+        <span v-if="qtdCarrinho > 0" class="carrinho-badge">{{ qtdCarrinho }}</span>
+      </div>
+      <transition name="mini-cart-fade">
+        <div v-if="showMiniCart && mostrarCarrinho" class="mini-cart-modal" @click.self="toggleMiniCart">
+          <div class="mini-cart-content">
+            <h3>Seu Carrinho</h3>
+            <ul v-if="carrinho.length">
+              <li v-for="(item, idx) in carrinho" :key="idx" class="mini-cart-item">
+                <div class="mini-cart-item-info">
+                  <span class="mini-cart-item-nome">{{ item.nome }}</span>
+                  <span v-if="item.preco" class="mini-cart-item-preco">{{ item.preco }}</span>
+                </div>
+                <div class="mini-cart-item-actions">
+                  <button class="mini-cart-btn-action" @click.stop="removerItem(idx)">-</button>
+                  <span class="mini-cart-item-qtd">{{ item.qtd || 1 }}</span>
+                  <button class="mini-cart-btn-action" @click.stop="adicionarMais(idx)">+</button>
+                </div>
+              </li>
+            </ul>
+            <p v-else>Carrinho vazio.</p>
+            <button class="mini-cart-btn" @click="irParaCarrinho">Ver Carrinho Completo</button>
+          </div>
+        </div>
+      </transition>
+    </template>
 
     <div v-if="$route.path === '/'" class="background">
       <div class="overlay">
@@ -87,32 +114,6 @@ window.addEventListener('storage', atualizarQtdCarrinho)
         </div>
       </div>
     </div>
-    <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleMiniCart">
-      <img src="/src/assets/imagens/carrinho.png" alt="Carrinho" class="carrinho-icon" />
-      <span v-if="qtdCarrinho > 0" class="carrinho-badge">{{ qtdCarrinho }}</span>
-    </div>
-    <transition name="mini-cart-fade">
-      <div v-if="showMiniCart && mostrarCarrinho" class="mini-cart-modal" @click.self="toggleMiniCart">
-        <div class="mini-cart-content">
-          <h3>Seu Carrinho</h3>
-          <ul v-if="carrinho.length">
-            <li v-for="(item, idx) in carrinho" :key="idx" class="mini-cart-item">
-              <div class="mini-cart-item-info">
-                <span class="mini-cart-item-nome">{{ item.nome }}</span>
-                <span v-if="item.preco" class="mini-cart-item-preco">{{ item.preco }}</span>
-              </div>
-              <div class="mini-cart-item-actions">
-                <button class="mini-cart-btn-action" @click.stop="removerItem(idx)">-</button>
-                <span class="mini-cart-item-qtd">{{ item.qtd || 1 }}</span>
-                <button class="mini-cart-btn-action" @click.stop="adicionarMais(idx)">+</button>
-              </div>
-            </li>
-          </ul>
-          <p v-else>Carrinho vazio.</p>
-          <button class="mini-cart-btn" @click="irParaCarrinho">Ver Carrinho Completo</button>
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 
