@@ -256,4 +256,40 @@ canvas {
   max-width: 100%;
   max-height: 260px;
 }
+
+@media (max-width: 900px) {
+  .graficos-relatorio {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .grafico-box {
+    min-width: 0;
+    width: 100%;
+    max-width: 100vw;
+    padding: 1rem 0.5rem 1.2rem 0.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .admin-section {
+    padding: 1rem 0.2rem;
+  }
+  .graficos-relatorio {
+    gap: 0.7rem;
+  }
+  .grafico-box {
+    padding: 0.7rem 0.1rem 1rem 0.1rem;
+    font-size: 0.98rem;
+  }
+  .filtro-data {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .data-selecionada-info {
+    font-size: 0.95rem;
+  }
+  canvas {
+    max-height: 180px;
+  }
+}
 </style>

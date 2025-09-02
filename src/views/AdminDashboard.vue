@@ -123,4 +123,92 @@ export default {
   padding: 2rem;
   min-height: 400px;
 }
+
+@media (max-width: 900px) {
+  .admin-dashboard {
+    flex-direction: column;
+    padding: 12px 2vw;
+    gap: 18px;
+  }
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    max-width: 100vw;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    flex-direction: row;
+    gap: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2vw;
+  }
+  .sidebar ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-around;
+    margin: 0;
+  }
+  .sidebar li {
+    margin-bottom: 0;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+  }
+  .main-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100vw;
+    border-radius: 12px;
+    padding: 18px 2vw;
+  }
+}
+@media (max-width: 600px) {
+  .admin-dashboard {
+    flex-direction: column;
+    padding: 6px 1vw;
+    gap: 10px;
+  }
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    max-width: 100vw;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.98rem;
+    padding: 10px 2vw;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sidebar ul {
+    flex-direction: column;
+    gap: 0.2rem;
+    width: 100%;
+    align-items: flex-start;
+  }
+  .sidebar li {
+    width: 100%;
+    font-size: 0.98rem;
+    padding: 0.6rem 0.7rem;
+  }
+  .main-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100vw;
+    border-radius: 8px;
+    padding: 10px 2vw;
+    font-size: 0.98rem;
+  }
+  .admin-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 10px 2vw 8px 2vw;
+  }
+  .admin-header h1 {
+    font-size: 1.1rem;
+    text-align: center;
+    width: 100%;
+  }
+}
 </style>
