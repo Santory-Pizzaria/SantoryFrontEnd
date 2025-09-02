@@ -274,7 +274,8 @@ nav a:first-of-type {
   transition: box-shadow 0.2s, transform 0.2s;
   border: 2.5px solid #222;
 }
-.carrinho-float:hover {
+.carrinho-float:hover,
+.carrinho-float.open {
   box-shadow: 0 4px 16px #b33c1a44;
   transform: scale(1.08);
 }
@@ -296,7 +297,25 @@ nav a:first-of-type {
   text-align: center;
   box-shadow: 0 2px 8px #b33c1a44;
 }
-
+@media (max-width: 600px) {
+  .carrinho-float {
+    width: 48px;
+    height: 48px;
+    right: 12px;
+    bottom: 12px;
+  }
+  .carrinho-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .carrinho-badge {
+    top: 2px;
+    right: 2px;
+    font-size: 0.85rem;
+    min-width: 18px;
+    padding: 1px 5px;
+  }
+}
 .mini-cart-modal {
   position: fixed;
   right: 24px;
@@ -429,11 +448,18 @@ nav a:first-of-type {
   color: #333;
 }
 @media (max-width: 600px) {
+  .mini-cart-modal {
+    right: 0;
+    bottom: 0;
+    align-items: flex-end;
+    justify-content: center;
+  }
   .mini-cart-content {
     width: 98vw;
     min-width: 0;
     padding: 16px 4vw 16px 4vw;
     margin: 0 2vw 12vw 0;
+    border-radius: 18px 18px 0 0;
   }
   .mini-cart-item {
     font-size: 0.95rem;
