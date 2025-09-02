@@ -19,7 +19,7 @@ defineExpose({ carregarPedidos })
 <template>
   <div class="pedidos-timeline-container">
     <!-- Seta fixa no topo esquerdo -->
-    <button class="back-btn" @click="$router.push('/menu')" aria-label="Voltar ao menu">
+    <button class="back-btn" @click="$router.push('/tempo')" aria-label="Voltar ao menu">
       <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-icon" />
     </button>
     <header class="pedidos-header novo-header">

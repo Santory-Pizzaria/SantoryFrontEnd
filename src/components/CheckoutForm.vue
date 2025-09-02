@@ -6,6 +6,9 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+// Mercado Pago - Exemplo de uso da PUBLIC_KEY
+const MERCADO_PAGO_PUBLIC_KEY = 'TEST-a08af5e5-b543-4202-850d-c8ea7f5462cf';
+
 const cep = ref('')
 const erroCep = ref('')
 const endereco = ref({
@@ -30,6 +33,19 @@ onMounted(() => {
   } else {
     // Se não há dados do pedido, redirecionar para o menu
     router.push('/menu')
+  }
+
+  // Mercado Pago - Carregar SDK e inicializar
+  if (!window.MercadoPago) {
+    const script = document.createElement('script')
+    script.src = "https://sdk.mercadopago.com/js/v2"
+    script.async = true
+    script.onload = () => {
+      window.mercadoPagoInstance = new window.MercadoPago(MERCADO_PAGO_PUBLIC_KEY)
+      // Aqui você pode criar campos de cartão ou iniciar o checkout
+      // Exemplo: window.mercadoPagoInstance.checkout({...})
+    }
+    document.head.appendChild(script)
   }
 })
 
