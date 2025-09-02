@@ -553,7 +553,7 @@ body {
     position: relative;
   }
   .italia-logo {
-    height: 160px !important;
+    height: 90px !important;
     margin-top: 6px;
   }
   .hamburger {
@@ -563,10 +563,28 @@ body {
     z-index: 1300;
     display: flex !important;
   }
+  .italia-nav {
+    font-size: 0.9rem;
+    padding: 12px 0 12px 12px;
+    gap: 0;
+  }
   .italia-hero-content {
-    margin-top: -400px !important;
-    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 40px !important;
+  }
+  .italia-hero-title {
+    font-size: 1.2rem;
+  }
+  .italia-hero-sub {
+    font-size: 1rem;
+  }
+  .pizza-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 8px;
+  }
+  .pizza-item img {
+    height: 90px;
   }
 }
-
 </style>
