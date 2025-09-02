@@ -315,4 +315,93 @@ export default {
     z-index: 1;
   }
 }
+@media (max-width: 900px) {
+  .pizza-card-layout {
+    padding: 1rem 0.2rem 1.5rem 0.2rem;
+    max-width: 99vw;
+  }
+  .pizza-card-list {
+    gap: 1rem;
+  }
+  .pizza-card-item {
+    width: 90vw;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 1rem 0.5rem 1rem 0.5rem;
+  }
+  .pizza-card-logo {
+    width: 60px;
+    height: 60px;
+  }
+  .pizza-card-title {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .pizza-card-tabs {
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .pizza-card-tabs button {
+    font-size: 1rem;
+    padding: 8px 10px 4px 10px;
+  }
+  .pizza-card-img {
+    width: 60px;
+    height: 60px;
+  }
+  .seta-voltar {
+    width: 22px;
+    height: 22px;
+    top: 8px;
+    left: 8px;
+    padding: 2px;
+  }
+}
+@media (max-width: 600px) {
+  .pizza-card-layout {
+    padding: 0.5rem 0.1rem 1rem 0.1rem;
+    max-width: 100vw;
+  }
+  .pizza-card-list {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .pizza-card-item {
+    width: 98vw;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+  }
+  .pizza-card-logo {
+    width: 44px;
+    height: 44px;
+  }
+  .pizza-card-title {
+    font-size: 1rem;
+    text-align: center;
+  }
+  .pizza-card-tabs {
+    gap: 4px;
+    margin-bottom: 0.5rem;
+  }
+  .pizza-card-tabs button {
+    font-size: 0.95rem;
+    padding: 6px 4px 2px 4px;
+  }
+  .pizza-card-img {
+    width: 44px;
+    height: 44px;
+  }
+  .pizza-card-add-btn {
+    font-size: 0.95rem;
+    padding: 8px 0;
+  }
+  .seta-voltar {
+    width: 18px;
+    height: 18px;
+    top: 4px;
+    left: 4px;
+    padding: 1px;
+  }
+}
 </style>
