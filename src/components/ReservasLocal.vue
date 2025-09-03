@@ -10,7 +10,8 @@ export default {
         nome: '',
         telefone: '',
         data: '',
-        hora: '',
+        horaInicio: '',
+        horaFim: '',
         pessoas: 1,
         observacao: ''
       },
@@ -32,6 +33,21 @@ export default {
   computed: {
     dataMinima() {
       return new Date().toISOString().split('T')[0];
+    },
+    mesasDisponiveis() {
+      // Filtra mesas que não estão reservadas para o período selecionado
+      const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+      if (!this.reserva.data || !this.reserva.horaInicio || !this.reserva.horaFim) return this.mesas;
+      return this.mesas.filter(mesa => {
+        const reservasMesa = reservas.filter(r => r.mesa === mesa.numero && r.data === this.reserva.data && r.status !== 'Cancelada');
+        // Verifica se há conflito de horário
+        return !reservasMesa.some(r => {
+          // Conflito se o intervalo selecionado sobrepõe o intervalo da reserva existente
+          return (
+            (this.reserva.horaInicio < r.horaFim && this.reserva.horaFim > r.horaInicio)
+          );
+        });
+      });
     }
   },
   methods: {
@@ -52,7 +68,7 @@ export default {
       this.mesaSelecionada = null;
       this.montandoMesa = false;
       this.mensagem = '';
-      this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1, observacao: '' };
+      this.reserva = { nome: '', telefone: '', data: '', horaInicio: '', horaFim: '', pessoas: 1, observacao: '' };
       this.erros = {};
     },
     validarFormulario() {
@@ -69,8 +85,11 @@ export default {
       } else if (this.reserva.data < this.dataMinima) {
         this.erros.data = 'A data não pode ser anterior a hoje.';
       }
-      if (!this.reserva.hora) {
-        this.erros.hora = 'Escolha um horário.';
+      if (!this.reserva.horaInicio) {
+        this.erros.horaInicio = 'Escolha um horário de início.';
+      }
+      if (!this.reserva.horaFim) {
+        this.erros.horaFim = 'Escolha um horário de fim.';
       }
       if (!this.reserva.pessoas || this.reserva.pessoas < 1) {
         this.erros.pessoas = 'Informe ao menos 1 pessoa.';
@@ -81,19 +100,20 @@ export default {
     },
     enviarReserva() {
       if (this.validarFormulario()) {
-        // Salva a reserva no localStorage
         this.salvarReserva({
           nome: this.reserva.nome,
           telefone: this.reserva.telefone,
           data: this.reserva.data,
-          horario: this.reserva.hora,
+          horaInicio: this.reserva.horaInicio,
+          horaFim: this.reserva.horaFim,
           qtdPessoas: this.reserva.pessoas,
           observacao: this.reserva.observacao,
           mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : 'Montada',
           status: 'Aberta'
         });
-        this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.hora}.`;
-        this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1, observacao: '' };
+        this.mensagem = `🍕 Sua reserva foi realizada com sucesso!\n\nOlá, ${this.reserva.nome}!\nMesa: ${this.mesaSelecionada ? this.mesaSelecionada.numero : 'Montada'}\nData: ${this.reserva.data}\nHorário: ${this.reserva.horaInicio} - ${this.reserva.horaFim}\nPessoas: ${this.reserva.pessoas}\n\nAguardamos você para saborear nossas pizzas!`;
+        setTimeout(() => { this.mensagem = ''; }, 5000);
+        this.reserva = { nome: '', telefone: '', data: '', horaInicio: '', horaFim: '', pessoas: 1, observacao: '' };
         this.erros = {};
         this.formularioVisivel = false;
         this.mesaSelecionada = null;
@@ -120,6 +140,11 @@ export default {
 
 <template>
   <div class="reserva-container">
+    <transition name="fade">
+      <div v-if="mensagem" class="mensagem-topo">
+        {{ mensagem }}
+      </div>
+    </transition>
     <div v-if="formularioVisivel" class="seta-voltar" @click="voltarEscolha">
       <img src="@/assets/imagens/seta-preta.png" alt="Voltar" />
     </div>
@@ -128,7 +153,7 @@ export default {
     </div>
     <h2>Reserva de Mesas</h2>
     <div v-if="!formularioVisivel" class="mesas-grid">
-      <MesaCard v-for="mesa in mesas" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
+      <MesaCard v-for="mesa in mesasDisponiveis" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
       <div class="novo-montar-mesa-btn" @click="selecionarMontarMesa">
         <span class="montar-mesa-icone-wrapper">
           <img src="@/assets/imagens/adicionar.png" alt="Montar" class="montar-mesa-icone" />
@@ -166,10 +191,17 @@ export default {
           </div>
         </div>
         <div class="form-group">
-          <label for="hora">Horário</label>
+          <label for="horaInicio">Horário de Início</label>
           <div class="input-wrapper">
-            <input type="time" id="hora" v-model="reserva.hora" :class="{'erro': erros.hora}" />
-            <span v-if="erros.hora" class="erro-msg">{{ erros.hora }}</span>
+            <input type="time" id="horaInicio" v-model="reserva.horaInicio" :class="{'erro': erros.horaInicio}" />
+            <span v-if="erros.horaInicio" class="erro-msg">{{ erros.horaInicio }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="horaFim">Horário de Fim</label>
+          <div class="input-wrapper">
+            <input type="time" id="horaFim" v-model="reserva.horaFim" :class="{'erro': erros.horaFim}" />
+            <span v-if="erros.horaFim" class="erro-msg">{{ erros.horaFim }}</span>
           </div>
         </div>
         <div class="form-group">
@@ -362,5 +394,32 @@ export default {
   width: 24px;
   height: 24px;
   margin-right: 8px;
+}
+.mensagem-topo {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #e63946 60%, #ffb347 100%);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: bold;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #e6394622;
+  padding: 18px 32px;
+  z-index: 2000;
+  text-align: center;
+  white-space: pre-line;
+  animation: fadein 0.5s;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -42,7 +42,7 @@ export default {
       localStorage.setItem('reservas', JSON.stringify(todasReservas));
     },
     cancelarReserva(id) {
-      if (window.confirm('Tem certeza que deseja cancelar esta reserva?')) {
+      if (window.confirm('⚠️ Tem certeza que deseja cancelar sua reserva?\n\nAo cancelar, sua mesa ficará disponível para outros clientes.\n\nClique em OK para confirmar ou Cancelar para voltar.')) {
         let todasReservas = JSON.parse(localStorage.getItem('reservas') || '[]');
         todasReservas = todasReservas.filter(r => r.id !== id);
         localStorage.setItem('reservas', JSON.stringify(todasReservas));
