@@ -81,15 +81,37 @@ export default {
     },
     enviarReserva() {
       if (this.validarFormulario()) {
+        // Salva a reserva no localStorage
+        this.salvarReserva({
+          nome: this.reserva.nome,
+          telefone: this.reserva.telefone,
+          data: this.reserva.data,
+          horario: this.reserva.hora,
+          qtdPessoas: this.reserva.pessoas,
+          observacao: this.reserva.observacao,
+          mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : 'Montada',
+          status: 'Aberta'
+        });
         this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.hora}.`;
         this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1, observacao: '' };
         this.erros = {};
+        this.formularioVisivel = false;
+        this.mesaSelecionada = null;
+        this.montandoMesa = false;
       } else {
         this.mensagem = '';
       }
     },
     irParaMenu() {
       this.$router.push({ name: 'menu' });
+    },
+    salvarReserva(reserva) {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+      reserva.id = Date.now();
+      reserva.usuarioId = usuarioLogado.id;
+      reservas.push(reserva);
+      localStorage.setItem('reservas', JSON.stringify(reservas));
     }
   }
 }

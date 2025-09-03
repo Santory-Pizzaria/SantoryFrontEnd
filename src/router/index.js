@@ -23,6 +23,7 @@ import ControleEstoque from '../components/ControleEstoque.vue';
 import ProdutosAdmin from '@/components/ProdutosAdmin.vue';
 import UsuariosAdmin from '@/components/UsuariosAdmin.vue';
 import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue';
+import ReservasUsuario from '@/components/ReservasUsuario.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,11 @@ const router = createRouter({
       path: '/perfil',
       name: 'perfil',
       component: PerfilUsuario,
+    },
+    {
+      path: '/reservasUsuario',
+      name: 'ReservasUsuario',
+      component: ReservasUsuario,
     },
     {
       path: '/ProdutosAdmin',

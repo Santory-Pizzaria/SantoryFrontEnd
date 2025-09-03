@@ -61,6 +61,9 @@ function goToPizzaCard() {
 function goToReserva() {
   router.push('/reserva');
 }
+function goToReservaUsuario() {
+  router.push('/reservasUsuario');
+}
 
 const showMenu = ref(false);
 function toggleMenu() {
@@ -93,18 +96,18 @@ function toggleMenu() {
       <nav class="italia-nav" :class="{ 'show-mobile': showMenu }">
         <a href="#" class="italia-nav-link active">HOME</a>
         <span class="italia-sep">|</span>
-        <a href="#" class="italia-nav-link" @click.prevent="goToReserva">RESERVAS</a>
+        <a href="#" class="italia-nav-link" @click.prevent="goToReservaUsuario">RESERVAS</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToTempoEntrega">TAXA E TEMPO DE ENTREGA</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
+        <button class="italia-perfil-btn" @click="router.push('/perfil')" aria-label="Perfil">
+          <img :src="usuario.avatar || '/src/assets/imagens/perfil.png'" alt="Perfil" class="italia-perfil-icon" />
+        </button>
       </nav>
-      <button class="italia-delivery-btn" @click.prevent="goToPizzaCard">
-        PEÇA NO DELIVERY
-        <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
-      </button>
+
     </header>
     <!-- Hero -->
     <section class="italia-hero">
@@ -116,35 +119,10 @@ function toggleMenu() {
           FAÇA SUA RESERVA
           <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>
-
-<!--
-  <div class="container-tudo">
-    <header class="header-logo">
-      <div class="perfil-icone" @click="navigateTo('/perfil')">
-        <img :src="usuario.avatar || defaultAvatar" alt="Perfil" class="avatar-perfil" />
-      </div>
-    </header>
-    <div class="Logo">
-      <img src="/src/assets/imagens/logo.png" alt="Santory Logo" class="logo" />
-    </div>
-    <div class="header-Button">
-      <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
-      </div>
-      <div class="nav-items">
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
-          <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
-          <span>Meus Pedidos</span>
-        </a>
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
-          <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
-          <span>Taxa e Tempo de Entrega</span>
-        </a>
-        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
-          <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
-          <span>Avaliações</span>
-        </a>
--->
+        <button class="italia-delivery-btn" @click.prevent="goToPizzaCard">
+        PEÇA NO DELIVERY
+        <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
+      </button>
 
       </div>
     </section>
@@ -196,12 +174,7 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1;
-  font-size: 1.08rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #fff;
-  letter-spacing: 1px;
+  position: relative;
 }
 .italia-nav-link {
   color: #fff;
@@ -225,23 +198,26 @@ body {
   user-select: none;
 }
 .italia-delivery-btn {
-  border: 1.5px solid #fff;
-  background: transparent;
-  color: #fff;
-  padding: 7px 22px 7px 22px;
-  border-radius: 0;
-  font-size: 1rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: #fff;
+  color: #232323;
+  border: 2px solid #232323;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: none;
+  box-shadow: 0 4px 16px #23232322;
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+  margin-bottom: 18px;
 }
-
+.italia-delivery-btn:hover {
+  background: #232323;
+  color: #fff;
+  border-color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
 
 .nav-items .nav-icon {
   width: 30px;
@@ -406,24 +382,23 @@ body {
 .italia-reserva-btn {
   background: #fff;
   color: #232323;
-  border: none;
-  border-radius: 0;
-  padding: 12px 38px;
-  font-size: 1.1rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  border: 2px solid #232323;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: none;
-  transition: background 0.2s, color 0.2s;
-  margin: 0 auto;
+  box-shadow: 0 4px 16px #23232322;
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+  margin-bottom: 18px;
 }
 .italia-reserva-btn:hover {
-  background: #ffb347;
+  background: #232323;
   color: #fff;
+  border-color: #fff;
+  transform: translateY(-2px) scale(1.04);
 }
 .italia-clock {
   margin-left: 2px;
@@ -585,6 +560,74 @@ body {
   }
   .pizza-item img {
     height: 90px;
+  }
+}
+.italia-reserva-btn, .italia-delivery-btn {
+  background: #fff;
+  color: #232323;
+  border: 2px solid #232323;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 16px #23232322;
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+  margin-bottom: 18px;
+}
+.italia-reserva-btn:hover, .italia-delivery-btn:hover {
+  background: #232323;
+  color: #fff;
+  border-color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+.italia-clock, .italia-bag {
+  margin-left: 8px;
+}
+.italia-perfil-icon {
+  width: 52px;
+  height: 52px;
+}
+@media (max-width: 600px) {
+  .italia-perfil-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+.italia-perfil-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .italia-perfil-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .italia-perfil-btn {
+    margin-left: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .italia-reserva-btn, .italia-delivery-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 12px 0;
+    margin-bottom: 14px;
+  }
+  .italia-clock, .italia-bag {
+    margin-left: 4px;
   }
 }
 </style>
