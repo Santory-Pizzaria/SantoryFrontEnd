@@ -172,126 +172,154 @@ export default {
 </template>
 
 <style scoped>
+/* Layout responsivo, elegante e moderno para VerificacaoView */
 .verificacao-container {
-  width: 100vw;
-  min-height: 100vh;
-  background: #fff;
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 32px 18px 24px 18px;
+  background: linear-gradient(120deg, #fffbe6 60%, #ffe5b4 100%);
+  border-radius: 28px;
+  box-shadow: 0 8px 32px #b33c1a22;
+  font-family: 'Roboto', Arial, sans-serif;
+  position: relative;
+  border: 2px solid #ff9800;
+  animation: fadein 0.7s;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 .verificacao-header {
-  background: #ff9800;
-  color: #fff;
-  text-align: center;
-  padding: 18px 0 8px 0;
-  font-size: 2rem;
-  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 .verificacao-title {
   font-size: 2rem;
-  font-weight: bold;
+  color: #b33c1a;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #b33c1a44;
 }
 .verificacao-content {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.verificacao-subtitle {
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 18px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #b33c1a11;
+  padding: 18px 12px;
+  margin-bottom: 12px;
 }
 .verificacao-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 32px 32px 24px 32px;
-  min-width: 350px;
-  max-width: 95vw;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  position: relative;
+  gap: 14px;
 }
 .pizza-tipo {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  color: #e63946;
   font-weight: bold;
+  margin-bottom: 6px;
   text-align: center;
-  width: 100%;
-  margin-bottom: 12px;
 }
 .verificacao-info {
-  font-size: 1.1rem;
-  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #222;
+  margin-bottom: 8px;
 }
 .verificacao-info ul {
-  margin: 0 0 8px 0;
-  padding-left: 18px;
+  margin: 0 0 0 12px;
+  padding: 0;
+}
+.verificacao-info li {
+  font-size: 0.98rem;
+  color: #b33c1a;
+  margin-bottom: 2px;
 }
 .verificacao-qtd {
-  position: absolute;
-  right: 32px;
-  top: 32px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 1.2rem;
-  color: #388e3c;
+  justify-content: center;
+  gap: 14px;
+  margin: 10px 0;
 }
 .verificacao-btn {
-  background: none;
-  border: 1.5px solid #388e3c;
-  color: #388e3c;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
+  color: #fff;
+  border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   font-size: 1.3rem;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 2px 8px #b33c1a22;
+  transition: background 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .verificacao-btn.diminuir {
-  font-size: 1.5rem;
-  line-height: 1;
+  background: #ccc;
+  color: #b33c1a;
 }
 .verificacao-actions {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 18px;
-  gap: 18px;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
 }
 .verificacao-pedir {
-  background: #ff9800;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 24px;
+  background: #fffbe6;
+  color: #b33c1a;
+  border: 2px solid #ff9800;
+  border-radius: 8px;
+  padding: 12px 0;
   font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
+}
+.verificacao-pedir:hover {
+  background: #ffe5b4;
+  color: #e63946;
 }
 .verificacao-finalizar {
-  background: #ff9800;
+  background: linear-gradient(90deg, #e63946 60%, #ffb347 100%);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 10px 24px;
-  font-size: 1rem;
+  border-radius: 8px;
+  padding: 14px 0;
+  font-size: 1.08rem;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 8px #e6394622;
+  transition: background 0.2s, box-shadow 0.2s;
 }
-.verificacao-finalizar:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  opacity: 0.7;
+.verificacao-finalizar:hover {
+  background: linear-gradient(90deg, #b33c1a 60%, #ffb347 100%);
+  box-shadow: 0 4px 16px #e6394622;
 }
 @media (max-width: 600px) {
-  .verificacao-card {
-    min-width: 90vw;
-    padding: 16px 8px 16px 8px;
+  .verificacao-container {
+    max-width: 99vw;
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 2vw 10px 2vw;
+  }
+  .verificacao-title {
+    font-size: 1.2rem;
+  }
+  .verificacao-content {
+    padding: 8px 2px;
+    border-radius: 8px;
+  }
+  .verificacao-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
   }
 }
 </style>

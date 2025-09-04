@@ -45,6 +45,15 @@ export default {
   methods: {
     adicionarItem(item) {
       this.$router.push({ name: 'pizza-options', params: { pizzaNome: item.nome } });
+    },
+    adicionarAoCarrinho(item) {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      let pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+      item.id = Date.now();
+      item.usuarioId = usuarioLogado.id;
+      item.status = 'Pendente';
+      pedidos.push(item);
+      localStorage.setItem('pedidos', JSON.stringify(pedidos));
     }
   }
 };
