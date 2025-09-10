@@ -215,25 +215,26 @@ body {
   user-select: none;
 }
 .italia-delivery-btn {
-  background: #fff;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
-  border: 2px solid #232323;
-  border-radius: 12px;
-  padding: 14px 36px;
-  font-weight: 700;
-  font-size: 1.08rem;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 16px #23232322;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-  margin-bottom: 18px;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
 }
 .italia-delivery-btn:hover {
-  background: #232323;
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
   color: #fff;
-  border-color: #fff;
-  transform: translateY(-2px) scale(1.04);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 
 .nav-items .nav-icon {
@@ -326,9 +327,27 @@ nav a:hover {
   text-decoration: none;
 
 }
-.italia-delivery-btn:hover {
-  background: #fff;
+.italia-reserva-btn, .italia-delivery-btn {
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
+}
+.italia-reserva-btn:hover, .italia-delivery-btn:hover {
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+  color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 .italia-bag {
   margin-left: 2px;
@@ -412,25 +431,26 @@ body {
   color: #fff;
 }
 .italia-reserva-btn {
-  background: #fff;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
-  border: 2px solid #232323;
-  border-radius: 12px;
-  padding: 14px 36px;
-  font-weight: 700;
-  font-size: 1.08rem;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 16px #23232322;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-  margin-bottom: 18px;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
 }
 .italia-reserva-btn:hover {
-  background: #232323;
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
   color: #fff;
-  border-color: #fff;
-  transform: translateY(-2px) scale(1.04);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 .italia-clock {
   margin-left: 2px;
@@ -683,25 +703,26 @@ body {
   }
 }
 .italia-reserva-btn, .italia-delivery-btn {
-  background: #fff;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
-  border: 2px solid #232323;
-  border-radius: 12px;
-  padding: 14px 36px;
-  font-weight: 700;
-  font-size: 1.08rem;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 16px #23232322;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-  margin-bottom: 18px;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
 }
 .italia-reserva-btn:hover, .italia-delivery-btn:hover {
-  background: #232323;
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
   color: #fff;
-  border-color: #fff;
-  transform: translateY(-2px) scale(1.04);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 .italia-clock, .italia-bag {
   margin-left: 8px;
