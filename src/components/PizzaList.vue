@@ -86,13 +86,19 @@ function toggleMenu() {
     <!-- Header -->
     <header class="italia-header">
       <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
-      <!-- Ícone hambúrguer -->
+      <div class="header-user-area-right">
+        <button class="usuario-img-bola-btn" @click="router.push('/perfil')" aria-label="Perfil">
+          <div class="usuario-img-bola">
+            <img :src="usuario.avatar || '/src/assets/imagens/perfil.png'" alt="Foto do usuário" />
+          </div>
+        </button>
+      </div>
+      <!-- Ícone hambúrguer e nav -->
       <button class="hamburger" :class="{ active: showMenu }" @click="toggleMenu" aria-label="Abrir menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
       </button>
-      <!-- Menu tradicional -->
       <nav class="italia-nav" :class="{ 'show-mobile': showMenu }">
         <a href="#" class="italia-nav-link active">HOME</a>
         <span class="italia-sep">|</span>
@@ -104,8 +110,7 @@ function toggleMenu() {
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
         <button class="italia-perfil-btn" @click="router.push('/perfil')" aria-label="Perfil">
-          <img :src="usuario.avatar || '/src/assets/imagens/perfil.png'" alt="Perfil" class="italia-perfil-icon" />
-        </button>
+          </button>
       </nav>
 
     </header>
@@ -161,13 +166,25 @@ body {
   box-sizing: border-box;
 }
 .italia-logo {
+  display: block;
+  margin: 60px auto 0 auto;
   height: 90px;
   width: auto;
-  margin-right: 24px;
   background: none;
   border-radius: 0;
   box-shadow: none;
-  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .italia-logo {
+    margin-top: 40px;
+    height: 60px;
+  }
+}
+@media (max-width: 600px) {
+  .italia-logo {
+    margin-top: 28px !important;
+    height: 48px !important;
+  }
 }
 .italia-nav {
   display: flex;
@@ -356,7 +373,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 0;
+  position: relative;
+  top: -40px;
+}
+@media (max-width: 900px) {
+  .italia-hero-content {
+    top: -24px;
+    padding-top: 0 !important;
+  }
+}
+@media (max-width: 600px) {
+  .italia-hero-content {
+    top: -88px;
+    padding-top: 0 !important;
+  }
 }
 .italia-hero-title {
   font-family: 'Playfair Display', serif;
@@ -562,6 +594,94 @@ body {
     height: 90px;
   }
 }
+@media (max-width: 601px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 601px), (max-width: 600px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 620px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+}
 .italia-reserva-btn, .italia-delivery-btn {
   background: #fff;
   color: #232323;
@@ -628,6 +748,123 @@ body {
   }
   .italia-clock, .italia-bag {
     margin-left: 4px;
+  }
+}
+.header-user-area {
+  display: flex;
+  align-items: center;
+  margin-right: 18px;
+}
+.usuario-img-bola {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #2222;
+  border: 2.5px solid #ff9800;
+  background: #fffbe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.usuario-img-bola img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+@media (max-width: 900px) {
+  .usuario-img-bola {
+    width: 64px;
+    height: 64px;
+  }
+}
+@media (max-width: 600px) {
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
+  }
+}
+@media (max-width: 900px) {
+  .italia-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px 0 8px;
+  }
+  .header-user-area {
+    margin-right: 0;
+    margin-bottom: 8px;
+    justify-content: center;
+    width: 100%;
+  }
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 4px auto;
+  }
+}
+@media (max-width: 600px) {
+  .usuario-img-bola {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 2px;
+  }
+}
+.header-user-area-right {
+  position: absolute;
+  top: 18px;
+  right: 32px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+}
+.usuario-img-bola-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.usuario-img-bola {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #2222;
+  border: 2.5px solid #ff9800;
+  background: #fffbe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.usuario-img-bola img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+@media (max-width: 900px) {
+  .header-user-area-right {
+    top: 10px;
+    right: 10px;
+  }
+  .usuario-img-bola {
+    width: 64px;
+    height: 64px;
+  }
+}
+@media (max-width: 600px) {
+  .header-user-area-right {
+    top: 6px;
+    right: 6px;
+  }
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
   }
 }
 </style>
