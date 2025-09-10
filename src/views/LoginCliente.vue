@@ -14,7 +14,7 @@ async function handleLogin() {
     erro.value = ''
     router.push('/menu')
   } catch (e) {
-    erro.value = 'Email ou senha inválidos'
+    erro.value = e.message || 'Email ou senha inválidos'
   }
 }
 

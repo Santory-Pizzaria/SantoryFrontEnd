@@ -1,4 +1,5 @@
 const API_URL = 'http://localhost:8000/auth';
+const API_USER_URL = 'http://localhost:8000/api';
 
 export async function login(email, password) {
   const response = await fetch(`${API_URL}/jwt/create/`, {
@@ -10,13 +11,25 @@ export async function login(email, password) {
     let errorMsg = 'Login inválido';
     try {
       const err = await response.json();
-      errorMsg = JSON.stringify(err);
+      errorMsg = err.detail || JSON.stringify(err);
     } catch {}
     throw new Error(errorMsg);
   }
   const data = await response.json();
   localStorage.setItem('access', data.access);
   localStorage.setItem('refresh', data.refresh);
+
+  // Buscar dados do usuário logado
+  try {
+    const userResp = await fetch(`${API_USER_URL}/usuarios/me/`, {
+      headers: { 'Authorization': `Bearer ${data.access}` }
+    });
+    if (userResp.ok) {
+      const userData = await userResp.json();
+      localStorage.setItem('usuarioLogado', JSON.stringify(userData));
+    }
+  } catch {}
+
   return data;
 }
 

@@ -49,8 +49,26 @@ setInterval(nextImage, 3500);
 function goToTempoEntrega() {
   router.push({ name: 'TempoEntrega' });
 }
+// Lista de pizzas
+const pizzas = ref([]);
 function goToCardapioTela() {
+// Carregar dados do usuário logado
+onMounted(() => {
+  carregarDadosUsuario();
+  carregarPizzas();
+});
   router.push({ name: 'CardapioTela' });
+// Buscar pizzas do backend Django
+async function carregarPizzas() {
+  try {
+    const response = await fetch('http://localhost:8000/api/pizzas/');
+    if (!response.ok) throw new Error('Erro ao buscar pizzas');
+    pizzas.value = await response.json();
+  } catch (e) {
+    pizzas.value = [];
+    // Opcional: exibir erro para o usuário
+  }
+}
 }
 function goToFeedBack() {
   router.push({ name: 'FeedBack' });
