@@ -16,16 +16,18 @@ const mesSelecionado = ref('')
 
 function getTodasDatasPedidos() {
   const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]')
-  return pedidos.map(p => p.data)
+  return pedidos
+    .map(p => p.data)
+    .filter(data => typeof data === 'string' && data.split('/').length === 3)
 }
 
 function getTodosMesesPedidos() {
   // Retorna meses únicos no formato MM/YYYY
-  const datas = getTodasDatasPedidos()
+  const datas = getTodasDatasPedidos().filter(data => typeof data === 'string');
   const meses = datas.map(data => {
-    const [, mes, ano] = data.split('/')
-    return `${mes}/${ano}`
-  })
+    const [, mes, ano] = data.split('/');
+    return `${mes}/${ano}`;
+  });
   return [...new Set(meses)].sort((a, b) => {
     const [ma, aa] = a.split('/')
     const [mb, ab] = b.split('/')
@@ -36,7 +38,11 @@ function getTodosMesesPedidos() {
 function getDiasDoMes(mesAno) {
   // Retorna todos os dias (DD/MM/YYYY) do mês selecionado
   const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]')
-  return [...new Set(pedidos.filter(p => p.data.endsWith(`/${mesAno}`)).map(p => p.data))].sort((a, b) => {
+  return [...new Set(
+    pedidos
+      .filter(p => typeof p.data === 'string' && p.data.endsWith(`/${mesAno}`))
+      .map(p => p.data)
+  )].sort((a, b) => {
     const [da, ma, aa] = a.split('/')
     const [db, mb, ab] = b.split('/')
     return new Date(`${aa}-${ma}-${da}`) - new Date(`${ab}-${mb}-${db}`)

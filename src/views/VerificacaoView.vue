@@ -62,16 +62,25 @@ export default {
       this.$router.push('/form');
     },
     salvarPedido(pedido) {
-      // Recuperar pedidos existentes ou criar array vazio
-      const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]');
-
-      // Adicionar novo pedido
-      pedidosExistentes.push(pedido);
-
-      // Salvar de volta no localStorage
-      localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes));
-
-      console.log('Pedido salvo:', pedido);
+      // Monta o pedido no formato esperado pelos relatórios
+      const novoPedido = {
+        id: pedido.id || Date.now(),
+        data: pedido.data || new Date().toLocaleDateString('pt-BR'),
+        status: pedido.status || 'Confirmado',
+        valor: typeof pedido.valores === 'object' && pedido.valores.total ? parseFloat(pedido.valores.total.replace('R$','').replace(',','.')) : (typeof pedido.valor === 'string' ? parseFloat(pedido.valor.replace('R$','').replace(',','.')) : pedido.valor || 0),
+        itens: [
+          {
+            nome: pedido.pizza?.nome || pedido.pizzaNome || 'Pizza',
+            detalhes: `${pedido.pizza?.sabores?.map(s=>s.fracao+ ' ' + s.nome).join(', ') || ''}${pedido.pizza?.borda ? ' | Borda: ' + pedido.pizza.borda : ''}${pedido.bordaSelecionada ? ' | Borda: ' + pedido.bordaSelecionada : ''}`,
+            qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
+          }
+        ]
+      };
+      // Recuperar pedidos existentes
+      const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]')
+      pedidosExistentes.push(novoPedido)
+      localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes))
+      console.log('Pedido salvo:', novoPedido)
     },
     // Método para recuperar pedidos (útil para futuras funcionalidades)
     obterPedidos() {
