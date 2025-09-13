@@ -18,11 +18,11 @@ import PizzaCard from '../components/PizzaCard.vue'
 import ReservasLocal from '@/components/ReservasLocal.vue'
 import Carrinho from '../views/CarrinhoView.vue'
 import CarrinhoItem from '@/components/CarrinhoItem.vue'
-import CarrinhoItemDemo from '@/components/CarrinhoItem.vue';
-import ControleEstoque from '../components/ControleEstoque.vue';
-import ProdutosAdmin from '@/components/ProdutosAdmin.vue';
-import UsuariosAdmin from '@/components/UsuariosAdmin.vue';
-import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue';
+import CarrinhoItemDemo from '@/components/CarrinhoItem.vue'
+import ControleEstoque from '../components/ControleEstoque.vue'
+import ProdutosAdmin from '@/components/ProdutosAdmin.vue'
+import UsuariosAdmin from '@/components/UsuariosAdmin.vue'
+import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,7 +56,6 @@ const router = createRouter({
       path: '/ItemCarrinho',
       name: 'ItemCarrinho',
       component: CarrinhoItem,
-
     },
     {
       path: '/Estoque',
@@ -72,7 +71,6 @@ const router = createRouter({
       path: '/carrinho',
       name: 'carrinho',
       component: Carrinho,
-
     },
     {
       path: '/login',
@@ -103,7 +101,7 @@ const router = createRouter({
       path: '/pizza-options/:pizzaNome',
       name: 'pizza-options',
       component: PizzaOptionsView,
-      props: true
+      props: true,
     },
     {
       path: '/pizza',

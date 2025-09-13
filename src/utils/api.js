@@ -12,22 +12,23 @@ const api = axios.create({
 // Métodos para recursos principais (corrigidos para plural e adicionados faltantes)
 export const getUsuarios = () => api.get('/usuarios/');
 export const getUsuario = (id) => api.get(`/usuario/${id}/`);
-export const getProdutos = () => api.get('/produto/');
+export const getProdutos = () => api.get('/produtos/');
 export const getEndereco = (id) => api.get(`/endereco/${id}/`);
-export const getPedidos = () => api.get('/pedido/');
-export const createPedido = (data) => api.post('/pedido/', data);
+export const getFeedbacks = () => api.get('/feedbacks/');
+export const getPedidos = () => api.get('/pedidos/');
+export const createPedido = (data) => api.post('/pedidos/', data);
 export const getItemPedido = (id) => api.get(`/itempedido/${id}/`);
 export const createItemPedido = (data) => api.post('/itempedido/', data);
-export const getReservas = () => api.get('/reserva/');
-export const createReserva = (data) => api.post('/reserva/', data);
-export const getPizzas = () => api.get('/pizza/');
-export const getCombos = () => api.get('/combo/');
-export const getCarrinhos = () => api.get('/carrinho/');
-export const getCarrinho = (id) => api.get(`/carrinho/${id}/`);
-export const getCarrinhoItens = () => api.get('/carrinhoitem/');
-export const addCarrinhoItem = (data) => api.post('/carrinhoitem/', data);
+export const getReservas = () => api.get('/reservas/');
+export const createReserva = (data) => api.post('/reservas/', data);
+export const getPizzas = () => api.get('/pizzas/');
+export const getCombos = () => api.get('/combos/');
+export const getCarrinhos = () => api.get('/carrinhos/');
+export const getCarrinho = (id) => api.get(`/carrinhos/${id}/`);
+export const getCarrinhoItens = () => api.get('/carrinhoitens/');
+export const addCarrinhoItem = (data) => api.post('/carrinhoitens/', data);
 export const registerUser = (data) => api.post('/auth/users/', data);
 export const loginUser = (data) => api.post('/auth/jwt/create/', data);
-export const getBebidas = () => api.get('/bebida/');
+export const getBebidas = () => api.get('/bebidas/');
 
 export default api;
