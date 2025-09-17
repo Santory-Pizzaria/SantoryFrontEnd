@@ -6,7 +6,7 @@
         <span v-for="(b, idx) in banners" :key="idx" :class="['dot', { ativo: idx === bannerAtual }]" @click="setBanner(idx)"></span>
       </div>
     </div>
-    <div class="destaque-header">
+    <div class="destaque-header animar">
       <div class="destaque-texto">
         <h2>Conheça a Tradição Santory</h2>
         <p>
@@ -49,7 +49,7 @@
           <a href="https://wa.link/h475ec" target="_blank" class="link-btn">Whatsapp</a>
         </div>
       </div>
-      <div class="destaque-imgs">
+      <div class="destaque-imgs animar">
         <img src="/src/assets/imagens/carrosel1.png" alt="Ambiente Santory" />
         <img src="/src/assets/imagens/carrosel2.png" alt="Pizza Artesanal" />
       </div>
@@ -58,7 +58,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
+
 const banners = [
   { src: '/src/assets/imagens/carrosel1.png', alt: 'Ambiente aconchegante' },
   { src: '/src/assets/imagens/carrosel2.png', alt: 'Pizza artesanal' },
@@ -66,14 +67,33 @@ const banners = [
   { src: '/src/assets/imagens/Sabores.png', alt: 'Sabores variados' }
 ]
 const bannerAtual = ref(0)
+
 function nextBanner() {
   bannerAtual.value = (bannerAtual.value + 1) % banners.length
 }
+
 function setBanner(idx) {
   bannerAtual.value = idx
 }
+
+function animarAoEntrar(selector) {
+  nextTick(() => {
+    const elementos = document.querySelectorAll(selector)
+    const observer = new window.IntersectionObserver((entradas) => {
+      entradas.forEach(entrada => {
+        if (entrada.isIntersecting) {
+          entrada.target.classList.add('animar-entrada')
+          observer.unobserve(entrada.target)
+        }
+      })
+    }, { threshold: 0.15 })
+    elementos.forEach(el => observer.observe(el))
+  })
+}
+
 onMounted(() => {
   setInterval(nextBanner, 4000)
+  animarAoEntrar('.animar')
 })
 </script>
 
@@ -225,6 +245,15 @@ onMounted(() => {
   width: 170px;
   border-radius: 14px;
   box-shadow: 0 2px 8px #b33c1a22;
+}
+.animar {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.animar-entrada {
+  opacity: 1 !important;
+  transform: none !important;
 }
 @media (max-width: 900px) {
   .destaque-header {
