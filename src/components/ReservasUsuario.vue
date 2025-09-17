@@ -48,6 +48,16 @@ export default {
         localStorage.setItem('reservas', JSON.stringify(todasReservas));
         this.carregarReservas();
       }
+    },
+    formatarData(data) {
+      // Espera data no formato YYYY-MM-DD ou similar
+      if (!data) return '';
+      const partes = data.split('-');
+      if (partes.length === 3) {
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+      // fallback: retorna como está
+      return data;
     }
   },
   watch: {
@@ -70,7 +80,7 @@ export default {
     <div v-if="reservas.length === 0" class="sem-reservas">Nenhuma reserva encontrada.</div>
     <ul v-else class="lista-reservas">
       <li v-for="reserva in reservas" :key="reserva.id" class="reserva-item">
-        <div><strong>Data:</strong> {{ reserva.data }}</div>
+        <div><strong>Data:</strong> {{ formatarData(reserva.data) }}</div>
         <div><strong>Horário:</strong> {{ reserva.horario }}</div>
         <div><strong>Mesa:</strong> {{ reserva.mesa }}</div>
         <div><strong>Pessoas:</strong> {{ reserva.qtdPessoas }}</div>
