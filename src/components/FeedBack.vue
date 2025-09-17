@@ -8,7 +8,8 @@ export default {
         opiniao: '',
         estrelas: 0
       },
-      aviso: ''
+      aviso: '',
+      filtroEstrelas: '',
     }
   },
   methods: {
@@ -44,6 +45,15 @@ export default {
         localStorage.setItem('feedbacks', JSON.stringify(novo));
       },
       deep: true
+    }
+  },
+  computed: {
+    feedbacksFiltrados() {
+      let lista = [...this.feedbacks].reverse();
+      if (this.filtroEstrelas) {
+        return lista.filter(fb => fb.estrelas === Number(this.filtroEstrelas));
+      }
+      return lista;
     }
   }
 }
@@ -83,8 +93,15 @@ export default {
       </section>
       <section class="feedback-list-section-novo">
         <h2 class="feedback-list-title-novo">Avaliações Recentes</h2>
+        <div class="feedback-filter-novo">
+          <label>Filtrar por estrelas:</label>
+          <select v-model="filtroEstrelas">
+            <option value="">Todas</option>
+            <option v-for="n in 5" :key="n" :value="n">{{ n }} estrela{{ n > 1 ? 's' : '' }}</option>
+          </select>
+        </div>
         <ul class="feedback-list-novo">
-          <li v-for="(feedback, index) in feedbacks" :key="index" class="feedback-item-novo">
+          <li v-for="(feedback, index) in feedbacksFiltrados" :key="index" class="feedback-item-novo">
             <div class="feedback-user-novo">
               <div class="avatar-novo">🍕</div>
               <div>
@@ -280,6 +297,21 @@ export default {
   font-weight: 700;
   margin: 0 0 18px 0;
   letter-spacing: 1px;
+}
+.feedback-filter-novo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-size: 1.08rem;
+}
+.feedback-filter-novo select {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #222;
+  font-size: 1rem;
+  background: #fafafa;
+  color: #111;
 }
 .feedback-list-novo {
   width: 100%;
