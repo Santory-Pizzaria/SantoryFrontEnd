@@ -7,7 +7,7 @@ const carouselImages = [
 ]
 
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const router = useRouter();
 
@@ -36,7 +36,6 @@ function carregarDadosUsuario() {
     }
   }
 }
-
 
 const currentImage = ref(0);
 
@@ -69,6 +68,28 @@ const showMenu = ref(false);
 function toggleMenu() {
   showMenu.value = !showMenu.value;
 }
+
+const isScrolled = ref(false);
+
+function handleScroll() {
+  isScrolled.value = window.scrollY > 30;
+}
+
+const isMobile = ref(false);
+
+function handleResize() {
+  isMobile.value = window.innerWidth <= 620;
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', handleResize);
+  handleResize();
+});
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 <template>
   <div class="italia-bg">
@@ -84,8 +105,8 @@ function toggleMenu() {
       </div>
     </section>
     <!-- Header -->
-    <header class="italia-header">
-      <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
+    <header :class="['italia-header', { 'italia-header-transparente': isScrolled }]">
+      <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo-header" />
       <div class="header-user-area-right">
         <button class="usuario-img-bola-btn" @click="router.push('/perfil')" aria-label="Perfil">
           <div class="usuario-img-bola">
@@ -161,18 +182,34 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 4px 40px 0 40px;
-  background: transparent;
+  transition: background 0.3s, backdrop-filter 0.3s;
   font-family: 'Playfair Display', serif;
   box-sizing: border-box;
+  border-bottom: 1.5px solid #fff2;
 }
-.italia-logo {
-  display: block;
-  margin: 60px auto 0 auto;
-  height: 90px;
+.italia-header.italia-header-transparente {
+  background: rgba(34, 34, 34, 0.72); /* fundo fosco meio transparente */
+  backdrop-filter: blur(8px);
+}
+.italia-logo-header {
+  height: 60px;
   width: auto;
+  margin: 0 18px 0 0;
   background: none;
   border-radius: 0;
   box-shadow: none;
+}
+@media (max-width: 900px) {
+  .italia-logo-header {
+    height: 44px;
+    margin: 0 8px 0 0;
+  }
+}
+@media (max-width: 600px) {
+  .italia-logo-header {
+    height: 32px !important;
+    margin: 0 4px 0 0 !important;
+  }
 }
 @media (max-width: 900px) {
   .italia-logo {
@@ -201,6 +238,22 @@ body {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   font-size: 1.08rem;
+}
+@media (max-width: 900px) {
+  .italia-nav-link {
+    font-size: 0.98rem;
+  }
+}
+@media (max-width: 700px) {
+  .italia-nav-link {
+    font-size: 0.89rem;
+  }
+}
+@media (max-width: 500px) {
+  .italia-nav-link {
+    font-size: 0.78rem;
+    padding: 0 4px;
+  }
 }
 .italia-nav-link.active,
 .italia-nav-link:hover {
@@ -244,7 +297,6 @@ body {
 }
 
 header {
-  background: linear-gradient(90deg, #B90020 0%, #B90020 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -835,8 +887,9 @@ body {
 }
 .header-user-area-right {
   position: absolute;
-  top: 18px;
+  top: 50%;
   right: 32px;
+  transform: translateY(-50%);
   z-index: 200;
   display: flex;
   align-items: center;
@@ -870,8 +923,9 @@ body {
 }
 @media (max-width: 900px) {
   .header-user-area-right {
-    top: 10px;
+    top: 50%;
     right: 10px;
+    transform: translateY(-50%);
   }
   .usuario-img-bola {
     width: 64px;
@@ -880,8 +934,9 @@ body {
 }
 @media (max-width: 600px) {
   .header-user-area-right {
-    top: 6px;
+    top: 50%;
     right: 6px;
+    transform: translateY(-50%);
   }
   .usuario-img-bola {
     width: 48px;
