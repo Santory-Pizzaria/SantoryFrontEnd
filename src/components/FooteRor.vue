@@ -112,9 +112,9 @@
   height: 24px;
 }
 .footer-btn {
-  background: transparent;
-  color: #fffbe6;
-  border: 2px solid #fffbe6;
+  background: #ffe066;
+  color: #111;
+  border: 2px solid #ffe066;
   padding: 0.8rem 2.2rem;
   font-size: 1.08rem;
   border-radius: 4px;
@@ -124,9 +124,9 @@
   transition: background 0.2s, color 0.2s, border 0.2s;
 }
 .footer-btn:hover {
-  background: #b33c1a;
-  color: #fff;
-  border-color: #388e3c;
+  background: #fffbe6;
+  color: #bfa600;
+  border-color: #ffe066;
 }
 .footer-facebook .footer-fb-box {
   background: #23272f;

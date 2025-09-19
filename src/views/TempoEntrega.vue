@@ -186,18 +186,17 @@ export default {
 <style scoped>
 .tempo-entrega-novo {
   min-height: 100vh;
-  background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
   display: flex;
   flex-direction: column;
 }
 .tempo-header-novo {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 24px 32px 12px 32px;
   background: #fff;
-  border-bottom: 2px solid #64748b;
-  box-shadow: 0 2px 12px #64748b22;
+  border-bottom: 3px solid #ffe066;
+  box-shadow: 0 2px 12px #ffe06644;
   gap: 1.5rem;
   position: relative;
 }
@@ -209,11 +208,23 @@ export default {
   width: 32px;
   height: 32px;
   cursor: pointer;
-  filter: drop-shadow(0 2px 6px #64748b44);
+  filter: drop-shadow(0 2px 6px #ffe06688);
   transition: filter 0.2s;
 }
 .seta-voltar-tempo-novo:hover {
-  filter: brightness(1.2) drop-shadow(0 4px 12px #64748b66);
+  filter: brightness(1.2) drop-shadow(0 4px 12px #ffe066cc);
+}
+.logo-novo {
+  position: absolute;
+  top: 18px;
+  right: 32px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #ffe06644;
+  background: #fff;
+  margin: 0;
+  display: block;
 }
 .header-center-novo {
   display: flex;
@@ -221,20 +232,12 @@ export default {
   align-items: center;
   flex: none;
   gap: 0.2rem;
-}
-.logo-novo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px #64748b22;
-  margin: 0 auto 8px auto;
-  display: block;
-  background: #fff;
+  width: 100%;
 }
 .titulo-novo {
   font-size: 2rem;
   font-weight: 800;
-  color: #334155;
+  color: #111;
   margin-bottom: 2px;
   letter-spacing: 1px;
   text-align: center;
@@ -248,10 +251,10 @@ export default {
 }
 .tempo-box-novo {
   background: #fff;
-  border: 1.5px solid #64748b;
+  border: 2.5px solid #ffe066;
   border-radius: 20px;
   padding: 2.5rem 3.5rem;
-  box-shadow: 0 4px 16px #64748b22;
+  box-shadow: 0 4px 16px #ffe06633;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -266,13 +269,13 @@ export default {
 }
 .tempo-estimado-novo {
   font-size: 1.1rem;
-  color: #64748b;
-  opacity: 0.8;
+  color: #ffe066;
+  opacity: 0.9;
 }
 .tempo-novo {
   font-size: 2.2rem;
   font-weight: bold;
-  color: #334155;
+  color: #111;
 }
 .taxa-entrega-novo {
   display: flex;
@@ -283,40 +286,40 @@ export default {
 }
 .taxa-entrega-novo label {
   font-size: 1rem;
-  color: #64748b;
+  color: #111;
   opacity: 0.9;
 }
 .taxa-entrega-novo select {
   padding: 0.3rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid #64748b;
-  background: #f1f5f9;
-  color: #334155;
+  border: 1.5px solid #ffe066;
+  background: #fff;
+  color: #111;
   font-size: 1rem;
 }
 .taxa-novo {
   margin-top: 0.3rem;
   font-size: 1.1rem;
-  color: #334155;
+  color: #111;
   font-weight: bold;
 }
 .loading-taxa-novo {
   margin-top: 0.3rem;
   font-size: 1rem;
-  color: #f59e42;
+  color: #ffe066;
 }
 .progress-bar-novo {
   width: 240px;
   height: 18px;
-  background: #e2e8f0;
+  background: #222;
   border-radius: 9px;
   overflow: hidden;
   margin-bottom: 1.5rem;
-  border: 1px solid #64748b;
+  border: 1.5px solid #ffe066;
 }
 .progress-novo {
   height: 100%;
-  background: linear-gradient(90deg, #334155 60%, #fbbf24 100%);
+  background: linear-gradient(90deg, #ffe066 60%, #111 100%);
   transition: width 0.5s;
 }
 .status-list-novo {
@@ -331,12 +334,12 @@ export default {
   flex-direction: column;
   align-items: center;
   font-size: 0.95rem;
-  color: #64748b;
+  color: #ffe066;
   opacity: 0.5;
   transition: opacity 0.3s, color 0.3s;
 }
 .status-item-novo.ativo {
-  color: #334155;
+  color: #111;
   opacity: 1;
   font-weight: bold;
 }
@@ -344,6 +347,7 @@ export default {
   width: 32px;
   height: 32px;
   margin-bottom: 0.3rem;
+  filter: drop-shadow(0 2px 6px #ffe06644);
 }
 .opcoes-novo {
   display: flex;
@@ -351,40 +355,47 @@ export default {
   margin-top: 1.5rem;
 }
 .voltar-novo, .detalhes-novo, .ajuda-novo {
-  background: #334155;
+  background: #111;
   color: #fff;
-  border: none;
+  border: 2px solid #ffe066;
   border-radius: 8px;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.3s, color 0.3s, border 0.3s;
 }
 .detalhes-novo {
-  background: #fbbf24;
-  color: #334155;
+  background: #ff9800;
+  color: #fff;
+  border: 2px solid #ff9800;
+}
+.detalhes-novo:hover {
+  background: #fff3e0;
+  color: #ff9800;
+  border-color: #ff9800;
 }
 .ajuda-novo {
-  background: #f87171;
-  color: #fff;
+  background: #fff;
+  color: #111;
 }
 .voltar-novo:hover, .detalhes-novo:hover, .ajuda-novo:hover {
   filter: brightness(0.95);
   opacity: 0.85;
+  border-color: #111;
 }
 .mensagem-ajuda-novo {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fbbf24;
-  color: #334155;
-  border: 2px solid #f59e42;
+  background: #ffe066;
+  color: #111;
+  border: 2px solid #111;
   border-radius: 12px;
   padding: 16px 22px;
   margin-top: 1.5rem;
   font-size: 1.08rem;
   font-weight: 600;
-  box-shadow: 0 2px 12px #fbbf2433;
+  box-shadow: 0 2px 12px #ffe06633;
   animation: ajudaPopIn 0.4s;
 }
 .mensagem-ajuda-topo {
@@ -396,7 +407,7 @@ export default {
   min-width: 320px;
   max-width: 90vw;
   justify-content: center;
-  box-shadow: 0 6px 24px #fbbf2433, 0 1.5px 8px #64748b22;
+  box-shadow: 0 6px 24px #ffe06633, 0 1.5px 8px #1112;
 }
 @media (max-width: 900px) {
   .tempo-box-novo {
@@ -430,8 +441,11 @@ export default {
     text-align: center;
   }
   .logo-novo {
-    margin: 0 auto 8px auto;
-    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
   }
   .titulo-novo {
     text-align: center;
