@@ -99,15 +99,15 @@ onMounted(() => {
 
 <style scoped>
 .destaque-menu.dark {
-  background: linear-gradient(120deg, #232323 70%, #b33c1a 100%);
-  color: #fffbe6;
-  border-radius: 18px;
-  box-shadow: 0 2px 18px #b33c1a33;
+  background: #fff;
+  color: #111;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px #2222;
   padding: 2.5rem 2rem;
   margin: 2rem auto;
   max-width: 1100px;
   text-align: center;
-  border-top: 6px solid #b33c1a;
+  border-top: 6px solid #ffe066;
 }
 .banner-carousel {
   position: relative;
@@ -117,9 +117,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #232323;
-  border-radius: 24px;
-  box-shadow: 0 2px 12px #b33c1a11;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 2px 16px #ffe06644;
   min-height: 320px;
   min-width: 100%;
 }
@@ -128,8 +128,8 @@ onMounted(() => {
   max-width: 1080px;
   height: 320px;
   object-fit: cover;
-  border-radius: 22px;
-  box-shadow: 0 2px 8px #b33c1a22;
+  border-radius: 24px;
+  box-shadow: 0 2px 8px #ffe06644;
 }
 .carousel-dots {
   position: absolute;
@@ -143,17 +143,23 @@ onMounted(() => {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fffbe655;
+  background: #ffe06655;
   cursor: pointer;
   transition: background 0.2s;
 }
-.dot.ativo { background: #b33c1a; }
+.dot.ativo { background: #ffe066; }
 .destaque-header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #ffe06644;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+  border: 2px solid #ffe066;
 }
 .destaque-texto {
   flex: 2;
@@ -161,14 +167,14 @@ onMounted(() => {
   text-align: left;
 }
 .destaque-menu.dark h2 {
-  color: #ffe5b4;
+  color: #111;
   font-family: 'Playfair Display', serif;
   margin-bottom: 1rem;
-  font-size: 2.1rem;
+  font-size: 2.2rem;
 }
 .destaque-menu.dark p {
-  color: #fffbe6;
-  font-size: 1.15rem;
+  color: #222;
+  font-size: 1.18rem;
   margin-bottom: 1.2rem;
 }
 .destaque-diferenciais {
@@ -182,17 +188,18 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   font-size: 0.98rem;
-  color: #ffe5b4;
-  background: #232323;
+  color: #111;
+  background: #fff;
   border-radius: 10px;
   padding: 0.5rem 0.7rem;
   box-shadow: 0 1px 4px #b33c1a11;
   min-width: 90px;
-  border: 1.5px solid #b33c1a;
+  border: 2px solid #ffe066;
 }
 .diferencial img {
   width: 32px;
   margin-bottom: 0.3rem;
+  filter: drop-shadow(0 2px 6px #ffe06644);
 }
 .destaque-menu.dark ul {
   list-style: none;
@@ -200,14 +207,14 @@ onMounted(() => {
   margin-bottom: 1.2rem;
 }
 .destaque-menu.dark li {
-  color: #fffbe6;
+  color: #222;
   font-size: 1.05rem;
   margin-bottom: 0.4rem;
 }
 .destaque-info-extra {
   margin-bottom: 1.2rem;
-  color: #b3e59f;
-  font-weight: 500;
+  color: #ffe066;
+  font-weight: 700;
   font-size: 1.08rem;
 }
 .destaque-links {
@@ -217,8 +224,8 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 .link-btn {
-  background: #b33c1a;
-  color: #fffbe6;
+  background: #111;
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.5rem;
@@ -226,12 +233,14 @@ onMounted(() => {
   font-family: inherit;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
   margin-bottom: 0.2rem;
+  font-weight: 700;
+  border: 2px solid #ffe066;
 }
 .link-btn:hover {
-  background: #ffe5b4;
-  color: #b33c1a;
+  background: #ffe066;
+  color: #111;
 }
 .destaque-imgs {
   flex: 1;
@@ -245,6 +254,8 @@ onMounted(() => {
   width: 170px;
   border-radius: 14px;
   box-shadow: 0 2px 8px #b33c1a22;
+  border: 2px solid #ffe066;
+  background: #fff;
 }
 .animar {
   opacity: 0;
@@ -260,6 +271,7 @@ onMounted(() => {
     flex-direction: column;
     align-items: stretch;
     gap: 1.5rem;
+    padding: 1.2rem 0.5rem;
   }
   .destaque-imgs img {
     width: 120px;
@@ -267,6 +279,7 @@ onMounted(() => {
   .banner-img {
     height: 180px;
     max-width: 98vw;
+    border-radius: 14px;
   }
   .banner-carousel {
     min-height: 180px;
@@ -302,6 +315,9 @@ onMounted(() => {
   .banner-carousel {
     min-height: 110px;
     border-radius: 10px;
+  }
+  .destaque-header {
+    padding: 0.7rem 0.2rem;
   }
 }
 @media (max-width: 400px) {
