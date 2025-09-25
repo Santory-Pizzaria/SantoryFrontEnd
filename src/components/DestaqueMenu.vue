@@ -213,7 +213,7 @@ onMounted(() => {
 }
 .destaque-info-extra {
   margin-bottom: 1.2rem;
-  color: #ffe066;
+  color: #c7af4f;
   font-weight: 700;
   font-size: 1.08rem;
 }
