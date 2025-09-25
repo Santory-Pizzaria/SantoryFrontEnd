@@ -41,7 +41,22 @@ export default {
       return `R$ ${total.toFixed(2).replace('.', ',')}`;
     },
     pedirMais() {
-      this.$router.push('/menu')
+      // Adiciona o item atual ao carrinho
+      const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+      // Monta o item do carrinho
+      const itemCarrinho = {
+        id: Date.now(),
+        nome: this.pedido.pizzaNome,
+        sabores: this.pedido.saboresSelecionados,
+        borda: this.pedido.bordaSelecionada,
+        quantidade: this.pedido.quantidade,
+        preco: typeof this.pedido.valor === 'string' ? parseFloat(this.pedido.valor.replace('R$','').replace(',','.')) : this.pedido.valor,
+        imagem: '/src/assets/imagens/pizza.png' // ou outra imagem padrão
+      };
+      carrinho.push(itemCarrinho);
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      // Redireciona para o menu
+      this.$router.push('/menu');
     },
     finalizarPedido() {
       // Salvar dados do pedido no localStorage temporariamente para passar para o pagamento

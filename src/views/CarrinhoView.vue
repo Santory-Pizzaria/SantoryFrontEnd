@@ -26,6 +26,10 @@
             <strong>R$ {{ totalCarrinho.toFixed(2) }}</strong>
           </div>
           <button class="finalizar-novo" @click="finalizarCompra">Finalizar Compra</button>
+          <div class="valor-final-carrinho">
+            <span>Valor Final:</span>
+            <strong>R$ {{ totalCarrinho.toFixed(2) }}</strong>
+          </div>
         </div>
       </main>
     </div>
@@ -54,48 +58,32 @@ export default {
   },
   methods: {
     carregarCarrinho() {
-      // Busca os pedidos não finalizados do usuário no localStorage
-      // Removed unused variable 'usuarioLogado'
-      const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-      this.carrinho = pedidos.filter(p => p.usuarioId === usuarioLogado?.id && p.status !== 'Finalizado');
+      // Busca os itens do carrinho no localStorage
+      this.carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
     },
     alterarQuantidade(index, valor) {
-      const pedido = this.carrinho[index];
-      if (pedido.quantidade + valor >= 1) {
-        pedido.quantidade += valor;
+      const item = this.carrinho[index];
+      if (item.quantidade + valor >= 1) {
+        item.quantidade += valor;
         // Atualiza no localStorage
-        let pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-        const idx = pedidos.findIndex(p => p.id === pedido.id);
-        if (idx !== -1) {
-          pedidos[idx].quantidade = pedido.quantidade;
-          localStorage.setItem('pedidos', JSON.stringify(pedidos));
-        }
-        this.carregarCarrinho();
+        localStorage.setItem('carrinho', JSON.stringify(this.carrinho));
+        // Força atualização reativa
+        this.carrinho = [...this.carrinho];
       }
     },
     removerItem(index) {
-      let pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-      const pedidoRemovido = this.carrinho[index];
-      pedidos = pedidos.filter(p => p.id !== pedidoRemovido.id);
-      localStorage.setItem('pedidos', JSON.stringify(pedidos));
-      this.carregarCarrinho();
+      this.carrinho.splice(index, 1);
+      localStorage.setItem('carrinho', JSON.stringify(this.carrinho));
+      // Força atualização reativa
+      this.carrinho = [...this.carrinho];
     },
     finalizarCompra() {
       this.mensagemFinalizar = '🍕 Compra finalizada com sucesso! Obrigado por escolher a Santory Pizzaria!';
       setTimeout(() => {
         this.mensagemFinalizar = '';
-        // Marca todos os pedidos do carrinho como finalizados
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-        let pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-        pedidos = pedidos.map(p => {
-          if (p.usuarioId === usuarioLogado?.id && p.status !== 'Finalizado') {
-            return { ...p, status: 'Finalizado' };
-          }
-          return p;
-        });
-        localStorage.setItem('pedidos', JSON.stringify(pedidos));
-        this.carregarCarrinho();
+        // Limpa o carrinho
+        localStorage.removeItem('carrinho');
+        this.carrinho = [];
       }, 2000);
     }
   },
@@ -246,6 +234,17 @@ export default {
   text-align: center;
   white-space: pre-line;
   animation: fadein 0.4s;
+}
+.valor-final-carrinho {
+  margin-top: 12px;
+  font-size: 1.25em;
+  color: #388e3c;
+  font-weight: bold;
+  text-align: center;
+  background: #e8f5e9;
+  border-radius: 8px;
+  padding: 10px 0;
+  box-shadow: 0 2px 8px #b33c1a11;
 }
 @keyframes fadein {
   from { opacity: 0; transform: translateX(-50%) translateY(-20px); }

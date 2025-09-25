@@ -7,6 +7,15 @@ const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
 
+// Calcula o valor total do carrinho
+const totalCarrinho = computed(() => {
+  return carrinho.value.reduce((total, item) => {
+    const preco = parseFloat(item.preco) || 0;
+    const qtd = item.qtd || 1;
+    return total + preco * qtd;
+  }, 0);
+});
+
 const rotasSemCarrinho = ['/login', '/Login', '/cadastro', '/reserva', '/CadastroPizzaria', '/admin'];
 const mostrarCarrinho = computed(() => {
   return !rotasSemCarrinho.includes(router.currentRoute.value.path.toLowerCase());
@@ -80,7 +89,12 @@ window.addEventListener('storage', atualizarQtdCarrinho)
       <transition name="mini-cart-fade">
         <div v-if="showMiniCart && mostrarCarrinho" class="mini-cart-modal" @click.self="toggleMiniCart">
           <div class="mini-cart-content">
+            <div class="mini-cart-header">
+              <img src="/src/assets/imagens/carrinho.png" alt="Carrinho" class="mini-cart-icon" />
+              <span v-if="totalCarrinho > 0" class="carrinho-badge mini-cart-badge">R$ {{ totalCarrinho.toFixed(2) }}</span>
+            </div>
             <h3>Seu Carrinho</h3>
+            <div v-if="totalCarrinho > 0" class="mini-cart-total">Valor Total: <strong>R$ {{ totalCarrinho.toFixed(2) }}</strong></div>
             <ul v-if="carrinho.length">
               <li v-for="(item, idx) in carrinho" :key="idx" class="mini-cart-item">
                 <div class="mini-cart-item-info">
@@ -475,5 +489,27 @@ nav a:first-of-type {
     height: 24px;
     font-size: 1rem;
   }
+}
+.mini-cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.mini-cart-icon {
+  width: 32px;
+  height: 32px;
+}
+.mini-cart-badge {
+  position: static;
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 1rem;
+  min-width: 0;
+  padding: 2px 8px;
+  top: unset;
+  right: unset;
+  box-shadow: none;
 }
 </style>
