@@ -12,7 +12,9 @@ export async function login(email, password) {
     try {
       const err = await response.json();
       errorMsg = err.detail || JSON.stringify(err);
-    } catch {}
+    } catch {
+      // Error parsing error response, ignore
+    }
     throw new Error(errorMsg);
   }
   const data = await response.json();
@@ -28,7 +30,10 @@ export async function login(email, password) {
       const userData = await userResp.json();
       localStorage.setItem('usuarioLogado', JSON.stringify(userData));
     }
-  } catch {}
+  } catch (e) {
+    // Error fetching user data, log the error
+    console.error('Error fetching user data:', e);
+  }
 
   return data;
 }
@@ -53,7 +58,9 @@ export async function register({ email, password, name }) {
     try {
       const err = await response.json();
       errorMsg = JSON.stringify(err);
-    } catch {}
+    } catch {
+      // Error parsing error response, ignore
+    }
     throw new Error(errorMsg);
   }
   return await response.json();
