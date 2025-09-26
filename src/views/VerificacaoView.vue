@@ -55,6 +55,7 @@ export default {
       };
       carrinho.push(itemCarrinho);
       localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      window.dispatchEvent(new Event('carrinho-atualizado'));
       // Redireciona para o menu
       this.$router.push('/menu');
     },

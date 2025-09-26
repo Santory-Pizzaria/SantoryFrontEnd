@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -79,6 +79,12 @@ function adicionarMais(idx) {
 // Atualiza ao montar
 atualizarQtdCarrinho()
 window.addEventListener('storage', atualizarQtdCarrinho)
+window.addEventListener('carrinho-atualizado', atualizarQtdCarrinho)
+
+// Atualiza automaticamente a quantidade de itens na bola do carrinho
+watch(carrinho, () => {
+  qtdCarrinho.value = carrinho.value.reduce((soma, item) => soma + (item.quantidade || 1), 0);
+}, { deep: true });
 </script>
 
 <template>
