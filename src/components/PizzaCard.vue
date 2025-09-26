@@ -7,25 +7,25 @@ export default {
       tamanhos: [
         {
           nome: 'Pequena',
-          preco: 25.00,
+          preco: 18.00,
           img: '/src/assets/imagens/Pizzaex.png',
           descricao: '12cm •4 fatias • Serve até 1 pessoa'
         },
         {
           nome: 'Média',
-          preco: 35.00,
+          preco: 25.00,
           img: '/src/assets/imagens/Pizzaex.png',
           descricao: '18cm •8 fatias • Serve até 2 pessoas'
         },
         {
           nome: 'Grande',
-          preco: 45.00,
+          preco: 35.00,
           img: '/src/assets/imagens/Pizzaex.png',
           descricao: '22cm •12 fatias • Serve até 4 pessoas'
         },
         {
           nome: 'Família',
-          preco: 65.00,
+          preco: 45.00,
           img: '/src/assets/imagens/Pizzaex.png',
           descricao: '22cm •18 fatias • Serve até 4 pessoas'
         }
@@ -52,6 +52,10 @@ export default {
       item.id = Date.now();
       item.usuarioId = usuarioLogado.id;
       item.status = 'Pendente';
+      // Corrige o preço para número ao adicionar ao carrinho
+      if (typeof item.preco === 'string') {
+        item.preco = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim()) || 0;
+      }
       pedidos.push(item);
       localStorage.setItem('pedidos', JSON.stringify(pedidos));
     }

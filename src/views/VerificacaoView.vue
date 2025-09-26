@@ -49,8 +49,8 @@ export default {
         nome: this.pedido.pizzaNome,
         sabores: this.pedido.saboresSelecionados,
         borda: this.pedido.bordaSelecionada,
-        quantidade: this.pedido.quantidade,
-        preco: typeof this.pedido.valor === 'string' ? parseFloat(this.pedido.valor.replace('R$','').replace(',','.')) : this.pedido.valor,
+        quantidade: this.pedido.quantidade, // sempre quantidade
+        preco: typeof this.pedido.valor === 'string' ? parseFloat(this.pedido.valor.replace('R$', '').replace(',', '.')) : this.pedido.valor, // sempre número
         imagem: '/src/assets/imagens/pizza.png' // ou outra imagem padrão
       };
       carrinho.push(itemCarrinho);

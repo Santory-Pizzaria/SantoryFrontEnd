@@ -10,9 +10,16 @@ const carrinho = ref([]);
 // Calcula o valor total do carrinho
 const totalCarrinho = computed(() => {
   return carrinho.value.reduce((total, item) => {
-    const preco = parseFloat(item.preco) || 0;
-    const qtd = item.qtd || 1;
-    return total + preco * qtd;
+    // Aceita preco como número ou string (ex: 'R$ 19,90' ou '19,90')
+    let preco = item.preco;
+    if (typeof preco === 'string') {
+      preco = preco.replace('R$', '').replace(',', '.').trim();
+      preco = parseFloat(preco) || 0;
+    }
+    if (typeof preco !== 'number' || isNaN(preco)) preco = 0;
+    // Usa quantidade ou qtd
+    const quantidade = item.quantidade || item.qtd || 1;
+    return total + preco * quantidade;
   }, 0);
 });
 
@@ -36,7 +43,7 @@ function goToLogin() {
 // Exemplo: recarrega quantidade do carrinho do localStorage
 function atualizarQtdCarrinho() {
   const carrinhoStorage = JSON.parse(localStorage.getItem('carrinho') || '[]');
-  qtdCarrinho.value = carrinhoStorage.length;
+  qtdCarrinho.value = carrinhoStorage.reduce((soma, item) => soma + (item.quantidade || 1), 0);
   carrinho.value = carrinhoStorage;
 }
 
@@ -52,8 +59,8 @@ function irParaCarrinho() {
 
 function removerItem(idx) {
   const carrinhoStorage = JSON.parse(localStorage.getItem('carrinho') || '[]');
-  if (carrinhoStorage[idx]?.qtd && carrinhoStorage[idx].qtd > 1) {
-    carrinhoStorage[idx].qtd--;
+  if (carrinhoStorage[idx]?.quantidade && carrinhoStorage[idx].quantidade > 1) {
+    carrinhoStorage[idx].quantidade--;
   } else {
     carrinhoStorage.splice(idx, 1);
   }
@@ -63,8 +70,8 @@ function removerItem(idx) {
 
 function adicionarMais(idx) {
   const carrinhoStorage = JSON.parse(localStorage.getItem('carrinho') || '[]');
-  if (!carrinhoStorage[idx].qtd) carrinhoStorage[idx].qtd = 1;
-  carrinhoStorage[idx].qtd++;
+  if (!carrinhoStorage[idx].quantidade) carrinhoStorage[idx].quantidade = 1;
+  carrinhoStorage[idx].quantidade++;
   localStorage.setItem('carrinho', JSON.stringify(carrinhoStorage));
   atualizarQtdCarrinho();
 }
