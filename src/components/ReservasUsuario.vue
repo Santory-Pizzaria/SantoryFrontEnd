@@ -81,7 +81,7 @@ export default {
     <ul v-else class="lista-reservas">
       <li v-for="reserva in reservas" :key="reserva.id" class="reserva-item">
         <div><strong>Data:</strong> {{ formatarData(reserva.data) }}</div>
-        <div><strong>Horário:</strong> {{ reserva.horario }}</div>
+        <div><strong>Horário:</strong> {{ reserva.horaInicio }} - {{ reserva.horaFim }}</div>
         <div><strong>Mesa:</strong> {{ reserva.mesa }}</div>
         <div><strong>Pessoas:</strong> {{ reserva.qtdPessoas }}</div>
         <div><strong>Status:</strong> {{ reserva.status }}</div>

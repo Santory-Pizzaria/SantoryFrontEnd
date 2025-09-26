@@ -119,7 +119,7 @@ export default {
 </script>
 
 <template>
-  <div class="tempo-entrega-novo">
+  <div class="tempo-entrega-bg-novo">
     <header class="tempo-header-novo">
       <img
         src="@/assets/imagens/seta-preta.png"
@@ -133,10 +133,10 @@ export default {
       </div>
     </header>
     <main class="tempo-main-novo">
-      <section class="tempo-box-novo">
-        <div class="tempo-info-novo">
+      <section class="tempo-box-novo tempo-box-card">
+        <div class="tempo-info-novo tempo-info-card">
           <span class="tempo-estimado-novo">Tempo estimado:</span>
-          <span class="tempo-novo">
+          <span class="tempo-novo tempo-novo-card">
             <template v-if="tempoEntregaMin !== null">
               {{ tempoEntregaMin + 45 }} min
             </template>
@@ -145,7 +145,7 @@ export default {
             </template>
           </span>
         </div>
-        <div class="taxa-entrega-novo">
+        <div class="taxa-entrega-novo taxa-entrega-card">
           <label for="local">Selecione seu bairro:</label>
           <select id="local" v-model="bairroSelecionado">
             <option disabled value="">Selecione</option>
@@ -153,21 +153,18 @@ export default {
               {{ bairro.nome }}
             </option>
           </select>
-          <span v-if="taxaEntrega !== null" class="taxa-novo">
-            Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
+          <span v-if="taxaEntrega !== null" class="taxa-novo taxa-novo-card">
+            Taxa de entrega: <b>R$ {{ taxaEntrega.toFixed(2) }}</b>
           </span>
           <span v-if="loadingTaxa" class="loading-taxa-novo">Calculando...</span>
         </div>
-        <div class="progress-bar-novo">
-          <div class="progress-novo" :style="{ width: progresso + '%' }"></div>
-        </div>
-        <div class="status-list-novo">
-          <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item-novo" :class="{ ativo: idx <= etapaAtual }">
-            <img :src="etapa.icone" :alt="etapa.nome" class="status-icone-novo" />
+        <div class="status-list-novo status-list-card">
+          <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item-novo status-item-card" :class="{ ativo: idx <= etapaAtual }">
+            <img :src="etapa.icone" :alt="etapa.nome" class="status-icone-novo status-icone-card" />
             <span>{{ etapa.nome }}</span>
           </div>
         </div>
-        <div class="opcoes-novo">
+        <div class="opcoes-novo opcoes-card">
           <button class="voltar-novo" @click="voltarMenu">Voltar ao Menu</button>
           <button class="detalhes-novo" @click="verDetalhes">Ver Detalhes do Pedido</button>
           <button class="ajuda-novo" @click="abrirAjuda">Precisa de Ajuda?</button>
@@ -184,8 +181,9 @@ export default {
 </template>
 
 <style scoped>
-.tempo-entrega-novo {
+.tempo-entrega-bg-novo {
   min-height: 100vh;
+  background: url('@/assets/imagens/fundo.png') center center/cover no-repeat;
   display: flex;
   flex-direction: column;
 }
@@ -193,10 +191,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 24px 32px 12px 32px;
-  background: #fff;
-  border-bottom: 3px solid #ffe066;
-  box-shadow: 0 2px 12px #ffe06644;
   gap: 1.5rem;
   position: relative;
 }
@@ -221,8 +215,8 @@ export default {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  box-shadow: 0 2px 8px #ffe06644;
-  background: #fff;
+  box-shadow: none;
+  background: transparent;
   margin: 0;
   display: block;
 }
@@ -261,11 +255,28 @@ export default {
   min-width: 340px;
   max-width: 420px;
 }
+.tempo-box-card {
+  background: #fffbe6;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px #ffe06633;
+  border: 2.5px solid #ffe066;
+  padding: 2.5rem 3.5rem;
+  margin-top: 2rem;
+  min-width: 340px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .tempo-info-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
+}
+.tempo-info-card {
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
 .tempo-estimado-novo {
   font-size: 1.1rem;
@@ -277,12 +288,22 @@ export default {
   font-weight: bold;
   color: #111;
 }
+.tempo-novo-card {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #b33c1a;
+}
 .taxa-entrega-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
   gap: 0.3rem;
+}
+.taxa-entrega-card {
+  margin-bottom: 1.2rem;
+  gap: 0.3rem;
+  text-align: center;
 }
 .taxa-entrega-novo label {
   font-size: 1rem;
@@ -303,6 +324,10 @@ export default {
   color: #111;
   font-weight: bold;
 }
+.taxa-novo-card {
+  color: #e63946;
+  font-weight: bold;
+}
 .loading-taxa-novo {
   margin-top: 0.3rem;
   font-size: 1rem;
@@ -317,6 +342,15 @@ export default {
   margin-bottom: 1.5rem;
   border: 1.5px solid #ffe066;
 }
+.progress-bar-card {
+  width: 240px;
+  height: 18px;
+  background: #ffe066;
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1.5px solid #b33c1a;
+}
 .progress-novo {
   height: 100%;
   background: linear-gradient(90deg, #ffe066 60%, #111 100%);
@@ -329,6 +363,10 @@ export default {
   margin: 1.5rem 0 1rem 0;
   gap: 0.5rem;
 }
+.status-list-card {
+  margin: 1.5rem 0 1rem 0;
+  gap: 0.5rem;
+}
 .status-item-novo {
   display: flex;
   flex-direction: column;
@@ -338,7 +376,15 @@ export default {
   opacity: 0.5;
   transition: opacity 0.3s, color 0.3s;
 }
+.status-item-card {
+  color: #b33c1a;
+}
 .status-item-novo.ativo {
+  color: #111;
+  opacity: 1;
+  font-weight: bold;
+}
+.status-item-card.ativo {
   color: #111;
   opacity: 1;
   font-weight: bold;
@@ -349,10 +395,20 @@ export default {
   margin-bottom: 0.3rem;
   filter: drop-shadow(0 2px 6px #ffe06644);
 }
+.status-icone-card {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.3rem;
+  filter: drop-shadow(0 2px 6px #b33c1a44);
+}
 .opcoes-novo {
   display: flex;
   gap: 1rem;
   margin-top: 1.5rem;
+}
+.opcoes-card {
+  margin-top: 1.5rem;
+  gap: 1rem;
 }
 .voltar-novo, .detalhes-novo, .ajuda-novo {
   background: #111;
@@ -415,6 +471,11 @@ export default {
     max-width: 98vw;
     padding: 1.5rem 2vw;
   }
+  .tempo-box-card {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 1.5rem 2vw;
+  }
   .tempo-header-novo {
     padding: 18px 2vw 8px 2vw;
   }
@@ -459,7 +520,15 @@ export default {
     max-width: 99vw;
     padding: 1rem 2vw;
   }
+  .tempo-box-card {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+  }
   .progress-bar-novo {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .progress-bar-card {
     width: 90vw;
     min-width: 120px;
   }
@@ -467,7 +536,16 @@ export default {
     width: 24px;
     height: 24px;
   }
+  .status-icone-card {
+    width: 24px;
+    height: 24px;
+  }
   .opcoes-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .opcoes-card {
     flex-direction: column;
     gap: 0.5rem;
     width: 100%;
@@ -501,7 +579,15 @@ export default {
     min-width: 90vw;
     padding: 1.2rem 0.5rem;
   }
+  .tempo-box-card {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+  }
   .progress-bar-novo {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .progress-bar-card {
     width: 90vw;
     min-width: 120px;
   }
@@ -509,7 +595,6 @@ export default {
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
-    padding: 18px 8px 8px 8px;
   }
   .header-center-novo {
     align-items: flex-start;
