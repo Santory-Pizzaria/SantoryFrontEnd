@@ -10,6 +10,7 @@ export default {
       },
       aviso: '',
       filtroEstrelas: '',
+      usuarioLogado: ''
     }
   },
   methods: {
@@ -19,13 +20,23 @@ export default {
         setTimeout(() => { this.aviso = ''; }, 3000);
         return;
       }
+      // Pega o nome do usuário logado
+      let usuario = '';
+      try {
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        usuario = usuarioLogado?.nome || '';
+      } catch { usuario = ''; }
       this.feedbacks.push({
         opiniao: this.novoFeedback.opiniao.trim(),
-        estrelas: this.novoFeedback.estrelas
+        estrelas: this.novoFeedback.estrelas,
+        usuario: usuario
       });
       this.novoFeedback.opiniao = '';
       this.novoFeedback.estrelas = 0;
       this.aviso = '';
+    },
+    deletarFeedback(idx) {
+      this.feedbacks.splice(idx, 1);
     }
   },
   mounted() {
@@ -38,6 +49,10 @@ export default {
         this.feedbacks = [];
       }
     }
+    try {
+      const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+      this.usuarioLogado = usuario?.nome || '';
+    } catch { this.usuarioLogado = ''; }
   },
   watch: {
     feedbacks: {
@@ -109,6 +124,9 @@ export default {
                   <span v-for="star in 5" :key="star" :class="{ selected: star <= feedback.estrelas }">★</span>
                 </div>
                 <div class="feedback-opinion-novo">{{ feedback.opiniao }}</div>
+                <div v-if="feedback.usuario" class="feedback-usuario-nome">— {{ feedback.usuario }}
+                  <button v-if="feedback.usuario === usuarioLogado" class="btn-deletar-feedback" @click="deletarFeedback(index)">Excluir</button>
+                </div>
               </div>
             </div>
           </li>
@@ -361,6 +379,11 @@ export default {
   color: #111;
   margin-top: 2px;
   font-style: italic;
+}
+.feedback-usuario-nome {
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 4px;
 }
 @media (max-width: 900px) {
   .feedback-bg-novo {
