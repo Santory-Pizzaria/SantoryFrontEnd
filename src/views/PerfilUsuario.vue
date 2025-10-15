@@ -13,6 +13,8 @@ export default {
       usuarioEdit: {},
       editando: false,
       defaultAvatar: new URL('@/assets/imagens/logo.png', import.meta.url).href,
+      showAlerta: false,
+      alertaMsg: '',
     };
   },
   mounted() {
@@ -90,12 +92,16 @@ export default {
         this.editando = false;
         this.$forceUpdate();
 
-        // Mostrar feedback de sucesso
-        alert('Perfil atualizado com sucesso!');
+        // Alerta personalizado
+        this.alertaMsg = 'Perfil atualizado com sucesso!';
+        this.showAlerta = true;
+        setTimeout(() => { this.showAlerta = false; }, 3000);
 
       } catch (error) {
         console.error('Erro ao salvar perfil:', error);
-        alert('Erro ao salvar perfil. Tente novamente.');
+        this.alertaMsg = 'Erro ao salvar perfil. Tente novamente.';
+        this.showAlerta = true;
+        setTimeout(() => { this.showAlerta = false; }, 3000);
       }
     },
     cancelarEdicao() {
@@ -157,6 +163,9 @@ export default {
 
 <template>
   <div class="pizzaria-bg"></div>
+  <div v-if="showAlerta" class="alerta-perfil-sucesso">
+    <span>{{ alertaMsg }}</span>
+  </div>
   <div class="perfil-container pizzaria-layout">
     <div class="seta-voltar" @click="voltarMenu">
       <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
@@ -381,6 +390,26 @@ export default {
   height: 36px;
   filter: drop-shadow(0 1px 2px rgba(44,62,80,0.10));
 }
+.alerta-perfil-sucesso {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #b33c1a22;
+  padding: 16px 32px;
+  animation: alertaPerfilFadeIn 0.4s;
+  min-width: 220px;
+  text-align: center;
+}
+@keyframes alertaPerfilFadeIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 @media (max-width: 600px) {
   .pizzaria-card {
     padding: 20px 4px 20px 4px;
@@ -394,6 +423,14 @@ export default {
   .seta-voltar {
     top: 10px;
     left: 10px;
+  }
+  .alerta-perfil-sucesso {
+    top: 10px;
+    right: 4vw;
+    min-width: 0;
+    max-width: 90vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
   }
 }
 </style>

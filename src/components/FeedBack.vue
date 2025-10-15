@@ -84,7 +84,7 @@ export default {
         @click="$router.push('/menu')"
       />
       <div class="header-center-novo">
-        <img src="/logo.ico" alt="Logo Pizzaria" class="pizza-logo-novo" />
+
         <div>
           <h1 class="pizza-title-novo">Deixe sua Avaliação!</h1>
           <p class="pizza-sub-novo">Sua opinião faz nossa pizza melhor 🍕</p>
@@ -139,10 +139,18 @@ export default {
 <style scoped>
 .feedback-bg-novo {
   min-height: 100vh;
-  background: #fff;
+  background: url('@/assets/imagens/fundo.png') center center/cover no-repeat;
   padding: 0 0 40px 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+.feedback-bg-novo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  z-index: 0;
 }
 .feedback-header-novo {
   display: flex;
@@ -150,8 +158,10 @@ export default {
   justify-content: space-between;
   padding: 24px 32px 12px 32px;
   background: #fff;
-  border-bottom: 2px solid #222;
-  box-shadow: 0 2px 12px #2221;
+  border-bottom: 2px solid #b33c1a;
+  box-shadow: 0 2px 12px #b33c1a22;
+  position: relative;
+  z-index: 1;
 }
 .header-center-novo {
   display: flex;
@@ -164,17 +174,18 @@ export default {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  box-shadow: 0 2px 8px #2222;
+  box-shadow: 0 2px 8px #b33c1a22;
   margin: 0 auto 8px auto;
   display: block;
 }
 .pizza-title-novo {
   font-size: 2rem;
   font-weight: 800;
-  color: #111;
+  color: #b33c1a;
   margin-bottom: 2px;
   letter-spacing: 1px;
   text-align: center;
+  font-family: 'Playfair Display', serif;
 }
 .pizza-sub-novo {
   color: #444;
@@ -186,11 +197,11 @@ export default {
   width: 32px;
   height: 32px;
   cursor: pointer;
-  filter: drop-shadow(0 2px 6px #0002);
+  filter: drop-shadow(0 2px 6px #b33c1a22);
   transition: filter 0.2s, transform 0.2s;
 }
 .seta-voltar-novo:hover {
-  filter: brightness(1.2) drop-shadow(0 4px 12px #0004);
+  filter: brightness(1.2) drop-shadow(0 4px 12px #b33c1a44);
   transform: scale(1.08);
 }
 .feedback-main-novo {
@@ -199,14 +210,16 @@ export default {
   gap: 32px;
   justify-content: center;
   margin-top: 24px;
+  position: relative;
+  z-index: 1;
 }
 .feedback-form-section-novo {
   flex: 1 1 340px;
   max-width: 400px;
   background: #fff;
   border-radius: 18px;
-  border: 1.5px solid #222;
-  box-shadow: 0 4px 24px #2221;
+  border: 1.5px solid #ff9800;
+  box-shadow: 0 4px 24px #b33c1a11;
   padding: 32px 24px 24px 24px;
   display: flex;
   flex-direction: column;
@@ -221,23 +234,23 @@ export default {
 }
 .feedback-label-novo {
   font-weight: 600;
-  color: #111;
+  color: #b33c1a;
   margin-bottom: 6px;
   display: block;
 }
 .feedback-form-novo textarea {
   padding: 10px 14px;
-  border: 1.5px solid #222;
+  border: 1.5px solid #ff9800;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
-  background: #fafafa;
-  color: #111;
+  background: #fffbe6;
+  color: #222;
   resize: none;
   transition: border 0.2s;
 }
 .feedback-form-novo textarea:focus {
-  border-color: #111;
+  border-color: #b33c1a;
 }
 .star-rating-novo {
   display: flex;
@@ -254,7 +267,7 @@ export default {
 }
 .star-rating-novo span.selected,
 .star-rating-novo span:hover {
-  color: #111;
+  color: #ff9800;
   transform: scale(1.18);
 }
 .star-rating-novo span:hover~span {
@@ -262,7 +275,7 @@ export default {
 }
 .feedback-form-novo button {
   padding: 12px 0;
-  background: #111;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -270,17 +283,17 @@ export default {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 2px 8px #2222;
+  box-shadow: 0 2px 8px #b33c1a22;
   margin-top: 8px;
 }
 .feedback-form-novo button:hover {
-  background: #444;
+  background: linear-gradient(90deg, #b33c1a 0%, #ff9800 100%);
   transform: translateY(-2px) scale(1.04);
 }
 .feedback-aviso-novo {
-  background: #f5f5f5;
-  color: #111;
-  border: 1.5px solid #222;
+  background: #fffbe6;
+  color: #b33c1a;
+  border: 1.5px solid #ff9800;
   border-radius: 8px;
   padding: 10px 18px;
   margin: 12px auto 0 auto;
@@ -288,7 +301,7 @@ export default {
   text-align: center;
   font-weight: 600;
   font-size: 1.05rem;
-  box-shadow: 0 2px 8px #2222;
+  box-shadow: 0 2px 8px #b33c1a22;
   animation: avisoFadeIn 0.3s;
 }
 @keyframes avisoFadeIn {
@@ -300,8 +313,8 @@ export default {
   max-width: 520px;
   background: #fff;
   border-radius: 18px;
-  border: 1.5px solid #222;
-  box-shadow: 0 4px 24px #2221;
+  border: 1.5px solid #ff9800;
+  box-shadow: 0 4px 24px #b33c1a11;
   padding: 32px 24px 24px 24px;
   min-width: 280px;
   display: flex;
@@ -310,7 +323,7 @@ export default {
 }
 .feedback-list-title-novo {
   text-align: center;
-  color: #111;
+  color: #b33c1a;
   font-size: 1.3rem;
   font-weight: 700;
   margin: 0 0 18px 0;
@@ -326,10 +339,10 @@ export default {
 .feedback-filter-novo select {
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1.5px solid #222;
+  border: 1.5px solid #ff9800;
   font-size: 1rem;
-  background: #fafafa;
-  color: #111;
+  background: #fffbe6;
+  color: #b33c1a;
 }
 .feedback-list-novo {
   width: 100%;
@@ -340,14 +353,15 @@ export default {
   gap: 16px;
 }
 .feedback-item-novo {
-  background: #fafafa;
-  border: 1.5px solid #222;
+  background: #fffbe6;
+  border: 1.5px solid #ff9800;
   border-radius: 14px;
   padding: 16px 18px;
-  box-shadow: 0 2px 8px #2221;
+  box-shadow: 0 2px 8px #b33c1a11;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
 }
 .feedback-user-novo {
   display: flex;
@@ -357,13 +371,14 @@ export default {
 .avatar-novo {
   width: 38px;
   height: 38px;
-  background: #222;
+  background: #ff9800;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.7rem;
-  box-shadow: 0 1px 4px #2222;
+  box-shadow: 0 1px 4px #b33c1a22;
+  color: #fff;
 }
 .feedback-stars-novo {
   display: flex;
@@ -372,18 +387,34 @@ export default {
   color: #e0e0e0;
 }
 .feedback-stars-novo span.selected {
-  color: #111;
+  color: #ff9800;
 }
 .feedback-opinion-novo {
   font-size: 1.08rem;
-  color: #111;
+  color: #222;
   margin-top: 2px;
   font-style: italic;
 }
 .feedback-usuario-nome {
   font-size: 0.95rem;
-  color: #555;
+  color: #b33c1a;
   margin-top: 4px;
+  font-weight: 600;
+}
+.btn-deletar-feedback {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 14px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-deletar-feedback:hover {
+  background: #b33c1a;
 }
 @media (max-width: 900px) {
   .feedback-bg-novo {

@@ -348,7 +348,6 @@ nav a:first-of-type {
   right: 24px;
   bottom: 100px;
   z-index: 10000;
-  background: rgba(0,0,0,0.18);
   width: 100vw;
   height: 100vh;
   display: flex;

@@ -97,15 +97,11 @@ export default {
   left: 18px;
   z-index: 1000;
   cursor: pointer;
-  background: rgba(255,255,255,0.7);
   border-radius: 50%;
-  box-shadow: 0 2px 8px #b33c1a22;
   padding: 6px;
   transition: background 0.2s;
 }
-.seta-voltar-menu:hover {
-  background: #ff9800;
-}
+
 .seta-voltar-menu img {
   width: 32px;
   height: 32px;

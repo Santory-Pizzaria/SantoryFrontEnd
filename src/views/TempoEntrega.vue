@@ -202,12 +202,9 @@ export default {
   width: 32px;
   height: 32px;
   cursor: pointer;
-  filter: drop-shadow(0 2px 6px #ffe06688);
   transition: filter 0.2s;
 }
-.seta-voltar-tempo-novo:hover {
-  filter: brightness(1.2) drop-shadow(0 4px 12px #ffe066cc);
-}
+
 .logo-novo {
   position: absolute;
   top: 18px;
