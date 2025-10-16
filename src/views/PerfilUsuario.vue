@@ -15,10 +15,12 @@ export default {
       defaultAvatar: new URL('@/assets/imagens/logo.png', import.meta.url).href,
       showAlerta: false,
       alertaMsg: '',
+      historicoCompras: [], // Adicionado histórico
     };
   },
   mounted() {
     this.carregarDadosUsuario();
+    this.atualizarHistoricoCompras(); // Atualiza histórico ao montar
   },
   methods: {
     carregarDadosUsuario() {
@@ -91,6 +93,7 @@ export default {
 
         this.editando = false;
         this.$forceUpdate();
+        this.atualizarHistoricoCompras(); // Atualiza histórico após salvar perfil
 
         // Alerta personalizado
         this.alertaMsg = 'Perfil atualizado com sucesso!';
@@ -156,7 +159,13 @@ export default {
       localStorage.removeItem('usuarioLogado');
       localStorage.removeItem('token');
       this.$router.push('/login');
-    }
+    },
+    atualizarHistoricoCompras() {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado) return;
+      const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+      this.historicoCompras = pedidos.filter(p => p.usuarioId === usuarioLogado.id);
+    },
   },
 };
 </script>
@@ -166,39 +175,57 @@ export default {
   <div v-if="showAlerta" class="alerta-perfil-sucesso">
     <span>{{ alertaMsg }}</span>
   </div>
-  <div class="perfil-container pizzaria-layout">
-    <div class="seta-voltar" @click="voltarMenu">
-      <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
+  <div class="perfil-historico-layout">
+    <div class="perfil-container pizzaria-layout">
+      <div class="seta-voltar" @click="voltarMenu">
+        <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
+      </div>
+      <div class="perfil-card pizzaria-card">
+        <div class="perfil-avatar-area pizzaria-avatar-area">
+          <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar pizzaria-avatar" alt="Avatar do usuário" />
+          <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
+          <button class="btn-avatar pizzaria-btn-avatar" @click="abrirInputAvatar">Trocar Foto</button>
+        </div>
+        <div v-if="!editando" class="perfil-info pizzaria-info">
+          <h2>{{ usuario.nome }}</h2>
+          <div class="info-box">
+            <span><i class="fa fa-envelope"></i> {{ usuario.email }}</span>
+            <span><i class="fa fa-phone"></i> {{ usuario.telefone }}</span>
+            <span><i class="fa fa-map-marker"></i> {{ usuario.endereco }}</span>
+          </div>
+          <div class="botoes-perfil pizzaria-botoes">
+            <button class="btn-editar pizzaria-btn-editar" @click="editarPerfil">Editar</button>
+            <button class="btn-deslogar pizzaria-btn-deslogar" @click="Deslogar">Sair</button>
+          </div>
+        </div>
+        <div v-else class="perfil-edicao pizzaria-edicao">
+          <input v-model="usuarioEdit.nome" placeholder="Nome" />
+          <input v-model="usuarioEdit.email" placeholder="Email" />
+          <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
+          <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
+          <div class="botoes-edicao pizzaria-botoes-edicao">
+            <button class="btn-salvar pizzaria-btn-salvar" @click="salvarPerfil">Salvar</button>
+            <button class="btn-cancelar pizzaria-btn-cancelar" @click="cancelarEdicao">Cancelar</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="perfil-card pizzaria-card">
-      <div class="perfil-avatar-area pizzaria-avatar-area">
-        <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar pizzaria-avatar" alt="Avatar do usuário" />
-        <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
-        <button class="btn-avatar pizzaria-btn-avatar" @click="abrirInputAvatar">Trocar Foto</button>
-      </div>
-      <div v-if="!editando" class="perfil-info pizzaria-info">
-        <h2>{{ usuario.nome }}</h2>
-        <div class="info-box">
-          <span><i class="fa fa-envelope"></i> {{ usuario.email }}</span>
-          <span><i class="fa fa-phone"></i> {{ usuario.telefone }}</span>
-          <span><i class="fa fa-map-marker"></i> {{ usuario.endereco }}</span>
-        </div>
-        <div class="botoes-perfil pizzaria-botoes">
-          <button class="btn-editar pizzaria-btn-editar" @click="editarPerfil">Editar</button>
-          <button class="btn-deslogar pizzaria-btn-deslogar" @click="Deslogar">Sair</button>
-        </div>
-      </div>
-      <div v-else class="perfil-edicao pizzaria-edicao">
-        <input v-model="usuarioEdit.nome" placeholder="Nome" />
-        <input v-model="usuarioEdit.email" placeholder="Email" />
-        <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
-        <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
-        <div class="botoes-edicao pizzaria-botoes-edicao">
-          <button class="btn-salvar pizzaria-btn-salvar" @click="salvarPerfil">Salvar</button>
-          <button class="btn-cancelar pizzaria-btn-cancelar" @click="cancelarEdicao">Cancelar</button>
-        </div>
-      </div>
-    </div>
+    <aside class="historico-compras-card">
+      <h3>Histórico de Compras</h3>
+      <div v-if="historicoCompras.length === 0" class="sem-historico">Nenhuma compra realizada.</div>
+      <ul v-else>
+        <li v-for="pedido in historicoCompras" :key="pedido.id" class="item-historico">
+          <div><strong>Pedido #{{ pedido.id }}</strong> - {{ pedido.data }}</div>
+          <div>Status: <span :class="pedido.status">{{ pedido.status }}</span></div>
+          <div>Valor: R$ {{ pedido.valor.toFixed(2).replace('.', ',') }}</div>
+          <div>Itens:
+            <ul>
+              <li v-for="item in pedido.itens" :key="item.nome">{{ item.nome }} ({{ item.qtd }}) - {{ item.detalhes }}</li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </aside>
   </div>
 </template>
 
@@ -369,9 +396,9 @@ export default {
   color: #fff;
 }
 .seta-voltar {
-  position: absolute;
-  top: 28px;
-  left: 28px;
+  position: fixed;
+  top: 18px;
+  left: 18px;
   cursor: pointer;
   z-index: 10;
   background: none;
@@ -421,8 +448,9 @@ export default {
     height: 80px;
   }
   .seta-voltar {
-    top: 10px;
-    left: 10px;
+    top: 8px;
+    left: 8px;
+    position: fixed;
   }
   .alerta-perfil-sucesso {
     top: 10px;
@@ -431,6 +459,55 @@ export default {
     max-width: 90vw;
     padding: 10px 4vw;
     font-size: 0.98rem;
+  }
+}
+.perfil-historico-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+}
+.historico-compras-card {
+  background: #fffbe6;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px #b33c1a18;
+  padding: 32px 24px;
+  min-width: 320px;
+  max-width: 400px;
+  width: 100%;
+  margin-top: 32px;
+}
+.historico-compras-card h3 {
+  color: #b33c1a;
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  font-family: 'Playfair Display', serif;
+}
+.item-historico {
+  background: #ffe5b4;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px #b33c1a22;
+}
+.sem-historico {
+  color: #b33c1a;
+  font-size: 1.08rem;
+  text-align: center;
+  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .perfil-historico-layout {
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .historico-compras-card {
+    margin-top: 0;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 18px 8px;
   }
 }
 </style>
