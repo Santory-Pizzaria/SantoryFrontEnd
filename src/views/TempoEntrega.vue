@@ -228,7 +228,7 @@ export default {
 .titulo-novo {
   font-size: 2rem;
   font-weight: 800;
-  color: #111;
+  color: #2b2323;
   margin-bottom: 2px;
   letter-spacing: 1px;
   text-align: center;

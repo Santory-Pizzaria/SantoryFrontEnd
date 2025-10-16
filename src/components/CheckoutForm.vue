@@ -194,9 +194,11 @@ function submitForm() {
 }
 
 function salvarPedidoConfirmado(pedido) {
-  // Monta o pedido no formato esperado pelo painel admin
+  // Adiciona o usuarioId do usuário logado
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
   const novoPedido = {
     id: pedido.id,
+    usuarioId: usuarioLogado?.id || null,
     data: pedido.data,
     status: pedido.status || 'Confirmado',
     valor: typeof pedido.valores === 'object' && pedido.valores.total ? parseFloat(pedido.valores.total.replace('R$','').replace(',','.')) : 0,
