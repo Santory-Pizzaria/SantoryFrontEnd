@@ -1,7 +1,7 @@
 // Campo para inserir a PUBLIC_KEY do Mercado Pago depois
 // Exemplo: const MERCADO_PAGO_PUBLIC_KEY = 'SUA_PUBLIC_KEY_AQUI';
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -24,6 +24,9 @@ const metodoPagamento = ref('')
 const processandoPagamento = ref(false)
 const frete = ref(0)
 const calculandoFrete = ref(false)
+const precisaTroco = ref(false)
+const valorTroco = ref('')
+const tipoCartao = ref('')
 
 onMounted(() => {
   // Recuperar dados do pedido do localStorage
@@ -118,6 +121,22 @@ function calcularValorTotal() {
   return `R$ ${valorTotal.toFixed(2).replace('.', ',')}`
 }
 
+function limparTrocoAoMudarPagamento() {
+  if (metodoPagamento.value !== 'dinheiro') {
+    precisaTroco.value = false
+    valorTroco.value = ''
+  }
+}
+
+function limparTipoCartaoAoMudarPagamento() {
+  if (metodoPagamento.value !== 'cartao') {
+    tipoCartao.value = ''
+  }
+}
+
+watch(metodoPagamento, limparTrocoAoMudarPagamento)
+watch(metodoPagamento, limparTipoCartaoAoMudarPagamento)
+
 function submitForm() {
   // Validações antes do pagamento
   if (!cep.value || erroCep.value) {
@@ -137,6 +156,11 @@ function submitForm() {
 
   if (calculandoFrete.value) {
     alert('Aguarde o cálculo do frete finalizar.')
+    return
+  }
+
+  if (metodoPagamento.value === 'dinheiro' && precisaTroco.value && (!valorTroco.value || isNaN(Number(valorTroco.value)) || Number(valorTroco.value) <= 0)) {
+    alert('Por favor, informe o valor para o troco.')
     return
   }
 
@@ -170,6 +194,7 @@ function submitForm() {
       pagamento: {
         metodo: metodoPagamento.value,
         status: 'Aprovado',
+        troco: metodoPagamento.value === 'dinheiro' && precisaTroco.value ? valorTroco.value : null,
       },
       status: 'Confirmado',
     }
@@ -220,9 +245,7 @@ function salvarPedidoConfirmado(pedido) {
 }
 
 // Função para voltar à verificação (caso o usuário queira ajustar algo)
-function voltarParaVerificacao() {
-  router.go(-1) // Volta para a página anterior
-}
+// Removido porque não está sendo utilizado
 </script>
 <template>
   <div class="checkout-bg"></div>
@@ -231,7 +254,6 @@ function voltarParaVerificacao() {
       <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
       <div class="titulo-Pag"><h1>Pizzaria Santory</h1></div>
     </header>
-    <p class="test-environment">Você está em ambiente de teste</p>
     <div class="checkout-main-content">
       <section class="checkout-form-section">
         <div>
@@ -264,37 +286,51 @@ function voltarParaVerificacao() {
           <ul>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="credito" v-model="metodoPagamento" />
-                Cartão de crédito
+                <input type="radio" name="pagamento" value="pix" v-model="metodoPagamento" />
+                Pix
               </label>
             </li>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="boleto" v-model="metodoPagamento" />
-                Boleto
+                <input type="radio" name="pagamento" value="dinheiro" v-model="metodoPagamento" />
+                Dinheiro
               </label>
             </li>
             <li>
               <label>
-                <input type="radio" name="pagamento" value="debito" v-model="metodoPagamento" />
-                Débito online
-              </label>
-            </li>
-            <li>
-              <label>
-                <input type="radio" name="pagamento" value="deposito" v-model="metodoPagamento" />
-                Depósito em conta
+                <input type="radio" name="pagamento" value="cartao" v-model="metodoPagamento" />
+                Cartão
               </label>
             </li>
           </ul>
-        </div>
-        <div class="banks">
-          <label><strong>Bandeiras de cartões aceitas:</strong></label>
-          <div class="banks-grid">
-            <div class="bank-icon"></div>
-            <div class="bank-icon"></div>
-            <div class="bank-icon"></div>
-            <div class="bank-icon"></div>
+          <div v-if="metodoPagamento === 'dinheiro'">
+            <label>
+              <input type="checkbox" v-model="precisaTroco" />
+              Precisa de troco?
+            </label>
+            <div v-if="precisaTroco" class="troco-section">
+              <label for="valorTroco">Valor para o troco:</label>
+              <input
+                id="valorTroco"
+                type="text"
+                v-model="valorTroco"
+                placeholder="Valor do troco"
+                class="input"
+              />
+            </div>
+          </div>
+          <div v-if="metodoPagamento === 'cartao'" class="troco-section">
+            <label>Tipo de cartão:</label>
+            <div style="display: flex; gap: 12px;">
+              <label>
+                <input type="radio" name="tipoCartao" value="debito" v-model="tipoCartao" />
+                Débito
+              </label>
+              <label>
+                <input type="radio" name="tipoCartao" value="credito" v-model="tipoCartao" />
+                Crédito
+              </label>
+            </div>
           </div>
         </div>
       </section>
@@ -323,15 +359,7 @@ function voltarParaVerificacao() {
             <p v-else-if="frete > 0"><strong>Frete:</strong> {{ obterValorFrete() }}</p>
             <p v-else><strong>Frete:</strong> Informe o CEP para calcular</p>
           </div>
-          <div class="total"><strong>Total a pagar:</strong> {{ calcularValorTotal() }}</div>
           <div class="buttons-container">
-            <button
-              @click="voltarParaVerificacao"
-              class="back-button"
-              :disabled="processandoPagamento"
-            >
-              ← Voltar
-            </button>
             <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">
               {{ processandoPagamento ? '💳 Processando...' : 'Finalizar Pedido' }}
             </button>
@@ -355,211 +383,304 @@ function voltarParaVerificacao() {
   z-index: 0;
   background: url('/src/assets/imagens/fundo.png') no-repeat center center fixed;
   background-size: cover;
-  opacity: 0.42;
+  opacity: 0.35;
   pointer-events: none;
 }
 .checkout-card-style {
   position: relative;
   z-index: 1;
-  background: rgba(255,255,255,0.85);
-  border-radius: 18px;
-  box-shadow: 0 4px 24px #b33c1a18;
-  padding: 2rem 1rem 2.5rem 1rem;
-  max-width: 1000px;
+  background: linear-gradient(120deg, #fffbe6 60%, #ffe5b4 100%);
+  border-radius: 28px;
+  box-shadow: 0 8px 32px #b33c1a22;
+  padding: 2rem 1rem 2rem 1rem;
+  max-width: 900px;
   margin: 32px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: box-shadow 0.3s, border 0.3s;
 }
 .header-Pag {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
   justify-content: center;
-  gap: 18px;
+  gap: 16px;
+  margin-bottom: 10px;
 }
 .logo {
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px #b33c1a22;
 }
 .titulo-Pag {
   text-align: center;
-  font-size: 24px;
+  font-size: 1.7rem;
   color: #b33c1a;
-  margin-bottom: 0;
-  padding-left: 0;
   font-family: 'Playfair Display', serif;
   font-weight: 700;
 }
 .test-environment {
-  background-color: #d2f9d2;
-  padding: 10px;
+  background: linear-gradient(90deg, #d2f9d2 60%, #ffe5b4 100%);
+  padding: 8px;
   font-size: 14px;
   text-align: center;
   border-radius: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
+  color: #222e3a;
+  font-weight: 600;
 }
 .checkout-main-content {
   display: flex;
-  gap: 30px;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 .checkout-form-section {
   flex: 2;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px #b33c1a11;
+  padding: 24px 16px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .checkout-summary {
   flex: 1;
-  background: #f7f3e9;
-  padding: 20px;
-  border-radius: 12px;
+  background: #fffbe6;
+  padding: 24px 16px;
+  border-radius: 18px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: 0 2px 8px #b33c1a22;
+  box-shadow: 0 2px 8px #b33c1a11;
+  min-width: 220px;
+  max-width: 340px;
+  gap: 14px;
 }
 .input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   margin: 6px 0 12px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1.2px solid #ff9800;
+  border-radius: 7px;
+  background: #fffbe6;
+  font-size: 1rem;
+  color: #b33c1a;
+  box-shadow: 0 1px 4px #b33c1a11;
+  transition: border 0.2s;
+}
+.input:focus {
+  border: 1.5px solid #b33c1a;
+  outline: none;
 }
 .erro {
-  color: red;
-  font-size: 13px;
-  margin-bottom: 10px;
+  color: #b33c1a;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 .payment-methods ul {
   list-style: none;
   padding-left: 0;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-.banks {
-  margin-top: 10px;
-}
-.banks-grid {
+  font-size: 15px;
+  margin-bottom: 10px;
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
-.bank-icon {
-  width: 50px;
-  height: 50px;
-  background-color: #aaa;
-  border-radius: 4px;
+.payment-methods li {
+  background: #ffe5b4;
+  border-radius: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 1px 4px #b33c1a11;
+  font-weight: 500;
 }
 .linha {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #222e3a;
 }
 .total {
-  background-color: #28c76f;
+  background: linear-gradient(90deg, #28c76f 60%, #ff9800 100%);
   color: white;
   padding: 10px;
   text-align: center;
   font-weight: bold;
-  margin-top: 15px;
-  border-radius: 4px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px #b33c1a22;
 }
 .submit-button {
-  background-color: #28c76f;
+  background: linear-gradient(90deg, #28c76f 60%, #ff9800 100%);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  padding: 16px 32px;
-  font-size: 18px;
-  min-width: 140px;
-  margin-top: 32px;
-  transition: background-color 0.3s ease;
+  padding: 14px 24px;
+  font-size: 1.08rem;
+  min-width: 120px;
+  margin-top: 18px;
+  transition: background 0.3s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #b33c1a22;
 }
 .submit-button:disabled {
-  background-color: #ccc;
+  background: #ccc;
   cursor: not-allowed;
   opacity: 0.7;
 }
+.submit-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #ff9800 60%, #28c76f 100%);
+  box-shadow: 0 4px 16px #b33c1a44;
+}
 .pedido-detalhes {
-  margin: 15px 0;
+  margin: 10px 0;
   padding: 10px;
   background: #f9f9f9;
-  border-radius: 4px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #b33c1a11;
 }
 .pedido-detalhes h4 {
-  margin: 0 0 8px 0;
-  color: #333;
+  margin: 0 0 6px 0;
+  color: #b33c1a;
 }
 .pedido-detalhes ul {
-  margin: 0 0 10px 0;
-  padding-left: 20px;
+  margin: 0 0 8px 0;
+  padding-left: 18px;
 }
 .pedido-detalhes li {
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .buttons-container {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
 }
 .back-button {
-  background-color: #ccc;
-  color: #333;
+  background: linear-gradient(90deg, #ffe5b4 60%, #ff9800 100%);
+  color: #b33c1a;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  padding: 16px 32px;
-  font-size: 18px;
-  min-width: 140px;
-  margin-top: 32px;
-  transition: background-color 0.3s ease;
+  padding: 14px 24px;
+  font-size: 1.08rem;
+  min-width: 120px;
+  margin-top: 18px;
+  transition: background 0.3s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #b33c1a22;
 }
 .back-button:hover:not(:disabled) {
-  background-color: #bbb;
+  background: linear-gradient(90deg, #ff9800 60%, #ffe5b4 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #b33c1a44;
 }
 .back-button:disabled {
-  background-color: #e0e0e0;
+  background: #e0e0e0;
   cursor: not-allowed;
   opacity: 0.7;
 }
 .info-pizzaria {
-  margin-top: 8px;
-  padding: 8px;
+  margin-top: 6px;
+  padding: 6px;
   background-color: #f0f8ff;
-  border-radius: 4px;
+  border-radius: 5px;
   border-left: 3px solid #ff9800;
 }
 .info-pizzaria small {
   color: #666;
   font-size: 12px;
 }
+.troco-section {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fffbe6;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #b33c1a22;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.troco-section label {
+  font-weight: 600;
+  color: #b33c1a;
+}
+.troco-section input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1.2px solid #ff9800;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 1rem;
+  color: #b33c1a;
+  box-shadow: 0 1px 4px #b33c1a11;
+  margin-top: 4px;
+}
 @media (max-width: 900px) {
   .checkout-main-content {
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
   }
   .checkout-summary {
-    margin-top: 18px;
+    margin-top: 10px;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 12px 4px;
+    border-radius: 12px;
+  }
+  .checkout-form-section {
+    min-width: 0;
+    padding: 12px 4px;
+    border-radius: 12px;
+  }
+  .checkout-card-style {
+    padding: 0.7rem 0.1rem 1rem 0.1rem;
+    border-radius: 12px;
+    margin: 0;
+    max-width: 99vw;
   }
 }
 @media (max-width: 600px) {
   .checkout-card-style {
-    padding: 0.5rem 0.2rem 1rem 0.2rem;
+    padding: 0.3rem 0.1rem 0.7rem 0.1rem;
     border-radius: 0;
     margin: 0;
+    max-width: 100vw;
   }
   .header-Pag {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
   .logo {
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
   }
   .titulo-Pag {
-    font-size: 18px;
+    font-size: 1rem;
   }
   .checkout-summary {
-    padding: 10px;
-    border-radius: 8px;
+    padding: 6px;
+    border-radius: 6px;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .checkout-form-section {
+    padding: 6px;
+    border-radius: 6px;
+    min-width: 0;
+  }
+  .submit-button, .back-button {
+    padding: 8px 6px;
+    font-size: 0.92rem;
+    min-width: 80px;
   }
 }
 </style>
