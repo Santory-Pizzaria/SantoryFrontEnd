@@ -4,10 +4,10 @@ export default {
   data() {
     return {
       usuario: {
+        id: '', // id do usuário
         nome: '',
         email: '',
         telefone: '',
-        endereco: '',
         avatar: '',
       },
       usuarioEdit: {},
@@ -35,11 +35,16 @@ export default {
 
       try {
         const dadosUsuario = JSON.parse(usuarioLogado);
+        // Gera id se não existir
+        if (!dadosUsuario.id) {
+          dadosUsuario.id = Math.floor(10000000 + Math.random() * 90000000).toString();
+          localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+        }
         this.usuario = {
+          id: dadosUsuario.id,
           nome: dadosUsuario.nome || '',
           email: dadosUsuario.email || '',
           telefone: dadosUsuario.telefone || '',
-          endereco: dadosUsuario.endereco || '',
           avatar: dadosUsuario.avatar || '',
         };
       } catch (error) {
@@ -66,10 +71,10 @@ export default {
         const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
         const usuarioAtualizado = {
           ...usuarioLogado,
+          id: this.usuario.id,
           nome: this.usuario.nome,
           email: this.usuario.email,
           telefone: this.usuario.telefone,
-          endereco: this.usuario.endereco,
           avatar: this.usuario.avatar,
         };
 
@@ -82,10 +87,10 @@ export default {
         if (indiceUsuario !== -1) {
           usuarios[indiceUsuario] = {
             ...usuarios[indiceUsuario],
+            id: this.usuario.id,
             nome: this.usuario.nome,
             email: this.usuario.email,
             telefone: this.usuario.telefone,
-            endereco: this.usuario.endereco,
             avatar: this.usuario.avatar,
           };
           localStorage.setItem('usuarios', JSON.stringify(usuarios));
@@ -189,9 +194,9 @@ export default {
         <div v-if="!editando" class="perfil-info pizzaria-info">
           <h2>{{ usuario.nome }}</h2>
           <div class="info-box">
+            <span><i class="fa fa-id-card"></i> ID: {{ usuario.id }}</span>
             <span><i class="fa fa-envelope"></i> {{ usuario.email }}</span>
             <span><i class="fa fa-phone"></i> {{ usuario.telefone }}</span>
-            <span><i class="fa fa-map-marker"></i> {{ usuario.endereco }}</span>
           </div>
           <div class="botoes-perfil pizzaria-botoes">
             <button class="btn-editar pizzaria-btn-editar" @click="editarPerfil">Editar</button>
@@ -202,7 +207,6 @@ export default {
           <input v-model="usuarioEdit.nome" placeholder="Nome" />
           <input v-model="usuarioEdit.email" placeholder="Email" />
           <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
-          <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
           <div class="botoes-edicao pizzaria-botoes-edicao">
             <button class="btn-salvar pizzaria-btn-salvar" @click="salvarPerfil">Salvar</button>
             <button class="btn-cancelar pizzaria-btn-cancelar" @click="cancelarEdicao">Cancelar</button>

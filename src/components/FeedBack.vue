@@ -27,6 +27,7 @@ export default {
         usuario = usuarioLogado?.nome || '';
       } catch { usuario = ''; }
       this.feedbacks.push({
+        id: Date.now() + Math.random(), // id único
         opiniao: this.novoFeedback.opiniao.trim(),
         estrelas: this.novoFeedback.estrelas,
         usuario: usuario
@@ -35,8 +36,8 @@ export default {
       this.novoFeedback.estrelas = 0;
       this.aviso = '';
     },
-    deletarFeedback(idx) {
-      this.feedbacks.splice(idx, 1);
+    deletarFeedback(id) {
+      this.feedbacks = this.feedbacks.filter(fb => fb.id !== id);
     }
   },
   mounted() {
@@ -116,7 +117,7 @@ export default {
           </select>
         </div>
         <ul class="feedback-list-novo">
-          <li v-for="(feedback, index) in feedbacksFiltrados" :key="index" class="feedback-item-novo">
+          <li v-for="feedback in feedbacksFiltrados" :key="feedback.id" class="feedback-item-novo">
             <div class="feedback-user-novo">
               <div class="avatar-novo">🍕</div>
               <div>
@@ -125,7 +126,7 @@ export default {
                 </div>
                 <div class="feedback-opinion-novo">{{ feedback.opiniao }}</div>
                 <div v-if="feedback.usuario" class="feedback-usuario-nome">— {{ feedback.usuario }}
-                  <button v-if="feedback.usuario === usuarioLogado" class="btn-deletar-feedback" @click="deletarFeedback(index)">Excluir</button>
+                  <button v-if="feedback.usuario === usuarioLogado" class="btn-deletar-feedback" @click="deletarFeedback(feedback.id)">Excluir</button>
                 </div>
               </div>
             </div>

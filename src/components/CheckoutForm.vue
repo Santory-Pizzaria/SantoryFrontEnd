@@ -18,6 +18,8 @@ const endereco = ref({
   uf: '',
 })
 
+const tipoEntrega = ref('') // 'retirar' ou 'entregar'
+
 // Dados do pedido vindos da verificação
 const pedidoData = ref(null)
 const metodoPagamento = ref('')
@@ -137,25 +139,34 @@ function limparTipoCartaoAoMudarPagamento() {
 watch(metodoPagamento, limparTrocoAoMudarPagamento)
 watch(metodoPagamento, limparTipoCartaoAoMudarPagamento)
 
+function validarEntrega() {
+  if (!tipoEntrega.value) {
+    alert('Por favor, selecione como deseja receber seu pedido.')
+    return false
+  }
+  if (tipoEntrega.value === 'entregar') {
+    if (!cep.value || erroCep.value) {
+      alert('Por favor, informe um CEP válido.')
+      return false
+    }
+    if (frete.value === 0) {
+      alert('Por favor, aguarde o cálculo do frete ou verifique se o CEP foi informado corretamente.')
+      return false
+    }
+    if (calculandoFrete.value) {
+      alert('Aguarde o cálculo do frete finalizar.')
+      return false
+    }
+  }
+  return true
+}
+
 function submitForm() {
   // Validações antes do pagamento
-  if (!cep.value || erroCep.value) {
-    alert('Por favor, informe um CEP válido.')
-    return
-  }
+  if (!validarEntrega()) return
 
   if (!metodoPagamento.value) {
     alert('Por favor, selecione um método de pagamento.')
-    return
-  }
-
-  if (frete.value === 0) {
-    alert('Por favor, aguarde o cálculo do frete ou verifique se o CEP foi informado corretamente.')
-    return
-  }
-
-  if (calculandoFrete.value) {
-    alert('Aguarde o cálculo do frete finalizar.')
     return
   }
 
@@ -684,3 +695,4 @@ function salvarPedidoConfirmado(pedido) {
   }
 }
 </style>
+```
