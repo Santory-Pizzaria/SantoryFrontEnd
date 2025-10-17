@@ -36,15 +36,106 @@ export default {
         { nome: 'Combo Família', descricao: '2 Pizzas Grandes + 1 Refrigerante 2L + 1 Porção de Batata Frita', preco: 'R$ 99,90', img: '/src/assets/imagens/ComboExjpg.jpg' }
       ],
       bebidas: [
-        { nome: 'Refrigerante Lata', descricao: 'Coca-Cola, Guaraná, Fanta, Sprite (350ml)', preco: 'R$ 6,00', img: '/src/assets/imagens/Coca.png' },
-        { nome: 'Água Mineral', descricao: 'Sem gás ou com gás (500ml)', preco: 'R$ 4,00', img: '/src/assets/imagens/Agua.png' },
-        { nome: 'Cerveja Long Neck', descricao: 'Heineken, Budweiser, Stella Artois (330ml)', preco: 'R$ 9,00', img: '/src/assets/imagens/Cerveja.png' }
-      ]
+        { nome: 'Refrigerante', descricao: 'Escolha o tamanho e sabor', preco: '', img: '/src/assets/imagens/Coca.png', tipo: 'refrigerante' },
+        { nome: 'Água Mineral', descricao: 'Escolha o tipo', preco: '', img: '/src/assets/imagens/Agua.png', tipo: 'agua' },
+        { nome: 'Cerveja', descricao: 'Escolha a marca', preco: '', img: '/src/assets/imagens/Cerveja.png', tipo: 'cerveja' }
+      ],
+      refrigeranteTamanhos: [
+        { nome: '2L', preco: 14.00 },
+        { nome: '1L', preco: 9.00 },
+        { nome: '500ml', preco: 7.00 },
+        { nome: '250ml', preco: 5.00 },
+        { nome: 'Lata 350ml', preco: 6.00 }
+      ],
+      refrigeranteSabores: [
+        'Coca-Cola',
+        'Fanta Laranja',
+        'Fanta Uva',
+        'Guaraná',
+        'Sprite'
+      ],
+      aguaTipos: [
+        { nome: 'Sem gás', preco: 4.00 },
+        { nome: 'Com gás', preco: 4.00 }
+      ],
+      cervejaMarcas: [
+        { nome: 'Heineken', preco: 9.00 },
+        { nome: 'Budweiser', preco: 9.00 },
+        { nome: 'Stella Artois', preco: 9.00 }
+      ],
+      showRefrigeranteModal: false,
+      selectedRefrigeranteTamanho: null,
+      selectedRefrigeranteSabor: null,
+      showAguaModal: false,
+      selectedAguaTipo: null,
+      showCervejaModal: false,
+      selectedCervejaMarca: null,
     };
   },
   methods: {
     adicionarItem(item) {
+      if (item.tipo === 'refrigerante') {
+        this.showRefrigeranteModal = true;
+        this.selectedRefrigeranteTamanho = null;
+        this.selectedRefrigeranteSabor = null;
+        return;
+      }
+      if (item.tipo === 'agua') {
+        this.showAguaModal = true;
+        this.selectedAguaTipo = null;
+        return;
+      }
+      if (item.tipo === 'cerveja') {
+        this.showCervejaModal = true;
+        this.selectedCervejaMarca = null;
+        return;
+      }
       this.$router.push({ name: 'pizza-options', params: { pizzaNome: item.nome } });
+    },
+    confirmarRefrigerante() {
+      if (!this.selectedRefrigeranteTamanho || !this.selectedRefrigeranteSabor) return;
+      const item = {
+        nome: `Refrigerante ${this.selectedRefrigeranteSabor} (${this.selectedRefrigeranteTamanho.nome})`,
+        descricao: `${this.selectedRefrigeranteSabor} - ${this.selectedRefrigeranteTamanho.nome}`,
+        preco: this.selectedRefrigeranteTamanho.preco,
+        img: '/src/assets/imagens/Coca.png',
+        tipo: 'refrigerante'
+      };
+      this.adicionarAoCarrinho(item);
+      this.showRefrigeranteModal = false;
+    },
+    cancelarRefrigerante() {
+      this.showRefrigeranteModal = false;
+    },
+    confirmarAgua() {
+      if (!this.selectedAguaTipo) return;
+      const item = {
+        nome: `Água Mineral (${this.selectedAguaTipo.nome})`,
+        descricao: this.selectedAguaTipo.nome,
+        preco: this.selectedAguaTipo.preco,
+        img: '/src/assets/imagens/Agua.png',
+        tipo: 'agua'
+      };
+      this.adicionarAoCarrinho(item);
+      this.showAguaModal = false;
+    },
+    cancelarAgua() {
+      this.showAguaModal = false;
+    },
+    confirmarCerveja() {
+      if (!this.selectedCervejaMarca) return;
+      const item = {
+        nome: `Cerveja Long Neck (${this.selectedCervejaMarca.nome})`,
+        descricao: this.selectedCervejaMarca.nome,
+        preco: this.selectedCervejaMarca.preco,
+        img: '/src/assets/imagens/Cerveja.png',
+        tipo: 'cerveja'
+      };
+      this.adicionarAoCarrinho(item);
+      this.showCervejaModal = false;
+    },
+    cancelarCerveja() {
+      this.showCervejaModal = false;
     },
     adicionarAoCarrinho(item) {
       const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -121,6 +212,54 @@ export default {
         </div>
       </div>
     </section>
+  </div>
+  <div v-if="showRefrigeranteModal" class="modal-refrigerante-bg">
+    <div class="modal-refrigerante">
+      <h3>Escolha o tamanho do refrigerante</h3>
+      <div class="modal-opcoes">
+        <button v-for="t in refrigeranteTamanhos" :key="t.nome" :class="{selected: selectedRefrigeranteTamanho && selectedRefrigeranteTamanho.nome === t.nome}" @click="selectedRefrigeranteTamanho = t">
+          {{ t.nome }} <span v-if="t.preco">- R$ {{ t.preco.toFixed(2) }}</span>
+        </button>
+      </div>
+      <h3>Escolha o sabor</h3>
+      <div class="modal-opcoes">
+        <button v-for="s in refrigeranteSabores" :key="s" :class="{selected: selectedRefrigeranteSabor === s}" @click="selectedRefrigeranteSabor = s">
+          {{ s }}
+        </button>
+      </div>
+      <div class="modal-botoes">
+        <button @click="confirmarRefrigerante" :disabled="!selectedRefrigeranteTamanho || !selectedRefrigeranteSabor">Adicionar ao carrinho</button>
+        <button @click="cancelarRefrigerante">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <div v-if="showAguaModal" class="modal-refrigerante-bg">
+    <div class="modal-refrigerante">
+      <h3>Escolha o tipo de água mineral</h3>
+      <div class="modal-opcoes">
+        <button v-for="t in aguaTipos" :key="t.nome" :class="{selected: selectedAguaTipo && selectedAguaTipo.nome === t.nome}" @click="selectedAguaTipo = t">
+          {{ t.nome }} <span v-if="t.preco">- R$ {{ t.preco.toFixed(2) }}</span>
+        </button>
+      </div>
+      <div class="modal-botoes">
+        <button @click="confirmarAgua" :disabled="!selectedAguaTipo">Adicionar ao carrinho</button>
+        <button @click="cancelarAgua">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <div v-if="showCervejaModal" class="modal-refrigerante-bg">
+    <div class="modal-refrigerante">
+      <h3>Escolha a marca da cerveja</h3>
+      <div class="modal-opcoes">
+        <button v-for="m in cervejaMarcas" :key="m.nome" :class="{selected: selectedCervejaMarca && selectedCervejaMarca.nome === m.nome}" @click="selectedCervejaMarca = m">
+          {{ m.nome }} <span v-if="m.preco">- R$ {{ m.preco.toFixed(2) }}</span>
+        </button>
+      </div>
+      <div class="modal-botoes">
+        <button @click="confirmarCerveja" :disabled="!selectedCervejaMarca">Adicionar ao carrinho</button>
+        <button @click="cancelarCerveja">Cancelar</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -416,5 +555,79 @@ export default {
     left: 4px;
     padding: 1px;
   }
+}
+.modal-refrigerante-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-refrigerante {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+.modal-refrigerante h3 {
+  font-size: 1.2rem;
+  color: #b33c1a;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.modal-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.modal-opcoes button {
+  background: #fff;
+  border: 2px solid #b33c1a;
+  color: #b33c1a;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.modal-opcoes button.selected {
+  background: #b33c1a;
+  color: #fff;
+}
+.modal-botoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.modal-botoes button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.modal-botoes button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.modal-botoes button:not(:disabled):hover {
+  transform: translateY(-2px) scale(1.04);
+}
+.modal-botoes button:first-child {
+  background: #b33c1a;
+  color: #fff;
+}
+.modal-botoes button:last-child {
+  background: #ccc;
+  color: #333;
 }
 </style>

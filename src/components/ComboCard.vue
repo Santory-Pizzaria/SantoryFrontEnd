@@ -4,11 +4,11 @@ defineProps(['combo']);
 
 <template>
   <div class="combo-card">
-    <img :src="combo.image" alt="Combo" class="combo-image" />
+    <img :src="combo.img" alt="Combo" class="combo-image" />
     <div class="combo-info">
-      <h3>{{ combo.name }}</h3>
-      <p class="descricao">{{ combo.description }}</p>
-      <p class="price">R$ {{ combo.price.toFixed(2) }}</p>
+      <h3>{{ combo.nome }}</h3>
+      <p class="descricao">{{ combo.descricao }}</p>
+      <p class="price">R$ {{ combo.preco.toFixed(2) }}</p>
     </div>
   </div>
 </template>

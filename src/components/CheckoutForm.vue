@@ -356,6 +356,15 @@ function salvarPedidoConfirmado(pedido) {
             <span>{{ pedidoData.pizzaNome }}</span>
             <span>{{ pedidoData.valor }}</span>
           </div>
+          <div class="linha" v-if="pedidoData.bebidaSelecionada">
+            <span>
+              <strong>Bebida:</strong>
+              {{ pedidoData.bebidaSelecionada.tipo }}
+              <span v-if="pedidoData.bebidaSelecionada.tamanho">- {{ pedidoData.bebidaSelecionada.tamanho }}</span>
+              <span v-if="pedidoData.bebidaSelecionada.sabor">- {{ pedidoData.bebidaSelecionada.sabor }}</span>
+            </span>
+            <span>R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
+          </div>
           <div class="pedido-detalhes">
             <h4>Sabores:</h4>
             <ul>
@@ -366,6 +375,13 @@ function salvarPedidoConfirmado(pedido) {
             <p><strong>Borda:</strong> {{ pedidoData.bordaSelecionada }}</p>
             <p><strong>Quantidade:</strong> {{ pedidoData.quantidade }}</p>
             <p><strong>Valor do item:</strong> {{ pedidoData.valor }}</p>
+            <div v-if="pedidoData.bebidaSelecionada">
+              <h4>Bebida:</h4>
+              <p><strong>Tipo:</strong> {{ pedidoData.bebidaSelecionada.tipo }}</p>
+              <p><strong>Tamanho:</strong> {{ pedidoData.bebidaSelecionada.tamanho }}</p>
+              <p><strong>Sabor/Marca:</strong> {{ pedidoData.bebidaSelecionada.sabor }}</p>
+              <p><strong>Valor da bebida:</strong> R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</p>
+            </div>
             <p v-if="calculandoFrete"><strong>Frete:</strong> 🔄 Calculando...</p>
             <p v-else-if="frete > 0"><strong>Frete:</strong> {{ obterValorFrete() }}</p>
             <p v-else><strong>Frete:</strong> Informe o CEP para calcular</p>
@@ -695,4 +711,3 @@ function salvarPedidoConfirmado(pedido) {
   }
 }
 </style>
-```

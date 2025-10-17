@@ -1,21 +1,29 @@
 <template>
   <div class="bebida-options-container">
     <header class="header">
-      <button class="back-btn" @click="$router.push('/bebida-list')">
-        <img src="/src/assets/imagens/seta-preta.png" alt="Voltar" />
-      </button>
       <span class="bebida-title">Escolha sua Bebida</span>
     </header>
     <section class="section">
-      <h2 class="section-title">Bebidas Disponíveis</h2>
+      <h2 class="section-title">Tipo de Bebida</h2>
       <div class="options-list">
-        <div v-for="(bebida, i) in bebidas" :key="i" :class="['option-card', { 'adicionado': bebidaSelecionada && bebidaSelecionada.nome === bebida.nome }]">
-          <button class="plus-btn" @click="selecionarBebida(bebida)">+</button>
-          <div class="bebida-info">
-            <span class="bebida-nome">{{ bebida.nome }}</span>
-            <span class="bebida-desc">{{ bebida.desc }}</span>
-            <span class="bebida-valor">{{ bebida.valor }}</span>
-          </div>
+        <button v-for="tipo in tiposBebida" :key="tipo.nome" :class="['option-card', {selected: tipoSelecionado && tipoSelecionado.nome === tipo.nome}]" @click="selecionarTipo(tipo)">
+          {{ tipo.nome }}
+        </button>
+      </div>
+      <div v-if="tipoSelecionado" class="tamanhos-list">
+        <h3 class="section-title">Escolha o tamanho</h3>
+        <div class="options-list">
+          <button v-for="t in tipoSelecionado.tamanhos" :key="t.nome" :class="['option-card', {selected: tamanhoSelecionado && tamanhoSelecionado.nome === t.nome}]" @click="selecionarTamanho(t)">
+            {{ t.nome }} <span v-if="t.preco">- R$ {{ t.preco.toFixed(2) }}</span>
+          </button>
+        </div>
+      </div>
+      <div v-if="tamanhoSelecionado && tipoSelecionado.sabores" class="sabores-list">
+        <h3 class="section-title">Escolha o sabor/marca</h3>
+        <div class="options-list">
+          <button v-for="s in tipoSelecionado.sabores" :key="s" :class="['option-card', {selected: saborSelecionado === s}]" @click="selecionarSabor(s)">
+            {{ s }}
+          </button>
         </div>
       </div>
       <div v-if="erroSelecao" class="erro-msg">{{ erroSelecao }}</div>
@@ -29,28 +37,91 @@ export default {
   name: 'BebidaOptions',
   data() {
     return {
-      bebidas: [
-        { nome: 'Coca-Cola 2L', desc: 'Refrigerante 2 Litros', valor: 'R$ 12,00' },
-        { nome: 'Guaraná 2L', desc: 'Refrigerante 2 Litros', valor: 'R$ 10,00' },
-        { nome: 'Água', desc: 'Garrafa 500ml', valor: 'R$ 4,00' },
-        { nome: 'Cerveja', desc: 'Lata 350ml', valor: 'R$ 7,00' },
-        { nome: 'Suco Natural', desc: 'Copo 300ml', valor: 'R$ 6,00' }
+      tiposBebida: [
+        {
+          nome: 'Refrigerante',
+          tamanhos: [
+            { nome: '2L', preco: 14.00 },
+            { nome: '1L', preco: 9.00 },
+            { nome: '500ml', preco: 7.00 },
+            { nome: '250ml', preco: 5.00 },
+            { nome: 'Lata 350ml', preco: 6.00 }
+          ],
+          sabores: [
+            'Coca-Cola',
+            'Fanta Laranja',
+            'Fanta Uva',
+            'Guaraná',
+            'Sprite',
+            'Pepsi'
+          ]
+        },
+        {
+          nome: 'Cerveja',
+          tamanhos: [
+            { nome: 'Long Neck 330ml', preco: 9.00 },
+            { nome: 'Lata 350ml', preco: 7.00 }
+          ],
+          sabores: [
+            'Heineken',
+            'Budweiser',
+            'Stella Artois'
+          ]
+        },
+        {
+          nome: 'Água Mineral',
+          tamanhos: [
+            { nome: '500ml', preco: 4.00 },
+            { nome: '1L', preco: 6.00 }
+          ],
+          sabores: [
+            'Sem gás',
+            'Com gás'
+          ]
+        }
       ],
-      bebidaSelecionada: null,
+      tipoSelecionado: null,
+      tamanhoSelecionado: null,
+      saborSelecionado: '',
       erroSelecao: ''
     }
   },
   methods: {
-    selecionarBebida(bebida) {
-      this.bebidaSelecionada = bebida;
+    selecionarTipo(tipo) {
+      this.tipoSelecionado = tipo;
+      this.tamanhoSelecionado = null;
+      this.saborSelecionado = '';
+      this.erroSelecao = '';
+    },
+    selecionarTamanho(t) {
+      this.tamanhoSelecionado = t;
+      this.saborSelecionado = '';
+      this.erroSelecao = '';
+    },
+    selecionarSabor(s) {
+      this.saborSelecionado = s;
       this.erroSelecao = '';
     },
     finalizarSelecao() {
-      if (!this.bebidaSelecionada) {
-        this.erroSelecao = 'Selecione uma bebida para continuar.';
+      if (!this.tipoSelecionado) {
+        this.erroSelecao = 'Selecione o tipo de bebida.';
         return;
       }
-      this.$emit('finish', this.bebidaSelecionada);
+      if (!this.tamanhoSelecionado) {
+        this.erroSelecao = 'Selecione o tamanho.';
+        return;
+      }
+      if (this.tipoSelecionado.sabores && !this.saborSelecionado) {
+        this.erroSelecao = 'Selecione o sabor/marca.';
+        return;
+      }
+      let bebidaFinal = {
+        tipo: this.tipoSelecionado.nome,
+        tamanho: this.tamanhoSelecionado.nome,
+        preco: this.tamanhoSelecionado.preco,
+        sabor: this.saborSelecionado
+      };
+      this.$emit('finish', bebidaFinal);
     }
   }
 }
@@ -110,13 +181,11 @@ export default {
   padding: 0 18px;
 }
 .section-title {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: bold;
-  margin-bottom: 14px;
-  text-align: center;
   color: #b33c1a;
+  margin-bottom: 12px;
   font-family: 'Playfair Display', serif;
-  text-shadow: 0 2px 8px #ff980044;
 }
 .options-list {
   display: flex;
@@ -138,7 +207,7 @@ export default {
   border-left: #ff9800 5px solid;
   transition: box-shadow 0.2s, border 0.2s, background 0.2s;
 }
-.option-card.adicionado {
+.option-card.selected {
   background: #ffe5b4;
   border-left: #b33c1a 7px solid;
   box-shadow: 0 4px 16px #b33c1a22;
@@ -203,6 +272,44 @@ export default {
   margin: 12px 0 0 0;
   font-size: 0.95rem;
   text-align: center;
+}
+.tamanhos-list {
+  margin: 18px 0 0 0;
+  padding: 12px 0;
+  background: #fffbe6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #b33c1a22;
+  text-align: center;
+}
+.sabores-list {
+  margin: 18px 0 0 0;
+  padding: 12px 0;
+  background: #fffbe6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #b33c1a22;
+  text-align: center;
+}
+.sabores-list label {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #b33c1a;
+  margin-bottom: 8px;
+  display: block;
+}
+#sabor-select {
+  margin-top: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid #ff9800;
+  font-size: 1rem;
+  background: #fff;
+  color: #b33c1a;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #b33c1a11;
+  transition: border 0.2s;
+}
+#sabor-select:focus {
+  border-color: #b33c1a;
 }
 @media (max-width: 600px) {
   .bebida-options-container {

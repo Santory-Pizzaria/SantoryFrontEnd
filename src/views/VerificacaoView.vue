@@ -10,6 +10,11 @@ export default {
     pedido: {
       type: Object,
       required: true
+    },
+    bebidaSelecionada: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -33,11 +38,12 @@ export default {
       }
     },
     calcularValorTotal() {
-      // Extrair valor numérico da pizza
       const valorPizza = parseFloat(this.pedido.valor.replace('R$ ', '').replace(',', '.'));
-
-      // Sem frete na verificação - só o valor das pizzas
-      const total = valorPizza * this.pedido.quantidade;
+      let valorBebida = 0;
+      if (this.bebidaSelecionada && this.bebidaSelecionada.preco) {
+        valorBebida = typeof this.bebidaSelecionada.preco === 'string' ? parseFloat(this.bebidaSelecionada.preco.replace('R$', '').replace(',', '.')) : this.bebidaSelecionada.preco;
+      }
+      const total = (valorPizza * this.pedido.quantidade) + valorBebida;
       return `R$ ${total.toFixed(2).replace('.', ',')}`;
     },
     pedirMais() {
@@ -68,6 +74,7 @@ export default {
         qtdSabores: this.pedido.qtdSabores,
         valor: this.pedido.valor,
         quantidade: this.pedido.quantidade,
+        bebidaSelecionada: this.bebidaSelecionada, // Adiciona bebida selecionada
         valorTotal: this.calcularValorTotal()
       };
 
@@ -166,6 +173,13 @@ export default {
           <div><b>Borda:</b> {{ pedido.bordaSelecionada }}</div>
           <div><b>Valor unitário:</b> {{ pedido.valor }}</div>
           <div><b>Valor total:</b> {{ calcularValorTotal() }}</div>
+        </div>
+        <div v-if="bebidaSelecionada" class="verificacao-info bebida-info">
+          <b>Bebida:</b>
+          <div>Tipo: {{ bebidaSelecionada.tipo }}</div>
+          <div v-if="bebidaSelecionada.tamanho">Tamanho: {{ bebidaSelecionada.tamanho }}</div>
+          <div v-if="bebidaSelecionada.sabor">Sabor/Marca: {{ bebidaSelecionada.sabor }}</div>
+          <div><b>Valor bebida:</b> R$ {{ bebidaSelecionada.preco ? bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</div>
         </div>
         <div class="verificacao-qtd">
           <button class="verificacao-btn diminuir" @click="diminuirQuantidade">-</button>
