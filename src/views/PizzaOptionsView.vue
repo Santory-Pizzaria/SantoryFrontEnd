@@ -19,12 +19,43 @@ export default {
       bebidaSelecionada: null,
     };
   },
+  computed: {
+    bebidaFixaComboAtiva() {
+      return this.$route.params.bebidaFixaCombo === true || this.$route.params.bebidaFixaCombo === 'true';
+    }
+  },
+  mounted() {
+    // Se vier bebida fixa do combo, já salva e pula a escolha de bebida
+    const params = this.$route.params;
+    if (params.bebidaFixaCombo === true || params.bebidaFixaCombo === 'true') {
+      this.pedido = { pizzaNome: params.pizzaNome, combo: params.combo };
+      this.bebidaSelecionada = {
+        tipo: params.refrigerante,
+        tamanho: params.refrigeranteTamanho,
+        preco: 0
+      };
+      this.mostrarVerificacao = true;
+      this.mostrarPerguntaBebida = false;
+      this.mostrarBebidaOptions = false;
+    }
+  },
   methods: {
     voltar() {
       this.$router.push('/menu');
     },
     finalizarSelecao(pedidoSelecionado) {
       this.pedido = pedidoSelecionado;
+      if (this.bebidaFixaComboAtiva) {
+        this.bebidaSelecionada = {
+          tipo: this.$route.params.refrigerante,
+          tamanho: this.$route.params.refrigeranteTamanho,
+          preco: 0
+        };
+        this.mostrarVerificacao = true;
+        this.mostrarPerguntaBebida = false;
+        this.mostrarBebidaOptions = false;
+        return;
+      }
       this.mostrarPerguntaBebida = true;
     },
     onFinishPizzaOptions(pedidoSelecionado) {
@@ -61,14 +92,14 @@ export default {
       @finish="onFinishPizzaOptions"
       @voltar="voltar"
     />
-    <div v-if="mostrarPerguntaBebida" class="pergunta-bebida-container">
+    <div v-if="mostrarPerguntaBebida && !bebidaFixaComboAtiva" class="pergunta-bebida-container">
       <p class="pergunta-bebida-titulo">Deseja adicionar bebidas ao pedido?</p>
       <div class="pergunta-bebida-botoes">
         <button class="pergunta-bebida-btn sim" @click="escolherBebida(true)">Sim</button>
         <button class="pergunta-bebida-btn nao" @click="escolherBebida(false)">Não</button>
       </div>
     </div>
-    <div v-if="mostrarBebidaOptions">
+    <div v-if="mostrarBebidaOptions && !bebidaFixaComboAtiva">
       <BebidaOptions @finish="finalizarBebidas" />
     </div>
     <VerificacaoView

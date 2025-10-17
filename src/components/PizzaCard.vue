@@ -33,7 +33,7 @@ export default {
       combos: [
         { nome: 'Combo Solteiro', descricao: '1 Pizza Média + 1 Refrigerante 350ml', preco: 'R$ 39,90', img: '/src/assets/imagens/ComboExjpg.jpg' },
         { nome: 'Combo Casal', descricao: '1 Pizza Grande + 1 Refrigerante 2L', preco: 'R$ 54,90', img: '/src/assets/imagens/ComboExjpg.jpg' },
-        { nome: 'Combo Família', descricao: '2 Pizzas Grandes + 1 Refrigerante 2L + 1 Porção de Batata Frita', preco: 'R$ 99,90', img: '/src/assets/imagens/ComboExjpg.jpg' }
+        { nome: 'Combo Família', descricao: '1 Pizza Familia + 1 Refrigerante 2L', preco: 'R$ 99,90', img: '/src/assets/imagens/ComboExjpg.jpg' }
       ],
       bebidas: [
         { nome: 'Refrigerante', descricao: 'Escolha o tamanho e sabor', preco: '', img: '/src/assets/imagens/Coca.png', tipo: 'refrigerante' },
@@ -74,6 +74,22 @@ export default {
   },
   methods: {
     adicionarItem(item) {
+      // Combo Solteiro: pizza média + Guaraná Antarctica lata 350ml grátis
+      if (item.nome === 'Combo Solteiro') {
+        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Média', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: 'Lata 350ml', bebidaFixaCombo: true } });
+        return;
+      }
+      // Combo Casal: pizza grande + Guaraná Antarctica 2L grátis
+      if (item.nome === 'Combo Casal') {
+        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Grande', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true } });
+        return;
+      }
+      // Combo Família: pizza família + Guaraná Antarctica 2L grátis
+      if (item.nome === 'Combo Família') {
+        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Família', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true } });
+        return;
+      }
+      // ...lógica de bebidas e pizzas...
       if (item.tipo === 'refrigerante') {
         this.showRefrigeranteModal = true;
         this.selectedRefrigeranteTamanho = null;
@@ -171,10 +187,6 @@ export default {
       <button :class="{ active: activeTab === 'combos' }" @click="activeTab = 'combos'">
         <img src="/src/assets/imagens/combo.png" alt="Combos" />
         <span>Combos</span>
-      </button>
-      <button :class="{ active: activeTab === 'bebidas' }" @click="activeTab = 'bebidas'">
-        <img src="/src/assets/imagens/bebida.png" alt="Bebidas" />
-        <span>Bebidas</span>
       </button>
     </nav>
     <section class="pizza-card-content">
