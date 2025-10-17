@@ -10,7 +10,6 @@ const router = useRouter()
 const MERCADO_PAGO_PUBLIC_KEY = 'TEST-a08af5e5-b543-4202-850d-c8ea7f5462cf';
 
 const cep = ref('')
-const erroCep = ref('')
 const endereco = ref({
   rua: '',
   bairro: '',
@@ -24,8 +23,6 @@ const tipoEntrega = ref('') // 'retirar' ou 'entregar'
 const pedidoData = ref(null)
 const metodoPagamento = ref('')
 const processandoPagamento = ref(false)
-const frete = ref(0)
-const calculandoFrete = ref(false)
 const precisaTroco = ref(false)
 const valorTroco = ref('')
 const tipoCartao = ref('')
@@ -54,73 +51,13 @@ onMounted(() => {
   }
 })
 
-async function validarCep() {
-  const cepLimpo = cep.value.replace(/\D/g, '')
-
-  if (!cepLimpo || cepLimpo.length !== 8) {
-    erroCep.value = 'CEP inválido. Deve conter 8 dígitos numéricos.'
-    endereco.value = { rua: '', bairro: '', cidade: '', uf: '' }
-    return
-  }
-
-  try {
-    const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
-    const data = await res.json()
-
-    if (data.erro) {
-      erroCep.value = 'CEP não encontrado.'
-      endereco.value = { rua: '', bairro: '', cidade: '', uf: '' }
-    } else {
-      erroCep.value = ''
-      endereco.value = {
-        rua: data.logradouro,
-        bairro: data.bairro,
-        cidade: data.localidade,
-        uf: data.uf,
-      }
-      // Calcular frete após obter o endereço
-      calculandoFrete.value = true
-      setTimeout(() => {
-        calcularFrete()
-        calculandoFrete.value = false
-      }, 1000) // Simula tempo de cálculo
-    }
-  } catch {
-    erroCep.value = 'Erro ao consultar o CEP.'
-    endereco.value = { rua: '', bairro: '', cidade: '', uf: '' }
-  }
-}
-
-function calcularFrete() {
-  // Por enquanto, um valor fixo baseado na cidade
-  // Futuramente aqui será implementado o cálculo de distância
-  const cidade = endereco.value.cidade?.toLowerCase() || ''
-
-  if (cidade.includes('joinville')) {
-    frete.value = 5.0 // Taxa mínima para Joinville
-  } else if (endereco.value.uf === 'SC') {
-    frete.value = 15.0 // Taxa para outras cidades de SC
-  } else {
-    frete.value = 25.0 // Taxa para outros estados
-  }
-
-  console.log(
-    `Frete calculado: R$ ${frete.value.toFixed(2)} para ${endereco.value.cidade}, ${endereco.value.uf}`,
-  )
-}
-
-function obterValorFrete() {
-  return frete.value > 0 ? `R$ ${frete.value.toFixed(2).replace('.', ',')}` : 'A calcular'
-}
-
 function calcularValorTotal() {
   if (!pedidoData.value) return 'R$ 0,00'
 
   const valorPizza = parseFloat(pedidoData.value.valor.replace('R$ ', '').replace(',', '.'))
   const valorTotalPizzas = valorPizza * pedidoData.value.quantidade
-  const valorTotal = valorTotalPizzas + frete.value
 
-  return `R$ ${valorTotal.toFixed(2).replace('.', ',')}`
+  return `R$ ${valorTotalPizzas.toFixed(2).replace('.', ',')}`
 }
 
 function limparTrocoAoMudarPagamento() {
@@ -143,20 +80,6 @@ function validarEntrega() {
   if (!tipoEntrega.value) {
     alert('Por favor, selecione como deseja receber seu pedido.')
     return false
-  }
-  if (tipoEntrega.value === 'entregar') {
-    if (!cep.value || erroCep.value) {
-      alert('Por favor, informe um CEP válido.')
-      return false
-    }
-    if (frete.value === 0) {
-      alert('Por favor, aguarde o cálculo do frete ou verifique se o CEP foi informado corretamente.')
-      return false
-    }
-    if (calculandoFrete.value) {
-      alert('Aguarde o cálculo do frete finalizar.')
-      return false
-    }
   }
   return true
 }
@@ -192,7 +115,6 @@ function submitForm() {
       },
       valores: {
         unitario: pedidoData.value.valor,
-        frete: obterValorFrete(),
         total: calcularValorTotal(),
       },
       endereco: {
@@ -268,29 +190,32 @@ function salvarPedidoConfirmado(pedido) {
     <div class="checkout-main-content">
       <section class="checkout-form-section">
         <div>
-          <div class="Cep" for="cep"><strong>Informe o CEP:</strong></div>
-          <input
-            id="cep"
-            type="text"
-            v-model="cep"
-            @blur="validarCep"
-            placeholder="CEP (ex: 01001000)"
-            class="input"
-          />
-          <p v-if="erroCep" class="erro">{{ erroCep }}</p>
-          <div class="info-pizzaria">
+          <div class="entrega-tipo">
+            <label><strong>Como deseja receber seu pedido?</strong></label>
+            <div class="entrega-opcoes">
+              <label>
+                <input type="radio" value="entregar" v-model="tipoEntrega" /> Receber em casa
+              </label>
+              <label>
+                <input type="radio" value="retirar" v-model="tipoEntrega" /> Pegar no local
+              </label>
+            </div>
+          </div>
+          <div v-if="tipoEntrega === 'entregar'" class="form-endereco">
+            <label><strong>Rua:</strong></label>
+            <input type="text" v-model="endereco.rua" class="input" placeholder="Rua" />
+            <label><strong>Número:</strong></label>
+            <input type="text" v-model="endereco.numero" class="input" placeholder="Número" />
+            <label><strong>Bairro:</strong></label>
+            <input type="text" v-model="endereco.bairro" class="input" placeholder="Bairro" />
+            <label><strong>Cidade:</strong></label>
+            <input type="text" v-model="endereco.cidade" class="input" placeholder="Cidade" />
+            <label><strong>Complemento:</strong></label>
+            <input type="text" v-model="endereco.complemento" class="input" placeholder="Complemento" />
+          </div>
+          <div v-if="tipoEntrega === 'retirar'" class="info-pizzaria">
             <small>📍 Nossa pizzaria fica em Joinville/SC - R. Francisco Cristofolini, 326</small>
           </div>
-        </div>
-        <div v-if="endereco.rua">
-          <label><strong>Rua:</strong></label>
-          <input type="text" :value="endereco.rua" disabled class="input" />
-          <label><strong>Bairro:</strong></label>
-          <input type="text" :value="endereco.bairro" disabled class="input" />
-          <label><strong>Cidade:</strong></label>
-          <input type="text" :value="endereco.cidade" disabled class="input" />
-          <label><strong>Estado:</strong></label>
-          <input type="text" :value="endereco.uf" disabled class="input" />
         </div>
         <div class="payment-methods">
           <div class="title-Pagamento"><h2>Pagamento</h2></div>
@@ -382,9 +307,6 @@ function salvarPedidoConfirmado(pedido) {
               <p><strong>Sabor/Marca:</strong> {{ pedidoData.bebidaSelecionada.sabor }}</p>
               <p><strong>Valor da bebida:</strong> R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</p>
             </div>
-            <p v-if="calculandoFrete"><strong>Frete:</strong> 🔄 Calculando...</p>
-            <p v-else-if="frete > 0"><strong>Frete:</strong> {{ obterValorFrete() }}</p>
-            <p v-else><strong>Frete:</strong> Informe o CEP para calcular</p>
           </div>
           <div class="buttons-container">
             <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">
@@ -650,6 +572,21 @@ function salvarPedidoConfirmado(pedido) {
   color: #b33c1a;
   box-shadow: 0 1px 4px #b33c1a11;
   margin-top: 4px;
+}
+.entrega-tipo {
+  margin-bottom: 18px;
+}
+.entrega-opcoes {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
+}
+.form-endereco {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fffbe6;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #b33c1a22;
 }
 @media (max-width: 900px) {
   .checkout-main-content {
