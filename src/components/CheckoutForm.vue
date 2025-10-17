@@ -152,25 +152,30 @@ function submitForm() {
 }
 
 function salvarPedidoConfirmado(pedido) {
-  // Adiciona o usuarioId do usuário logado
   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  const itensPedido = [
+    {
+      nome: pedido.pizza?.nome || pedido.pizzaNome || 'Pizza',
+      detalhes: `${pedido.pizza?.sabores?.map(s=>s.fracao+ ' ' + s.nome).join(', ') || ''}${pedido.pizza?.borda ? ' | Borda: ' + pedido.pizza.borda : ''}${pedido.bordaSelecionada ? ' | Borda: ' + pedido.bordaSelecionada : ''}`,
+      qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
+    }
+  ];
+  // Adiciona bebida se existir
+  if (pedidoData.value.bebidaSelecionada) {
+    itensPedido.push({
+      nome: `Bebida: ${pedidoData.value.bebidaSelecionada.tipo}`,
+      detalhes: `${pedidoData.value.bebidaSelecionada.tamanho || ''} ${pedidoData.value.bebidaSelecionada.sabor || ''}`.trim(),
+      qtd: 1
+    });
+  }
   const novoPedido = {
     id: pedido.id,
     usuarioId: usuarioLogado?.id || null,
     data: pedido.data,
     status: pedido.status || 'Confirmado',
     valor: typeof pedido.valores === 'object' && pedido.valores.total ? parseFloat(pedido.valores.total.replace('R$','').replace(',','.')) : 0,
-    itens: [
-      {
-        nome: pedido.pizza?.nome || pedido.pizzaNome || 'Pizza',
-        detalhes: `${pedido.pizza?.sabores?.map(s=>s.fracao+ ' ' + s.nome).join(', ') || ''}${pedido.pizza?.borda ? ' | Borda: ' + pedido.pizza.borda : ''}${pedido.bordaSelecionada ? ' | Borda: ' + pedido.bordaSelecionada : ''}`,
-        qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
-      },
-      // Adiciona bebida se existir
-      ...(pedido.bebida ? [{ nome: pedido.bebida.nome, detalhes: pedido.bebida.detalhes || '', qtd: pedido.bebida.quantidade || 1 }] : [])
-    ]
+    itens: itensPedido
   };
-  // Recuperar pedidos existentes
   const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]')
   pedidosExistentes.push(novoPedido)
   localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes))

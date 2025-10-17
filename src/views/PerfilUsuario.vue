@@ -224,7 +224,16 @@ export default {
           <div>Valor: R$ {{ pedido.valor.toFixed(2).replace('.', ',') }}</div>
           <div>Itens:
             <ul>
-              <li v-for="item in pedido.itens" :key="item.nome">{{ item.nome }} ({{ item.qtd }}) - {{ item.detalhes }}</li>
+              <li v-for="item in pedido.itens" :key="item.nome">
+                <template v-if="item && item.nome">
+                  <span v-if="item.nome.toLowerCase().includes('bebida') || item.nome.toLowerCase().includes('refrigerante') || item.nome.toLowerCase().includes('cerveja') || item.nome.toLowerCase().includes('água')">
+                    <strong>Bebida:</strong> {{ item.nome }} <span v-if="item.detalhes">- {{ item.detalhes }}</span>
+                  </span>
+                  <span v-else>
+                    {{ item.nome }} ({{ item.qtd }}) - {{ item.detalhes }}
+                  </span>
+                </template>
+              </li>
             </ul>
           </div>
         </li>
