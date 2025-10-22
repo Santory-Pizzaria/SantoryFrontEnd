@@ -1,3 +1,42 @@
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+
+const banners = [
+  { src: '/src/assets/imagens/carrosel-1.png', alt: 'Ambiente aconchegante' },
+  { src: '/src/assets/imagens/carrosel-2.png', alt: 'Pizza artesanal' },
+  { src: '/src/assets/imagens/carrosel-3.png', alt: 'Combo promocional' }
+]
+const bannerAtual = ref(0)
+
+function nextBanner() {
+  bannerAtual.value = (bannerAtual.value + 1) % banners.length
+}
+
+function setBanner(idx) {
+  bannerAtual.value = idx
+}
+
+function animarAoEntrar(selector) {
+  nextTick(() => {
+    const elementos = document.querySelectorAll(selector)
+    const observer = new window.IntersectionObserver((entradas) => {
+      entradas.forEach(entrada => {
+        if (entrada.isIntersecting) {
+          entrada.target.classList.add('animar-entrada')
+          observer.unobserve(entrada.target)
+        }
+      })
+    }, { threshold: 0.15 })
+    elementos.forEach(el => observer.observe(el))
+  })
+}
+
+onMounted(() => {
+  setInterval(nextBanner, 4000)
+  animarAoEntrar('.animar')
+})
+</script>
+
 <template>
   <div class="destaque-menu dark">
     <div class="banner-carousel">
@@ -57,45 +96,6 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, nextTick } from 'vue'
-
-const banners = [
-  { src: '/src/assets/imagens/carrosel1.png', alt: 'Ambiente aconchegante' },
-  { src: '/src/assets/imagens/carrosel2.png', alt: 'Pizza artesanal' },
-  { src: '/src/assets/imagens/ComboExjpg.jpg', alt: 'Combo promocional' },
-  { src: '/src/assets/imagens/Sabores.png', alt: 'Sabores variados' }
-]
-const bannerAtual = ref(0)
-
-function nextBanner() {
-  bannerAtual.value = (bannerAtual.value + 1) % banners.length
-}
-
-function setBanner(idx) {
-  bannerAtual.value = idx
-}
-
-function animarAoEntrar(selector) {
-  nextTick(() => {
-    const elementos = document.querySelectorAll(selector)
-    const observer = new window.IntersectionObserver((entradas) => {
-      entradas.forEach(entrada => {
-        if (entrada.isIntersecting) {
-          entrada.target.classList.add('animar-entrada')
-          observer.unobserve(entrada.target)
-        }
-      })
-    }, { threshold: 0.15 })
-    elementos.forEach(el => observer.observe(el))
-  })
-}
-
-onMounted(() => {
-  setInterval(nextBanner, 4000)
-  animarAoEntrar('.animar')
-})
-</script>
 
 <style scoped>
 .destaque-menu.dark {
