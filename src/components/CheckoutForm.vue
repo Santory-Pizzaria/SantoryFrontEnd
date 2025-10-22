@@ -57,7 +57,13 @@ function calcularValorTotal() {
   const valorPizza = parseFloat(pedidoData.value.valor.replace('R$ ', '').replace(',', '.'))
   const valorTotalPizzas = valorPizza * pedidoData.value.quantidade
 
-  return `R$ ${valorTotalPizzas.toFixed(2).replace('.', ',')}`
+  // Soma o valor de todas as bebidas (fixas e extras)
+  let valorBebidas = 0
+  if (pedidoData.value.bebidas && Array.isArray(pedidoData.value.bebidas)) {
+    valorBebidas = pedidoData.value.bebidas.reduce((total, bebida) => total + (bebida.preco || 0), 0)
+  }
+
+  return `R$ ${(valorTotalPizzas + valorBebidas).toFixed(2).replace('.', ',')}`
 }
 
 function limparTrocoAoMudarPagamento() {
@@ -295,6 +301,21 @@ function salvarPedidoConfirmado(pedido) {
             </span>
             <span>R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
           </div>
+          <!-- Exibe todas as bebidas do pedido (fixas e extras) -->
+          <div v-if="pedidoData.bebidas && pedidoData.bebidas.length">
+            <div class="linha">
+              <span><strong>Bebidas:</strong></span>
+              <span></span>
+            </div>
+            <div v-for="(bebida, idx) in pedidoData.bebidas" :key="idx" class="linha">
+              <span>
+                {{ bebida.nome || bebida.tipo || bebida.sabor }}
+                <span v-if="bebida.tamanho">- {{ bebida.tamanho }}</span>
+                <span v-if="bebida.sabor && !bebida.nome">- {{ bebida.sabor }}</span>
+              </span>
+              <span>R$ {{ bebida.preco ? bebida.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
+            </div>
+          </div>
           <div class="pedido-detalhes">
             <h4>Sabores:</h4>
             <ul>
@@ -312,6 +333,22 @@ function salvarPedidoConfirmado(pedido) {
               <p><strong>Sabor/Marca:</strong> {{ pedidoData.bebidaSelecionada.sabor }}</p>
               <p><strong>Valor da bebida:</strong> R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</p>
             </div>
+            <!-- Exibe todas as bebidas do pedido (fixas e extras) no bloco de detalhes -->
+            <div v-if="pedidoData.bebidas && pedidoData.bebidas.length">
+              <h4>Bebidas:</h4>
+              <ul>
+                <li v-for="(bebida, idx) in pedidoData.bebidas" :key="idx">
+                  <strong>{{ bebida.nome || bebida.tipo || bebida.sabor }}</strong>
+                  <span v-if="bebida.tamanho"> - {{ bebida.tamanho }}</span>
+                  <span v-if="bebida.sabor && !bebida.nome"> - {{ bebida.sabor }}</span>
+                  <span> | Valor: R$ {{ bebida.preco ? bebida.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="total">
+            <span><strong>Total do Pedido:</strong></span>
+            <span>{{ calcularValorTotal() }}</span>
           </div>
           <div class="buttons-container">
             <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">

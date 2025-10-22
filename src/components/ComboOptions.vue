@@ -25,18 +25,53 @@
 </template>
 
 <script>
+const combos = [
+  {
+    nome: 'Combo Família',
+    descricao: '2 Pizzas Grandes + 1 Guaraná 2L',
+    valor: 89.90,
+    itensFixos: [
+      { tipo: 'pizza', quantidade: 2, tamanho: 'Grande' },
+      { tipo: 'bebida', nome: 'Guaraná', tamanho: '2L', preco: 0 }
+    ]
+  },
+  {
+    nome: 'Combo Casal',
+    descricao: '1 Pizza Média + 1 Guaraná 2L',
+    valor: 49.90,
+    itensFixos: [
+      { tipo: 'pizza', quantidade: 1, tamanho: 'Média' },
+      { tipo: 'bebida', nome: 'Guaraná', tamanho: '2L', preco: 0 }
+    ]
+  },
+  {
+    nome: 'Combo Kids',
+    descricao: '1 Pizza Pequena + 2 Sucos',
+    valor: 34.90,
+    itensFixos: [
+      { tipo: 'pizza', quantidade: 1, tamanho: 'Pequena' },
+      { tipo: 'bebida', nome: 'Suco', tamanho: '300ml', preco: 0 }
+    ]
+  },
+  {
+    nome: 'Combo Festa',
+    descricao: '3 Pizzas Grandes + 3 Refrigerantes',
+    valor: 129.90,
+    itensFixos: [
+      { tipo: 'pizza', quantidade: 3, tamanho: 'Grande' },
+      { tipo: 'bebida', nome: 'Refrigerante', tamanho: '2L', preco: 0 }
+    ]
+  }
+];
+
 export default {
   name: 'ComboOptions',
   data() {
     return {
-      combos: [
-        { nome: 'Combo Família', desc: '2 Pizzas Grandes + 2 Refrigerantes', valor: 'R$ 89,90' },
-        { nome: 'Combo Casal', desc: '1 Pizza Média + 1 Refrigerante', valor: 'R$ 49,90' },
-        { nome: 'Combo Kids', desc: '1 Pizza Pequena + 2 Sucos', valor: 'R$ 34,90' },
-        { nome: 'Combo Festa', desc: '3 Pizzas Grandes + 3 Refrigerantes', valor: 'R$ 129,90' }
-      ],
+      combos,
       comboSelecionado: null,
-      erroSelecao: ''
+      erroSelecao: '',
+      bebidasExtras: [] // Para bebidas extras
     }
   },
   methods: {
@@ -44,12 +79,24 @@ export default {
       this.comboSelecionado = combo;
       this.erroSelecao = '';
     },
+    adicionarBebidaExtra(bebida) {
+      this.bebidasExtras.push(bebida);
+    },
     finalizarSelecao() {
       if (!this.comboSelecionado) {
         this.erroSelecao = 'Selecione um combo para continuar.';
         return;
       }
-      this.$emit('finish', this.comboSelecionado);
+      // Monta pedido com itens fixos do combo e bebidas extras
+      const pedido = {
+        combo: this.comboSelecionado,
+        pizzas: [], // será preenchido na próxima etapa
+        bebidas: [
+          ...this.comboSelecionado.itensFixos.filter(i => i.tipo === 'bebida'),
+          ...this.bebidasExtras
+        ]
+      };
+      this.$emit('finish', pedido);
     }
   }
 }

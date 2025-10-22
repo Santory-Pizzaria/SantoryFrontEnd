@@ -75,6 +75,7 @@ export default {
         valor: this.pedido.valor,
         quantidade: this.pedido.quantidade,
         bebidaSelecionada: this.bebidaSelecionada, // Adiciona bebida selecionada
+        bebidas: this.pedido.bebidas || [], // Adiciona todas as bebidas do pedido
         valorTotal: this.calcularValorTotal()
       };
 
@@ -173,6 +174,28 @@ export default {
           <div><b>Borda:</b> {{ pedido.bordaSelecionada }}</div>
           <div><b>Valor unitário:</b> {{ pedido.valor }}</div>
           <div><b>Valor total:</b> {{ calcularValorTotal() }}</div>
+        </div>
+        <!-- Exibe todos os itens do combo e bebidas extras -->
+        <div v-if="pedido.combo">
+          <b>Combo:</b> {{ pedido.combo.nome }}<br>
+          <span>{{ pedido.combo.descricao }}</span>
+          <div><b>Valor do combo:</b> R$ {{ pedido.combo.valor.toFixed(2).replace('.', ',') }}</div>
+          <div v-if="pedido.pizzas && pedido.pizzas.length">
+            <b>Pizzas do combo:</b>
+            <ul>
+              <li v-for="(pizza, idx) in pedido.pizzas" :key="idx">
+                {{ pizza.tamanho }} - Sabores: {{ pizza.sabores ? pizza.sabores.join(', ') : '' }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="pedido.bebidas && pedido.bebidas.length" class="verificacao-info bebida-info">
+          <b>Bebidas:</b>
+          <ul>
+            <li v-for="(bebida, idx) in pedido.bebidas" :key="idx">
+              {{ bebida.nome || bebida.sabor }} <span v-if="bebida.tamanho">({{ bebida.tamanho }})</span> | Valor: R$ {{ bebida.preco ? bebida.preco.toFixed(2).replace('.', ',') : '0,00' }}
+            </li>
+          </ul>
         </div>
         <div v-if="bebidaSelecionada" class="verificacao-info bebida-info">
           <b>Bebida:</b>

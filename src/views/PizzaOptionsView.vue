@@ -17,6 +17,7 @@ export default {
       mostrarPerguntaBebida: false,
       mostrarBebidaOptions: false,
       bebidaSelecionada: null,
+      bebidasExtras: [], // Adiciona array para bebidas extras
     };
   },
   computed: {
@@ -44,18 +45,18 @@ export default {
       this.$router.push('/menu');
     },
     finalizarSelecao(pedidoSelecionado) {
-      this.pedido = pedidoSelecionado;
-      if (this.bebidaFixaComboAtiva) {
-        this.bebidaSelecionada = {
-          tipo: this.$route.params.refrigerante,
-          tamanho: this.$route.params.refrigeranteTamanho,
-          preco: 0
+      // Se vier de um combo, preenche as pizzas e bebidas fixas do combo
+      if (pedidoSelecionado.combo) {
+        this.pedido = {
+          combo: pedidoSelecionado.combo,
+          pizzas: pedidoSelecionado.pizzas,
+          bebidas: [...pedidoSelecionado.bebidas], // já inclui Guaraná fixo
         };
-        this.mostrarVerificacao = true;
-        this.mostrarPerguntaBebida = false;
-        this.mostrarBebidaOptions = false;
+        this.mostrarPerguntaBebida = true;
         return;
       }
+      // ...fluxo normal para pizzas avulsas...
+      this.pedido = pedidoSelecionado;
       this.mostrarPerguntaBebida = true;
     },
     onFinishPizzaOptions(pedidoSelecionado) {
@@ -74,9 +75,16 @@ export default {
       }
     },
     finalizarBebidas(bebida) {
-      this.bebidaSelecionada = bebida;
+      // Adiciona bebida extra ao array
+      this.bebidasExtras.push(bebida);
       this.mostrarBebidaOptions = false;
       this.mostrarVerificacao = true;
+      // Junta bebidas fixas do combo com extras
+      if (this.pedido && this.pedido.bebidas) {
+        this.pedido.bebidas = [...this.pedido.bebidas, ...this.bebidasExtras];
+      } else if (this.pedido) {
+        this.pedido.bebidas = [...this.bebidasExtras];
+      }
     }
   }
 };
