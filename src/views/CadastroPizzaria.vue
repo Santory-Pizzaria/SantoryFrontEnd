@@ -39,7 +39,9 @@ async function cadastrarPizzaria() {
     usuariosExistentes.push(novoUsuario)
     localStorage.setItem('usuarios', JSON.stringify(usuariosExistentes))
     // Salvar também o usuário logado
-    localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario))
+    if (!localStorage.getItem('usuarioLogado')) {
+      localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario))
+    }
 
     mensagem.value = 'Cadastro realizado com sucesso!'
     nome.value = email.value = senha.value = telefone.value = endereco.value = ''
