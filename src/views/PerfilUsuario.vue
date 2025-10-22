@@ -169,7 +169,10 @@ export default {
       const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
       if (!usuarioLogado) return;
       const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-      this.historicoCompras = pedidos.filter(p => p.usuarioId === usuarioLogado.id);
+      // Ordena do mais recente para o mais antigo
+      this.historicoCompras = pedidos
+        .filter(p => p.usuarioId === usuarioLogado.id)
+        .sort((a, b) => b.id - a.id);
     },
   },
 };

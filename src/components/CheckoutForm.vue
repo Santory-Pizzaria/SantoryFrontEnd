@@ -166,12 +166,14 @@ function salvarPedidoConfirmado(pedido) {
       qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
     }
   ];
-  // Adiciona bebida se existir
-  if (pedidoData.value.bebidaSelecionada) {
-    itensPedido.push({
-      nome: `Bebida: ${pedidoData.value.bebidaSelecionada.tipo}`,
-      detalhes: `${pedidoData.value.bebidaSelecionada.tamanho || ''} ${pedidoData.value.bebidaSelecionada.sabor || ''}`.trim(),
-      qtd: 1
+  // Adiciona todas as bebidas do pedido
+  if (pedidoData.value.bebidas && Array.isArray(pedidoData.value.bebidas)) {
+    pedidoData.value.bebidas.forEach(bebida => {
+      itensPedido.push({
+        nome: `Bebida: ${bebida.nome || bebida.tipo || bebida.sabor}`,
+        detalhes: `${bebida.tamanho || ''} ${bebida.sabor || ''}`.trim(),
+        qtd: 1
+      });
     });
   }
   const novoPedido = {
