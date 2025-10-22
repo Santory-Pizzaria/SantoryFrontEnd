@@ -6,6 +6,11 @@ const router = useRouter();
 const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
+const showAssistant = ref(false);
+const assistantMessages = ref([
+  { sender: 'bot', text: 'Olá! Sou a Assistente da Santory Pizzaria. Como posso ajudar?' }
+]);
+const userInput = ref('');
 
 // Calcula o valor total do carrinho
 const totalCarrinho = computed(() => {
@@ -76,6 +81,54 @@ function adicionarMais(idx) {
   atualizarQtdCarrinho();
 }
 
+function toggleAssistant() {
+  showAssistant.value = !showAssistant.value;
+}
+
+function sendAssistantMessage() {
+  const input = userInput.value.trim();
+  if (!input) return;
+  assistantMessages.value.push({ sender: 'user', text: input });
+  userInput.value = '';
+  setTimeout(() => {
+    assistantMessages.value.push({ sender: 'bot', text: getAssistantReply(input) });
+  }, 500);
+}
+
+function removerAcentos(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function getAssistantReply(input) {
+  const txt = removerAcentos(input.toLowerCase());
+  // Saudações
+  if (["oi", "ola", "bom dia", "boa tarde", "boa noite"].some(s => txt.includes(s))) {
+    return `Olá! Sou a Assistente da Santory Pizzaria. Você pode perguntar sobre:
+- Cardápio
+- Horário de funcionamento
+- Endereço
+- Telefone/WhatsApp
+- Como fazer um pedido
+Digite uma dessas opções para saber mais!`;
+  }
+  if (txt.includes('cardapio') || txt.includes('menu')) {
+    return 'Você pode acessar o cardápio clicando em "Ver Cardápio e Pedir!" na página inicial.';
+  }
+  if (txt.includes('horario')) {
+    return 'Nosso horário de funcionamento é das 18h às 23h, todos os dias.';
+  }
+  if (txt.includes('endereco') || txt.includes('localizacao')) {
+    return 'Estamos localizados na Rua Exemplo, 123. Veja como chegar pelo botão "Como Chegar".';
+  }
+  if (txt.includes('telefone') || txt.includes('whatsapp')) {
+    return 'Você pode falar conosco pelo WhatsApp: (99) 99999-9999.';
+  }
+  if (txt.includes('pedido')) {
+    return 'Para fazer um pedido, acesse o cardápio e adicione itens ao carrinho.';
+  }
+  return 'Desculpe, não entendi. Pode tentar perguntar de outra forma?';
+}
+
 // Atualiza ao montar
 atualizarQtdCarrinho()
 window.addEventListener('storage', atualizarQtdCarrinho)
@@ -123,6 +176,35 @@ watch(carrinho, () => {
         </div>
       </transition>
     </template>
+
+    <!-- Assistente Flutuante -->
+    <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleAssistant">
+      <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="carrinho-icon" />
+      <span class="carrinho-badge">?</span>
+    </div>
+    <!-- Modal do Assistente -->
+    <transition name="mini-cart-fade">
+      <div v-if="showAssistant" class="mini-cart-modal" @click.self="toggleAssistant">
+        <div class="mini-cart-content" style="max-height: 60vh; overflow-y: auto;">
+          <div class="mini-cart-header">
+            <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="mini-cart-icon" />
+            <span class="mini-cart-badge mini-cart-badge">Assistente</span>
+          </div>
+          <h3>Assistente da Pizzaria</h3>
+          <div style="margin-bottom: 12px;">
+            <div v-for="(msg, idx) in assistantMessages" :key="idx" :style="{ textAlign: msg.sender === 'bot' ? 'left' : 'right', margin: '6px 0' }">
+              <span :style="{ background: msg.sender === 'bot' ? '#eee' : '#b33c1a', color: msg.sender === 'bot' ? '#222' : '#fff', borderRadius: '8px', padding: '6px 12px', display: 'inline-block', maxWidth: '80%' }">{{ msg.text }}</span>
+            </div>
+          </div>
+          <form @submit.prevent="sendAssistantMessage" style="display: flex; gap: 8px;">
+            <input v-model="userInput" type="text" placeholder="Digite sua dúvida..." style="flex:1; border-radius:6px; border:1px solid #ccc; padding:8px;" />
+            <button type="submit" class="assistant-send-btn">
+              <span style="font-size:2rem;">➤</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </transition>
 
     <div v-if="$route.path === '/'" class="background">
       <div class="overlay">
@@ -350,6 +432,11 @@ nav a:first-of-type {
   align-items: flex-end;
   justify-content: flex-end;
 }
+.mini-cart-modal.assistant-open {
+  background: rgba(0,0,0,0.35);
+  align-items: center;
+  justify-content: center;
+}
 .mini-cart-content {
   background: #fff;
   border-radius: 18px 18px 0 0;
@@ -361,9 +448,20 @@ nav a:first-of-type {
   margin: 0 24px 24px 0;
   animation: miniCartIn 0.35s cubic-bezier(.4,0,.2,1);
 }
+.mini-cart-content.assistant-chat {
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #10b98155;
+  border: 2px solid #10b981;
+  background: #fff;
+  animation: assistantIn 0.35s cubic-bezier(.4,0,.2,1);
+}
 @keyframes miniCartIn {
   from { transform: translateY(80px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+@keyframes assistantIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 .mini-cart-fade-enter-active, .mini-cart-fade-leave-active {
   transition: opacity 0.25s;
@@ -519,5 +617,25 @@ nav a:first-of-type {
   top: unset;
   right: unset;
   box-shadow: none;
+}
+.assistant-send-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 40%, #f59e0b 100%);
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px #10b98144;
+  border: none;
+  padding: 0;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+}
+.assistant-send-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 8px 32px #f59e0b55;
+  background: linear-gradient(135deg, #f59e0b 40%, #10b981 100%);
 }
 </style>
