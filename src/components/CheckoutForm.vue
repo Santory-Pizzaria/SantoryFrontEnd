@@ -125,18 +125,22 @@ function submitForm() {
   processandoPagamento.value = true
 
   // Simular processamento do pagamento
-  setTimeout(() => {
+  // Processa pagamento (simulado) e envia para backend
+  setTimeout(async () => {
     // Criar objeto do pedido completo
     const pedidoCompleto = {
       id: Date.now(),
       data: new Date().toLocaleDateString('pt-BR'),
       hora: new Date().toLocaleTimeString('pt-BR'),
-      pizza: {
-        nome: pedidoData.value.pizzaNome,
-        sabores: pedidoData.value.saboresSelecionados,
-        borda: pedidoData.value.bordaSelecionada,
-        quantidade: pedidoData.value.quantidade,
-      },
+      itens: [
+        {
+          nome: pedidoData.value.pizzaNome,
+          detalhes: (pedidoData.value.saboresSelecionados || []).map(s => `${s.fracao} ${s.nome}`).join(', '),
+          qtd: pedidoData.value.quantidade || 1,
+          preco: parseFloat((pedidoData.value.valor || 'R$ 0').replace('R$', '').replace(',', '.')) || 0
+        },
+        ...(pedidoData.value.bebida ? [{ nome: pedidoData.value.bebida.nome, detalhes: pedidoData.value.bebida.detalhes || '', qtd: pedidoData.value.bebida.quantidade || 1, preco: pedidoData.value.bebida.preco || 0 }] : [])
+      ],
       valores: {
         unitario: pedidoData.value.valor,
         frete: obterValorFrete(),
@@ -153,25 +157,56 @@ function submitForm() {
         metodo: metodoPagamento.value,
         status: 'Aprovado',
       },
-      status: 'Confirmado',
+      status: 'confirmado',
     }
 
-    // Salvar pedido confirmado
-    salvarPedidoConfirmado(pedidoCompleto)
+    try {
+      const access = localStorage.getItem('access')
+      const payload = {
+        items: pedidoCompleto.itens,
+        total: parseFloat((pedidoCompleto.valores.total || 'R$ 0').toString().replace('R$', '').replace(',', '.')) || 0,
+        cep: pedidoCompleto.endereco.cep,
+        rua: pedidoCompleto.endereco.rua,
+        bairro: pedidoCompleto.endereco.bairro,
+        cidade: pedidoCompleto.endereco.cidade,
+        uf: pedidoCompleto.endereco.uf,
+        status: pedidoCompleto.status,
+        pagamento_status: pedidoCompleto.pagamento.status || 'aprovado',
+        observacoes: ''
+      }
 
-    // Limpar dados temporários
-    localStorage.removeItem('pedido-pagamento')
+      const res = await fetch('http://localhost:8000/api/pedidos/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(access ? { 'Authorization': `Bearer ${access}` } : {})
+        },
+        body: JSON.stringify(payload)
+      })
 
-    processandoPagamento.value = false
+      if (!res.ok) {
+        const err = await res.text()
+        console.error('Erro ao enviar pedido:', res.status, err)
+        // fallback: salvar localmente
+        salvarPedidoConfirmado(pedidoCompleto)
+        alert('Pedido salvo localmente (backend indisponível).')
+      } else {
+        const data = await res.json()
+        console.log('Pedido criado no backend:', data)
+        // Limpar dados temporários
+        localStorage.removeItem('pedido-pagamento')
+        alert(`🍕 Pedido #${data.id} confirmado com sucesso!\nTempo estimado de entrega: ${data.tempo_entrega_min || '30'}-${data.tempo_entrega_max || '45'} minutos`)
+      }
+    } catch (err) {
+      console.error('Erro ao enviar pedido (catch):', err)
+      // fallback local
+      salvarPedidoConfirmado(pedidoCompleto)
+      alert('Pedido salvo localmente (erro de rede).')
+    } finally {
+      processandoPagamento.value = false
+      setTimeout(() => router.push('/menu'), 800)
+    }
 
-    // Mostrar confirmação e redirecionar
-    alert(
-      `🍕 Pagamento aprovado!\n\nPedido #${pedidoCompleto.id} confirmado com sucesso!\nTempo estimado de entrega: 30-45 minutos\n\nVocê será redirecionado para a página inicial.`,
-    )
-
-    setTimeout(() => {
-      router.push('/menu')
-    }, 1000)
   }, 1000) // Simula tempo de processamento do pagamento
 }
 
