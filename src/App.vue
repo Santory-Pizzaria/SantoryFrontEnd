@@ -95,10 +95,6 @@ watch(carrinho, () => {
     </header>
     <router-view />
     <template v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/cadastro' && $route.path !== '/admin' && $route.path !== '/CadastroPizzaria' && $route.path !== '/Login'">
-      <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleMiniCart">
-        <img src="/src/assets/imagens/carrinho.png" alt="Carrinho" class="carrinho-icon" />
-        <span v-if="qtdCarrinho > 0" class="carrinho-badge">{{ qtdCarrinho }}</span>
-      </div>
       <transition name="mini-cart-fade">
         <div v-if="showMiniCart && mostrarCarrinho" class="mini-cart-modal" @click.self="toggleMiniCart">
           <div class="mini-cart-content">
