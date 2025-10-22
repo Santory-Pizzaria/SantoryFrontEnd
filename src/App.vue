@@ -10,7 +10,22 @@ const showAssistant = ref(false);
 const assistantMessages = ref([
   { sender: 'bot', text: 'Olá! Sou a Assistente da Santory Pizzaria. Como posso ajudar?' }
 ]);
-const userInput = ref('');
+
+const comandosAssistente = [
+  { label: 'Cardápio', pergunta: 'cardápio' },
+  { label: 'Horário de funcionamento', pergunta: 'horário' },
+  { label: 'Endereço', pergunta: 'endereço' },
+  { label: 'Telefone/WhatsApp', pergunta: 'telefone' },
+  { label: 'Como fazer um pedido', pergunta: 'pedido' },
+  { label: 'Produto errado', pergunta: 'produto errado' }
+];
+
+function selecionarComando(cmd) {
+  assistantMessages.value.push({ sender: 'user', text: cmd.label });
+  setTimeout(() => {
+    assistantMessages.value.push({ sender: 'bot', text: getAssistantReply(cmd.pergunta) });
+  }, 400);
+}
 
 // Calcula o valor total do carrinho
 const totalCarrinho = computed(() => {
@@ -85,15 +100,7 @@ function toggleAssistant() {
   showAssistant.value = !showAssistant.value;
 }
 
-function sendAssistantMessage() {
-  const input = userInput.value.trim();
-  if (!input) return;
-  assistantMessages.value.push({ sender: 'user', text: input });
-  userInput.value = '';
-  setTimeout(() => {
-    assistantMessages.value.push({ sender: 'bot', text: getAssistantReply(input) });
-  }, 500);
-}
+/* Removed unused sendAssistantMessage function */
 
 function removerAcentos(str) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -125,6 +132,9 @@ Digite uma dessas opções para saber mais!`;
   }
   if (txt.includes('pedido')) {
     return 'Para fazer um pedido, acesse o cardápio e adicione itens ao carrinho.';
+  }
+  if (txt.includes('produto errado')) {
+    return 'Se o produto está errado, por favor, entre em contato pelo WhatsApp para suporte.';
   }
   return 'Desculpe, não entendi. Pode tentar perguntar de outra forma?';
 }
@@ -196,12 +206,11 @@ watch(carrinho, () => {
               <span :style="{ background: msg.sender === 'bot' ? '#eee' : '#b33c1a', color: msg.sender === 'bot' ? '#222' : '#fff', borderRadius: '8px', padding: '6px 12px', display: 'inline-block', maxWidth: '80%' }">{{ msg.text }}</span>
             </div>
           </div>
-          <form @submit.prevent="sendAssistantMessage" style="display: flex; gap: 8px;">
-            <input v-model="userInput" type="text" placeholder="Digite sua dúvida..." style="flex:1; border-radius:6px; border:1px solid #ccc; padding:8px;" />
-            <button type="submit" class="assistant-send-btn">
-              <span style="font-size:2rem;">➤</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <button v-for="cmd in comandosAssistente" :key="cmd.label" @click="selecionarComando(cmd)" style="background: linear-gradient(90deg, #10b981 40%, #f59e0b 100%); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px #10b98144;">
+              {{ cmd.label }}
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </transition>
