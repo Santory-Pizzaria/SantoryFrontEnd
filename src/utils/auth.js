@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/auth';
+const API_URL = 'http://localhost:8000/api/auth'; // Corrigido para refletir o endpoint correto
 const API_USER_URL = 'http://localhost:8000/api';
 
 export async function login(email, password) {
@@ -18,6 +18,7 @@ export async function login(email, password) {
     throw new Error(errorMsg);
   }
   const data = await response.json();
+  console.log('Tokens recebidos:', data); // Log para verificar os tokens recebidos
   localStorage.setItem('access', data.access);
   localStorage.setItem('refresh', data.refresh);
 
@@ -28,11 +29,13 @@ export async function login(email, password) {
     });
     if (userResp.ok) {
       const userData = await userResp.json();
+      console.log('Dados do usuário logado:', userData); // Log para verificar os dados do usuário
       localStorage.setItem('usuarioLogado', JSON.stringify(userData));
+    } else {
+      console.error('Erro ao buscar dados do usuário:', userResp.status, await userResp.text());
     }
   } catch (e) {
-    // Error fetching user data, log the error
-    console.error('Error fetching user data:', e);
+    console.error('Erro ao buscar dados do usuário:', e);
   }
 
   return data;
@@ -71,6 +74,33 @@ export function logout() {
   localStorage.removeItem('refresh');
 }
 
-export function isAuthenticated() {
-  return !!localStorage.getItem('access');
+export async function isAuthenticated() {
+  const access = localStorage.getItem('access');
+  console.log('Token de acesso no isAuthenticated:', access); // Log para verificar o token
+  if (!access) {
+    console.warn('Nenhum token de acesso encontrado.');
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${API_USER_URL}/usuarios/me/`, {
+      headers: { 'Authorization': `Bearer ${access}` },
+    });
+    console.log('Resposta do backend no isAuthenticated:', response.status); // Log para verificar a resposta
+
+    if (response.ok) {
+      const userData = await response.json();
+      console.log('Usuário autenticado:', userData); // Log para verificar os dados do usuário
+      localStorage.setItem('usuarioLogado', JSON.stringify(userData)); // Atualiza o localStorage com os dados do usuário
+      return true;
+    } else {
+      console.warn('Falha na autenticação. Status:', response.status);
+      const errorText = await response.text();
+      console.warn('Detalhes do erro:', errorText);
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao verificar autenticação:', error);
+    return false;
+  }
 }

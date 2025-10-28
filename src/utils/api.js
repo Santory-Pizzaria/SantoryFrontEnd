@@ -6,7 +6,20 @@ const API_BASE_URL = 'http://localhost:8000/api'; // ajuste para sua URL
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true // se usar autenticação por sessão
+});
+
+// Interceptor para adicionar o token de acesso no cabeçalho Authorization
+api.interceptors.request.use((config) => {
+  const access = localStorage.getItem('access');
+  if (access) {
+    config.headers.Authorization = `Bearer ${access}`;
+    console.log('Token enviado na requisição:', access); // Log para verificar o token enviado
+  } else {
+    console.warn('Nenhum token encontrado no localStorage.');
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 // Métodos para recursos principais (corrigidos para plural e adicionados faltantes)
@@ -21,7 +34,16 @@ export const getItemPedido = (id) => api.get(`/itempedido/${id}/`);
 export const createItemPedido = (data) => api.post('/itempedido/', data);
 export const getReservas = () => api.get('/reservas/');
 export const createReserva = (data) => api.post('/reservas/', data);
-export const getPizzas = () => api.get('/pizzas/');
+export const getPizzas = () => {
+  console.log('Iniciando requisição para /pizzas/');
+  return api.get('/pizzas/').then((response) => {
+    console.log('Resposta recebida:', response);
+    return response;
+  }).catch((error) => {
+    console.error('Erro ao buscar pizzas:', error);
+    throw error;
+  });
+};
 export const getCombos = () => api.get('/combos/');
 export const getCarrinhos = () => api.get('/carrinhos/');
 export const getCarrinho = (id) => api.get(`/carrinhos/${id}/`);
@@ -30,5 +52,6 @@ export const addCarrinhoItem = (data) => api.post('/carrinhoitens/', data);
 export const registerUser = (data) => api.post('/auth/users/', data);
 export const loginUser = (data) => api.post('/auth/jwt/create/', data);
 export const getBebidas = () => api.get('/bebidas/');
+export const refreshToken = (refresh) => api.post('/auth/jwt/refresh/', { refresh });
 
 export default api;

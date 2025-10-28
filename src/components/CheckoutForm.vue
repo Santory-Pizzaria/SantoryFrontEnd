@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { refreshToken } from '@/utils/api.js';
 
 const router = useRouter()
 
@@ -100,7 +101,37 @@ function calcularValorTotal() {
   return `R$ ${valorTotal.toFixed(2).replace('.', ',')}`
 }
 
-function submitForm() {
+async function verificarToken() {
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  console.log('Usuário logado no verificarToken:', usuarioLogado); // Log para verificar os dados do usuário
+  if (!usuarioLogado || !usuarioLogado.refresh) {
+    throw new Error('Usuário não autenticado.');
+  }
+
+  try {
+    const response = await refreshToken(usuarioLogado.refresh);
+    const novoAccessToken = response.data.access;
+
+    // Atualizar o token de acesso no localStorage
+    usuarioLogado.access = novoAccessToken;
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+
+    console.log('Token renovado com sucesso no verificarToken:', novoAccessToken); // Log para verificar o token renovado
+  } catch (error) {
+    console.error('Erro ao renovar o token no verificarToken:', error);
+    throw new Error('Sessão expirada. Faça login novamente.');
+  }
+}
+
+async function submitForm() {
+  try {
+    await verificarToken(); // Verifica e renova o token antes de prosseguir
+  } catch (error) {
+    alert(error.message);
+    router.push('/login'); // Redireciona para a página de login se o token for inválido
+    return;
+  }
+
   // Validações antes do pagamento
   if (!cep.value || erroCep.value) {
     alert('Por favor, informe um CEP válido.')
@@ -161,7 +192,8 @@ function submitForm() {
     }
 
     try {
-      const access = localStorage.getItem('access')
+      await verificarToken(); // Renova o token antes de enviar o pedido
+      const access = localStorage.getItem('access');
       const payload = {
         items: pedidoCompleto.itens,
         total: parseFloat((pedidoCompleto.valores.total || 'R$ 0').toString().replace('R$', '').replace(',', '.')) || 0,
@@ -173,7 +205,7 @@ function submitForm() {
         status: pedidoCompleto.status,
         pagamento_status: pedidoCompleto.pagamento.status || 'aprovado',
         observacoes: ''
-      }
+      };
 
       const res = await fetch('http://localhost:8000/api/pedidos/', {
         method: 'POST',
@@ -198,10 +230,8 @@ function submitForm() {
         alert(`🍕 Pedido #${data.id} confirmado com sucesso!\nTempo estimado de entrega: ${data.tempo_entrega_min || '30'}-${data.tempo_entrega_max || '45'} minutos`)
       }
     } catch (err) {
-      console.error('Erro ao enviar pedido (catch):', err)
-      // fallback local
-      salvarPedidoConfirmado(pedidoCompleto)
-      alert('Pedido salvo localmente (erro de rede).')
+      console.error('Erro ao processar pedido:', err)
+      alert('Erro ao processar pedido. Tente novamente.')
     } finally {
       processandoPagamento.value = false
       setTimeout(() => router.push('/menu'), 800)

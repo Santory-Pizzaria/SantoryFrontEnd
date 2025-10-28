@@ -153,6 +153,10 @@ const router = createRouter({
       name: 'PizzaCard',
       component: PizzaCard,
     },
+    {
+      path: '/',
+      redirect: '/menu',
+    },
   ],
 })
 
