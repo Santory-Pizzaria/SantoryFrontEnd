@@ -2,8 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { refreshToken } from '@/utils/api.js';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const cep = ref('')
 const erroCep = ref('')
@@ -22,6 +24,9 @@ const frete = ref(0)
 const calculandoFrete = ref(false)
 
 onMounted(() => {
+  // Restaurar o estado do usuário logado antes de prosseguir
+  userStore.restoreUser();
+
   // Recuperar dados do pedido do localStorage
   const dadosPedido = localStorage.getItem('pedido-pagamento')
   if (dadosPedido) {
@@ -102,24 +107,30 @@ function calcularValorTotal() {
 }
 
 async function verificarToken() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  const usuarioLogado = userStore.user;
   console.log('Usuário logado no verificarToken:', usuarioLogado); // Log para verificar os dados do usuário
-  if (!usuarioLogado || !usuarioLogado.refresh) {
+
+  if (!usuarioLogado) {
+    console.error('Nenhum usuário logado encontrado no userStore.');
     throw new Error('Usuário não autenticado.');
+  }
+
+  if (!usuarioLogado.refresh) {
+    console.error('Token de atualização ausente para o usuário logado.');
+    throw new Error('Token de atualização não encontrado.');
   }
 
   try {
     const response = await refreshToken(usuarioLogado.refresh);
     const novoAccessToken = response.data.access;
 
-    // Atualizar o token de acesso no localStorage
-    usuarioLogado.access = novoAccessToken;
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+    // Atualizar o token de acesso na store
+    userStore.setUser({ ...usuarioLogado, access: novoAccessToken });
 
     console.log('Token renovado com sucesso no verificarToken:', novoAccessToken); // Log para verificar o token renovado
   } catch (error) {
-    console.error('Erro ao renovar o token no verificarToken:', error);
-    throw new Error('Sessão expirada. Faça login novamente.');
+    console.error('Erro ao renovar o token:', error);
+    throw error;
   }
 }
 
@@ -192,8 +203,25 @@ async function submitForm() {
     }
 
     try {
-      await verificarToken(); // Renova o token antes de enviar o pedido
+      // Verificar e renovar o token de acesso, se necessário
+      const auth = await import('@/utils/auth');
+      const isTokenValid = await auth.isAuthenticated();
+      if (!isTokenValid) {
+        const tokenRenovado = await auth.refreshAccessToken();
+        if (!tokenRenovado) {
+          alert('Erro de autenticação. Faça login novamente.');
+          router.push('/login');
+          return;
+        }
+      }
+
       const access = localStorage.getItem('access');
+      if (!access) {
+        alert('Erro de autenticação. Faça login novamente.');
+        router.push('/login');
+        return;
+      }
+
       const payload = {
         items: pedidoCompleto.itens,
         total: parseFloat((pedidoCompleto.valores.total || 'R$ 0').toString().replace('R$', '').replace(',', '.')) || 0,

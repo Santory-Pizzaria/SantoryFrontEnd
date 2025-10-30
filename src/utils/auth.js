@@ -93,6 +93,10 @@ export async function isAuthenticated() {
       console.log('Usuário autenticado:', userData); // Log para verificar os dados do usuário
       localStorage.setItem('usuarioLogado', JSON.stringify(userData)); // Atualiza o localStorage com os dados do usuário
       return true;
+    } else if (response.status === 401) {
+      console.warn('Token expirado. Tentando renovar...');
+      const tokenRenovado = await refreshAccessToken();
+      return tokenRenovado;
     } else {
       console.warn('Falha na autenticação. Status:', response.status);
       const errorText = await response.text();
@@ -101,6 +105,41 @@ export async function isAuthenticated() {
     }
   } catch (error) {
     console.error('Erro ao verificar autenticação:', error);
+    return false;
+  }
+}
+
+export async function refreshAccessToken() {
+  const refresh = localStorage.getItem('refresh');
+  if (!refresh) {
+    console.warn('Nenhum token de atualização encontrado.');
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/jwt/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('access', data.access);
+      console.log('Token de acesso renovado e armazenado:', data.access);
+      return true;
+    } else {
+      console.warn('Falha ao renovar o token de acesso. Limpando tokens e redirecionando para login.');
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      const errorText = await response.text();
+      console.warn('Detalhes do erro:', errorText);
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao tentar renovar o token de acesso:', error);
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     return false;
   }
 }

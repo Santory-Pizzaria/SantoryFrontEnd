@@ -160,4 +160,14 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach(async (to, from, next) => {
+  const isAuthenticated = await import('@/utils/auth').then((auth) => auth.isAuthenticated());
+
+  if (to.name !== 'login' && to.name !== 'cadastro' && !isAuthenticated) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
+
 export default router

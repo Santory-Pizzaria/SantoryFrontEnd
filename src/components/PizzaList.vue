@@ -8,8 +8,10 @@ const carouselImages = [
 
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const userStore = useUserStore();
 
 // Dados do usuário logado
 const usuario = ref({
@@ -19,23 +21,11 @@ const usuario = ref({
 
 // Carregar dados do usuário logado
 onMounted(() => {
-  carregarDadosUsuario();
+  usuario.value = {
+    nome: userStore.user?.name || '',
+    avatar: userStore.user?.avatar || ''
+  };
 });
-
-function carregarDadosUsuario() {
-  const usuarioLogado = localStorage.getItem('usuarioLogado');
-  if (usuarioLogado) {
-    try {
-      const dadosUsuario = JSON.parse(usuarioLogado);
-      usuario.value = {
-        nome: dadosUsuario.nome || '',
-        avatar: dadosUsuario.avatar || ''
-      };
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error);
-    }
-  }
-}
 
 
 const currentImage = ref(0);
@@ -53,7 +43,6 @@ function goToTempoEntrega() {
 const pizzas = ref([]);
 // Corrigindo o uso do onMounted para garantir que está dentro do setup
 onMounted(() => {
-  carregarDadosUsuario();
   carregarPizzas();
 });
 
@@ -103,7 +92,7 @@ function toggleMenu() {
         <div class="pizza-info">
           <h3>{{ pizza.name }}</h3>
           <p>{{ pizza.description }}</p>
-          <p>Price: ${{ pizza.preco ? pizza.preco.toFixed(2) : '0.00' }}</p>
+          <p>Price: ${{ pizza.preco ? pizza.preco : '0.00' }}</p>
         </div>
       </div>
     </section>

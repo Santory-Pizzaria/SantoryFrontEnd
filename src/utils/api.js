@@ -1,6 +1,7 @@
 // src/utils/api.js
 // Serviço para consumir a API do Django
 import axios from 'axios';
+import { useUserStore } from '@/stores/user';
 
 const API_BASE_URL = 'http://localhost:8000/api'; // ajuste para sua URL
 
@@ -10,12 +11,13 @@ const api = axios.create({
 
 // Interceptor para adicionar o token de acesso no cabeçalho Authorization
 api.interceptors.request.use((config) => {
-  const access = localStorage.getItem('access');
+  const userStore = useUserStore();
+  const access = userStore.token; // Obter o token do Pinia
   if (access) {
     config.headers.Authorization = `Bearer ${access}`;
     console.log('Token enviado na requisição:', access); // Log para verificar o token enviado
   } else {
-    console.warn('Nenhum token encontrado no localStorage.');
+    console.warn('Nenhum token encontrado no userStore.');
   }
   return config;
 }, (error) => {
