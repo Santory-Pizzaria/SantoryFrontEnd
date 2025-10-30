@@ -9,6 +9,7 @@
       <div class="detalhes-produto">
         <span class="preco-unitario">R$ {{ item.preco.toFixed(2) }} un.</span>
         <div class="quantidade-box">
+          <!-- Quando integrar com API, chame a função de alteração de quantidade da API aqui -->
           <button @click="$emit('alterar-quantidade', -1)" :disabled="item.quantidade === 1">-</button>
           <span>{{ item.quantidade }}</span>
           <button @click="$emit('alterar-quantidade', 1)">+</button>
@@ -25,6 +26,7 @@ export default {
   props: {
     item: { type: Object, required: true }
   }
+  // Quando integrar com API, adicione métodos aqui para chamar a API ao alterar/remover
 }
 </script>
 

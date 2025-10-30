@@ -4,35 +4,22 @@ import FooteRor from '@/components/FooteRor.vue'
 
 const pedidos = ref([])
 
+function carregarPedidos() {
+  pedidos.value = JSON.parse(localStorage.getItem('pedidos') || '[]')
+}
+
 onMounted(() => {
-  pedidos.value = [
-    {
-      id: 1,
-      data: '20/06/2025',
-      status: 'Entregue',
-      valor: 85.00,
-      itens: [
-        { nome: 'Pizza Família', detalhes: '4 Sabores, Borda Cheddar', qtd: 1 },
-        { nome: 'Coca-Cola 2L', detalhes: '', qtd: 1 }
-      ]
-    },
-    {
-      id: 2,
-      data: '25/06/2025',
-      status: 'Em andamento',
-      valor: 49.90,
-      itens: [
-        { nome: 'Combo Família', detalhes: '2 Pizzas Grandes + 1 Refri 2L', qtd: 1 }
-      ]
-    }
-  ]
+  carregarPedidos()
 })
+
+// Permite atualização automática pelo AdminDashboard
+defineExpose({ carregarPedidos })
 </script>
 
 <template>
   <div class="pedidos-timeline-container">
     <!-- Seta fixa no topo esquerdo -->
-    <button class="back-btn" @click="$router.push('/menu')" aria-label="Voltar ao menu">
+    <button class="back-btn" @click="$router.push('/tempo')" aria-label="Voltar ao menu">
       <img src="/src/assets/imagens/seta-preta.png" alt="Voltar ao menu" class="seta-icon" />
     </button>
     <header class="pedidos-header novo-header">
@@ -45,13 +32,19 @@ onMounted(() => {
       Você ainda não fez nenhum pedido.
     </div>
     <div v-else class="timeline">
-      <div v-for="pedido in pedidos" :key="pedido.id" class="timeline-item">
+      <div v-for="pedido in pedidos.slice().reverse()" :key="pedido.id" class="timeline-item">
         <div class="timeline-dot" :class="pedido.status.toLowerCase().replace(' ', '-')"></div>
         <div class="timeline-content">
           <div class="pedido-top">
             <span class="pedido-id">#{{ pedido.id }}</span>
             <span class="pedido-data">{{ pedido.data }}</span>
-            <span class="status-pill" :class="pedido.status.toLowerCase().replace(' ', '-')">{{ pedido.status }}</span>
+            <span class="status-pill"
+              :class="{
+                entregue: pedido.status.toLowerCase() === 'confirmado',
+                'em-andamento': pedido.status.toLowerCase() === 'pendente',
+                cancelado: pedido.status.toLowerCase() === 'cancelado'
+              }"
+            >{{ pedido.status }}</span>
           </div>
           <div class="pedido-itens novo-itens">
             <b>Itens:</b>
@@ -62,7 +55,10 @@ onMounted(() => {
             </ul>
           </div>
           <div class="pedido-valor novo-valor">
-            <b>Total:</b> R$ {{ pedido.valor.toFixed(2) }}
+            <b>Total:</b>
+            <span v-if="typeof pedido.valor === 'number'">R$ {{ pedido.valor.toFixed(2) }}</span>
+            <span v-else-if="pedido.valor">R$ {{ Number(pedido.valor).toFixed(2) }}</span>
+            <span v-else>R$ 0,00</span>
           </div>
         </div>
       </div>
@@ -212,9 +208,15 @@ onMounted(() => {
 }
 .status-pill.entregue {
   background: #388e3c;
+  color: #fff;
 }
 .status-pill.em-andamento {
   background: #ff9800;
+  color: #fff;
+}
+.status-pill.cancelado {
+  background: #e63946;
+  color: #fff;
 }
 .novo-itens {
   margin: 8px 0 0 0;

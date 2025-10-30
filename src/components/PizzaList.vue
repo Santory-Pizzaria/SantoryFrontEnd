@@ -7,7 +7,7 @@ const carouselImages = [
 ]
 
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const router = useRouter();
 
@@ -37,7 +37,6 @@ function carregarDadosUsuario() {
   }
 }
 
-
 const currentImage = ref(0);
 
 function nextImage() {
@@ -61,11 +60,36 @@ function goToPizzaCard() {
 function goToReserva() {
   router.push('/reserva');
 }
+function goToReservaUsuario() {
+  router.push('/reservasUsuario');
+}
 
 const showMenu = ref(false);
 function toggleMenu() {
   showMenu.value = !showMenu.value;
 }
+
+const isScrolled = ref(false);
+
+function handleScroll() {
+  isScrolled.value = window.scrollY > 30;
+}
+
+const isMobile = ref(false);
+
+function handleResize() {
+  isMobile.value = window.innerWidth <= 620;
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', handleResize);
+  handleResize();
+});
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 <template>
   <div class="italia-bg">
@@ -81,30 +105,35 @@ function toggleMenu() {
       </div>
     </section>
     <!-- Header -->
-    <header class="italia-header">
-      <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo" />
-      <!-- Ícone hambúrguer -->
+    <header :class="['italia-header', { 'italia-header-transparente': isScrolled }]">
+      <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo-header" />
+      <div class="header-user-area-right">
+        <button class="usuario-img-bola-btn" @click="router.push('/perfil')" aria-label="Perfil">
+          <div class="usuario-img-bola">
+            <img :src="usuario.avatar || '/src/assets/imagens/perfil.png'" alt="Foto do usuário" />
+          </div>
+        </button>
+      </div>
+      <!-- Ícone hambúrguer e nav -->
       <button class="hamburger" :class="{ active: showMenu }" @click="toggleMenu" aria-label="Abrir menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
       </button>
-      <!-- Menu tradicional -->
       <nav class="italia-nav" :class="{ 'show-mobile': showMenu }">
         <a href="#" class="italia-nav-link active">HOME</a>
         <span class="italia-sep">|</span>
-        <a href="#" class="italia-nav-link" @click.prevent="goToReserva">RESERVAS</a>
+        <a href="#" class="italia-nav-link" @click.prevent="goToReservaUsuario">RESERVAS</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToTempoEntrega">TAXA E TEMPO DE ENTREGA</a>
         <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
+        <button class="italia-perfil-btn" @click="router.push('/perfil')" aria-label="Perfil">
+          </button>
       </nav>
-      <button class="italia-delivery-btn" @click.prevent="goToPizzaCard">
-        PEÇA NO DELIVERY
-        <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
-      </button>
+
     </header>
     <!-- Hero -->
     <section class="italia-hero">
@@ -116,35 +145,10 @@ function toggleMenu() {
           FAÇA SUA RESERVA
           <svg xmlns="http://www.w3.org/2000/svg" class="italia-clock" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>
-
-<!--
-  <div class="container-tudo">
-    <header class="header-logo">
-      <div class="perfil-icone" @click="navigateTo('/perfil')">
-        <img :src="usuario.avatar || defaultAvatar" alt="Perfil" class="avatar-perfil" />
-      </div>
-    </header>
-    <div class="Logo">
-      <img src="/src/assets/imagens/logo.png" alt="Santory Logo" class="logo" />
-    </div>
-    <div class="header-Button">
-      <div class="search-bar">
-        <input type="text" placeholder="Pesquisar Produtos por Nome ou descrição" v-model="searchText" />
-      </div>
-      <div class="nav-items">
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/pedidos')">
-          <img src="/src/assets/imagens/ingressos.png" alt="Meus Pedidos" class="nav-icon">
-          <span>Meus Pedidos</span>
-        </a>
-        <a href="#" class="nav-item" @click.prevent="navigateTo('/tempo')">
-          <img src="/src/assets/imagens/alerta.png" alt="Taxa e Tempo de Entrega" class="nav-icon">
-          <span>Taxa e Tempo de Entrega</span>
-        </a>
-        <a href="#" @click.prevent="navigateTo('/FeedBack')" class="nav-item">
-          <img src="/src/assets/imagens/estrela.png" alt="Avaliações" class="nav-icon">
-          <span>Avaliações</span>
-        </a>
--->
+        <button class="italia-delivery-btn" @click.prevent="goToPizzaCard">
+        PEÇA NO DELIVERY
+        <svg xmlns="http://www.w3.org/2000/svg" class="italia-bag" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14l-1.68 9.39A2 2 0 0115.35 19H8.65a2 2 0 01-1.97-1.61L5 8zm2-3a3 3 0 016 0" /></svg>
+      </button>
 
       </div>
     </section>
@@ -178,30 +182,53 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 4px 40px 0 40px;
-  background: transparent;
+  transition: background 0.3s, backdrop-filter 0.3s;
   font-family: 'Playfair Display', serif;
   box-sizing: border-box;
+  border-bottom: 1.5px solid #fff2;
 }
-.italia-logo {
-  height: 90px;
+.italia-header.italia-header-transparente {
+  background: rgba(34, 34, 34, 0.72); /* fundo fosco meio transparente */
+  backdrop-filter: blur(8px);
+}
+.italia-logo-header {
+  height: 60px;
   width: auto;
-  margin-right: 24px;
+  margin: 0 18px 0 0;
   background: none;
   border-radius: 0;
   box-shadow: none;
-  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .italia-logo-header {
+    height: 44px;
+    margin: 0 8px 0 0;
+  }
+}
+@media (max-width: 600px) {
+  .italia-logo-header {
+    height: 32px !important;
+    margin: 0 4px 0 0 !important;
+  }
+}
+@media (max-width: 900px) {
+  .italia-logo {
+    margin-top: 40px;
+    height: 60px;
+  }
+}
+@media (max-width: 600px) {
+  .italia-logo {
+    margin-top: 28px !important;
+    height: 48px !important;
+  }
 }
 .italia-nav {
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
-  font-size: 1.08rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #fff;
-  letter-spacing: 1px;
+  position: relative;
 }
 .italia-nav-link {
   color: #fff;
@@ -211,6 +238,22 @@ body {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   font-size: 1.08rem;
+}
+@media (max-width: 900px) {
+  .italia-nav-link {
+    font-size: 0.98rem;
+  }
+}
+@media (max-width: 700px) {
+  .italia-nav-link {
+    font-size: 0.89rem;
+  }
+}
+@media (max-width: 500px) {
+  .italia-nav-link {
+    font-size: 0.78rem;
+    padding: 0 4px;
+  }
 }
 .italia-nav-link.active,
 .italia-nav-link:hover {
@@ -225,23 +268,27 @@ body {
   user-select: none;
 }
 .italia-delivery-btn {
-  border: 1.5px solid #fff;
-  background: transparent;
-  color: #fff;
-  padding: 7px 22px 7px 22px;
-  border-radius: 0;
-  font-size: 1rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
+  color: #232323;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: none;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
 }
-
+.italia-delivery-btn:hover {
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+  color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
+}
 
 .nav-items .nav-icon {
   width: 30px;
@@ -250,7 +297,6 @@ body {
 }
 
 header {
-  background: linear-gradient(90deg, #B90020 0%, #B90020 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -333,9 +379,27 @@ nav a:hover {
   text-decoration: none;
 
 }
-.italia-delivery-btn:hover {
-  background: #fff;
+.italia-reserva-btn, .italia-delivery-btn {
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
+}
+.italia-reserva-btn:hover, .italia-delivery-btn:hover {
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+  color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 .italia-bag {
   margin-left: 2px;
@@ -380,7 +444,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 0;
+  position: relative;
+  top: -40px;
+}
+@media (max-width: 900px) {
+  .italia-hero-content {
+    top: -24px;
+    padding-top: 0 !important;
+  }
+}
+@media (max-width: 600px) {
+  .italia-hero-content {
+    top: -88px;
+    padding-top: 0 !important;
+  }
 }
 .italia-hero-title {
   font-family: 'Playfair Display', serif;
@@ -404,26 +483,26 @@ body {
   color: #fff;
 }
 .italia-reserva-btn {
-  background: #fff;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #232323;
   border: none;
-  border-radius: 0;
-  padding: 12px 38px;
-  font-size: 1.1rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: none;
-  transition: background 0.2s, color 0.2s;
-  margin: 0 auto;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
 }
 .italia-reserva-btn:hover {
-  background: #ffb347;
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
   color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
 }
 .italia-clock {
   margin-left: 2px;
@@ -553,7 +632,7 @@ body {
     position: relative;
   }
   .italia-logo {
-    height: 160px !important;
+    height: 90px !important;
     margin-top: 6px;
   }
   .hamburger {
@@ -563,10 +642,305 @@ body {
     z-index: 1300;
     display: flex !important;
   }
+  .italia-nav {
+    font-size: 0.9rem;
+    padding: 12px 0 12px 12px;
+    gap: 0;
+  }
   .italia-hero-content {
-    margin-top: -400px !important;
-    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 40px !important;
+  }
+  .italia-hero-title {
+    font-size: 1.2rem;
+  }
+  .italia-hero-sub {
+    font-size: 1rem;
+  }
+  .pizza-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 8px;
+  }
+  .pizza-item img {
+    height: 90px;
   }
 }
-
+@media (max-width: 601px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 601px), (max-width: 600px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+  .usuario-img-bola {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 620px) {
+  .hamburger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: auto;
+    z-index: 1300;
+    display: flex !important;
+  }
+  .header-user-area-right {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+  }
+}
+.italia-reserva-btn, .italia-delivery-btn {
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
+  color: #232323;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 44px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6px 24px #23232322;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 22px;
+  letter-spacing: 1px;
+}
+.italia-reserva-btn:hover, .italia-delivery-btn:hover {
+  background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+  color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 32px #ff980044;
+}
+.italia-clock, .italia-bag {
+  margin-left: 8px;
+}
+.italia-perfil-icon {
+  width: 52px;
+  height: 52px;
+}
+@media (max-width: 600px) {
+  .italia-perfil-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+.italia-perfil-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .italia-perfil-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .italia-perfil-btn {
+    margin-left: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .italia-reserva-btn, .italia-delivery-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 12px 0;
+    margin-bottom: 14px;
+  }
+  .italia-clock, .italia-bag {
+    margin-left: 4px;
+  }
+}
+.header-user-area {
+  display: flex;
+  align-items: center;
+  margin-right: 18px;
+}
+.usuario-img-bola {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #2222;
+  border: 2.5px solid #ff9800;
+  background: #fffbe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.usuario-img-bola img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+@media (max-width: 900px) {
+  .usuario-img-bola {
+    width: 64px;
+    height: 64px;
+  }
+}
+@media (max-width: 600px) {
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
+  }
+}
+@media (max-width: 900px) {
+  .italia-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px 0 8px;
+  }
+  .header-user-area {
+    margin-right: 0;
+    margin-bottom: 8px;
+    justify-content: center;
+    width: 100%;
+  }
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 4px auto;
+  }
+}
+@media (max-width: 600px) {
+  .usuario-img-bola {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 2px;
+  }
+}
+.header-user-area-right {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+}
+.usuario-img-bola-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.usuario-img-bola {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #2222;
+  border: 2.5px solid #ff9800;
+  background: #fffbe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.usuario-img-bola img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+@media (max-width: 900px) {
+  .header-user-area-right {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+  .usuario-img-bola {
+    width: 64px;
+    height: 64px;
+  }
+}
+@media (max-width: 600px) {
+  .header-user-area-right {
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+  }
+  .usuario-img-bola {
+    width: 48px;
+    height: 48px;
+  }
+}
 </style>

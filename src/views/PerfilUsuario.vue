@@ -4,19 +4,23 @@ export default {
   data() {
     return {
       usuario: {
+        id: '', // id do usuário
         nome: '',
         email: '',
         telefone: '',
-        endereco: '',
         avatar: '',
       },
       usuarioEdit: {},
       editando: false,
       defaultAvatar: new URL('@/assets/imagens/logo.png', import.meta.url).href,
+      showAlerta: false,
+      alertaMsg: '',
+      historicoCompras: [], // Adicionado histórico
     };
   },
   mounted() {
     this.carregarDadosUsuario();
+    this.atualizarHistoricoCompras(); // Atualiza histórico ao montar
   },
   methods: {
     carregarDadosUsuario() {
@@ -31,11 +35,16 @@ export default {
 
       try {
         const dadosUsuario = JSON.parse(usuarioLogado);
+        // Gera id se não existir
+        if (!dadosUsuario.id) {
+          dadosUsuario.id = Math.floor(10000000 + Math.random() * 90000000).toString();
+          localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+        }
         this.usuario = {
+          id: dadosUsuario.id,
           nome: dadosUsuario.nome || '',
           email: dadosUsuario.email || '',
           telefone: dadosUsuario.telefone || '',
-          endereco: dadosUsuario.endereco || '',
           avatar: dadosUsuario.avatar || '',
         };
       } catch (error) {
@@ -62,10 +71,10 @@ export default {
         const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
         const usuarioAtualizado = {
           ...usuarioLogado,
+          id: this.usuario.id,
           nome: this.usuario.nome,
           email: this.usuario.email,
           telefone: this.usuario.telefone,
-          endereco: this.usuario.endereco,
           avatar: this.usuario.avatar,
         };
 
@@ -78,30 +87,38 @@ export default {
         if (indiceUsuario !== -1) {
           usuarios[indiceUsuario] = {
             ...usuarios[indiceUsuario],
+            id: this.usuario.id,
             nome: this.usuario.nome,
             email: this.usuario.email,
             telefone: this.usuario.telefone,
-            endereco: this.usuario.endereco,
             avatar: this.usuario.avatar,
           };
           localStorage.setItem('usuarios', JSON.stringify(usuarios));
         }
 
         this.editando = false;
+        this.$forceUpdate();
+        this.atualizarHistoricoCompras(); // Atualiza histórico após salvar perfil
 
-        // Mostrar feedback de sucesso
-        alert('Perfil atualizado com sucesso!');
+        // Alerta personalizado
+        this.alertaMsg = 'Perfil atualizado com sucesso!';
+        this.showAlerta = true;
+        setTimeout(() => { this.showAlerta = false; }, 3000);
 
       } catch (error) {
         console.error('Erro ao salvar perfil:', error);
-        alert('Erro ao salvar perfil. Tente novamente.');
+        this.alertaMsg = 'Erro ao salvar perfil. Tente novamente.';
+        this.showAlerta = true;
+        setTimeout(() => { this.showAlerta = false; }, 3000);
       }
     },
     cancelarEdicao() {
       this.editando = false;
     },
     abrirInputAvatar() {
-      this.$el.querySelector('#avatarInput').click();
+      // Corrigido para garantir que o input seja encontrado corretamente
+      const input = document.getElementById('avatarInput');
+      if (input) input.click();
     },
     onAvatarChange(e) {
       const file = e.target.files[0];
@@ -112,9 +129,10 @@ export default {
             this.usuarioEdit.avatar = ev.target.result;
           } else {
             this.usuario.avatar = ev.target.result;
-            // Salvar avatar imediatamente se não estiver editando
             this.salvarAvatarImediato();
           }
+          // Atualiza visualmente o avatar imediatamente
+          this.$forceUpdate();
         };
         reader.readAsDataURL(file);
       }
@@ -146,173 +164,257 @@ export default {
       localStorage.removeItem('usuarioLogado');
       localStorage.removeItem('token');
       this.$router.push('/login');
-    }
+    },
+    atualizarHistoricoCompras() {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado) return;
+      const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+      // Ordena do mais recente para o mais antigo
+      this.historicoCompras = pedidos
+        .filter(p => p.usuarioId === usuarioLogado.id)
+        .sort((a, b) => b.id - a.id);
+    },
   },
 };
 </script>
 
-
 <template>
-  <div class="perfil-container">
-    <div class="seta-voltar" @click="voltarMenu">
-      <img src="@/assets/imagens/seta.png" alt="Voltar ao menu" />
-    </div>
-    <div class="perfil-card">
-      <div class="perfil-avatar-area">
-        <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar" alt="Avatar do usuário" />
-        <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
-        <button class="btn-avatar" @click="abrirInputAvatar">Alterar Foto</button>
+  <div class="pizzaria-bg"></div>
+  <div v-if="showAlerta" class="alerta-perfil-sucesso">
+    <span>{{ alertaMsg }}</span>
+  </div>
+  <div class="perfil-historico-layout">
+    <div class="perfil-container pizzaria-layout">
+      <div class="seta-voltar" @click="voltarMenu">
+        <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
       </div>
-      <div v-if="!editando" class="perfil-info">
-        <h2>{{ usuario.nome }}</h2>
-        <p><strong>Email:</strong> {{ usuario.email }}</p>
-        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
-        <p><strong>Endereço:</strong> {{ usuario.endereco }}</p>
-        <div class="botoes-perfil">
-          <button class="btn-editar" @click="editarPerfil">Editar Perfil</button>
-          <button class="btn-deslogar" @click="Deslogar">Sair da conta</button>
+      <div class="perfil-card pizzaria-card">
+        <div class="perfil-avatar-area pizzaria-avatar-area">
+          <img :src="usuario.avatar || defaultAvatar" class="perfil-avatar pizzaria-avatar" alt="Avatar do usuário" />
+          <input type="file" accept="image/*" @change="onAvatarChange" id="avatarInput" style="display:none" />
+          <button class="btn-avatar pizzaria-btn-avatar" @click="abrirInputAvatar">Trocar Foto</button>
+        </div>
+        <div v-if="!editando" class="perfil-info pizzaria-info">
+          <h2>{{ usuario.nome }}</h2>
+          <div class="info-box">
+            <span><i class="fa fa-id-card"></i> ID: {{ usuario.id }}</span>
+            <span><i class="fa fa-envelope"></i> {{ usuario.email }}</span>
+            <span><i class="fa fa-phone"></i> {{ usuario.telefone }}</span>
+          </div>
+          <div class="botoes-perfil pizzaria-botoes">
+            <button class="btn-editar pizzaria-btn-editar" @click="editarPerfil">Editar</button>
+            <button class="btn-deslogar pizzaria-btn-deslogar" @click="Deslogar">Sair</button>
+          </div>
+        </div>
+        <div v-else class="perfil-edicao pizzaria-edicao">
+          <input v-model="usuarioEdit.nome" placeholder="Nome" />
+          <input v-model="usuarioEdit.email" placeholder="Email" />
+          <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
+          <div class="botoes-edicao pizzaria-botoes-edicao">
+            <button class="btn-salvar pizzaria-btn-salvar" @click="salvarPerfil">Salvar</button>
+            <button class="btn-cancelar pizzaria-btn-cancelar" @click="cancelarEdicao">Cancelar</button>
+          </div>
         </div>
       </div>
-      <div v-else class="perfil-edicao">
-        <input v-model="usuarioEdit.nome" placeholder="Nome" />
-        <input v-model="usuarioEdit.email" placeholder="Email" />
-        <input v-model="usuarioEdit.telefone" placeholder="Telefone" />
-        <input v-model="usuarioEdit.endereco" placeholder="Endereço" />
-        <div class="botoes-edicao">
-          <button class="btn-salvar" @click="salvarPerfil">Salvar</button>
-          <button class="btn-cancelar" @click="cancelarEdicao">Cancelar</button>
-        </div>
-      </div>
     </div>
+    <aside class="historico-compras-card">
+      <h3>Histórico de Compras</h3>
+      <div v-if="historicoCompras.length === 0" class="sem-historico">Nenhuma compra realizada.</div>
+      <ul v-else>
+        <li v-for="pedido in historicoCompras" :key="pedido.id" class="item-historico">
+          <div><strong>Pedido #{{ pedido.id }}</strong> - {{ pedido.data }}</div>
+          <div>Status: <span :class="pedido.status">{{ pedido.status }}</span></div>
+          <div>Valor: R$ {{ pedido.valor.toFixed(2).replace('.', ',') }}</div>
+          <div>Itens:
+            <ul>
+              <li v-for="item in pedido.itens" :key="item.nome">
+                <template v-if="item && item.nome">
+                  <span v-if="item.nome.toLowerCase().includes('bebida') || item.nome.toLowerCase().includes('refrigerante') || item.nome.toLowerCase().includes('cerveja') || item.nome.toLowerCase().includes('água')">
+                    <strong>Bebida:</strong> {{ item.nome }} <span v-if="item.detalhes">- {{ item.detalhes }}</span>
+                  </span>
+                  <span v-else>
+                    {{ item.nome }} ({{ item.qtd }}) - {{ item.detalhes }}
+                  </span>
+                </template>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </aside>
   </div>
 </template>
 
-
 <style scoped>
-.perfil-container {
+.pizzaria-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0;
+  background: url('@/assets/imagens/fundo.png') no-repeat center center fixed, radial-gradient(circle at 30% 70%, #fffbe6 0%, #ffe5b4 40%, #b33c1a 100%);
+  background-size: cover;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.pizzaria-layout {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('@/assets/imagens/fundo.png') no-repeat center center fixed;
-  background-size: cover;
+  position: relative;
 }
-.perfil-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
-  padding: 32px 24px;
-  max-width: 350px;
+.pizzaria-card {
+  background: linear-gradient(120deg, #fff 70%, #ffe5b4 100%);
+  border-radius: 32px;
+  box-shadow: 0 8px 40px #b33c1a33;
+  padding: 48px 36px 36px 36px;
+  max-width: 420px;
   width: 100%;
   text-align: center;
+  position: relative;
+  border: 2px solid #b33c1a;
 }
-.perfil-avatar-area {
+.pizzaria-avatar-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
-.perfil-avatar {
-  width: 110px;
-  height: 110px;
+.pizzaria-avatar {
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #e74c3c;
-  margin-bottom: 8px;
+  border: 5px solid #ff9800;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px #b33c1a44;
+  background: #fffbe6;
 }
-.btn-avatar {
-  background: #e74c3c;
+.pizzaria-btn-avatar {
+  background: #ff9800;
   color: #fff;
   border: none;
-  padding: 6px 16px;
-  border-radius: 6px;
+  padding: 8px 24px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px #b33c1a44;
+  transition: background 0.2s;
 }
-.perfil-info h2 {
-  color: #e74c3c;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
+.pizzaria-btn-avatar:hover {
+  background: #b33c1a;
 }
-.perfil-info p {
-  margin: 4px 0;
-  color: #333;
+.pizzaria-info h2 {
+  color: #b33c1a;
+  font-size: 1.7rem;
+  margin-bottom: 12px;
+  font-family: 'Playfair Display', serif;
 }
-.botoes-perfil {
+.info-box {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 22px;
+  color: #222e3a;
+  font-size: 1.08rem;
+  align-items: flex-start;
+}
+.info-box i {
+  margin-right: 8px;
+  color: #ff9800;
+}
+.pizzaria-botoes {
+  display: flex;
+  gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 18px;
 }
-.btn-logout {
-  background: #e74c3c;
-  color: #fff;
+.pizzaria-btn-editar {
+  background: #ffe5b4;
+  color: #b33c1a;
   border: none;
-  padding: 8px 20px;
-  border-radius: 6px;
+  padding: 10px 26px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
+  box-shadow: 0 2px 8px #ff980044;
+  transition: background 0.2s;
 }
-.btn-logout:hover {
-  background: #c0392b;
+.pizzaria-btn-editar:hover {
+  background: #ff9800;
+  color: #fff;
 }
-.btn-editar:hover {
-  background: #d35400;
-}
-.btn-deslogar {
-  background: #e67e22;
+.pizzaria-btn-deslogar {
+  background: #b33c1a;
   color: #fff;
   border: none;
-  padding: 8px 20px;
-  border-radius: 6px;
+  padding: 10px 26px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 12px;
+  box-shadow: 0 2px 8px #b33c1a44;
+  transition: background 0.2s;
 }
-.perfil-edicao {
+.pizzaria-btn-deslogar:hover {
+  background: #ff9800;
+}
+.pizzaria-edicao {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.perfil-edicao input {
-  width: 90%;
-  margin-bottom: 10px;
-  padding: 7px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+.pizzaria-edicao input {
+  width: 94%;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  border: 1px solid #ff9800;
+  font-size: 1.08rem;
   display: block;
   text-align: center;
+  background: #fffbe6;
+  color: #b33c1a;
 }
-.botoes-edicao {
+.pizzaria-botoes-edicao {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
 }
-.btn-salvar {
-  background: #27ae60;
+.pizzaria-btn-salvar {
+  background: #ff9800;
   color: #fff;
   border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
+  padding: 10px 26px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
+  box-shadow: 0 2px 8px #ff980044;
+  transition: background 0.2s;
 }
-.btn-cancelar {
-  background: #e74c3c;
-  color: #fff;
+.pizzaria-btn-salvar:hover {
+  background: #b33c1a;
+}
+.pizzaria-btn-cancelar {
+  background: #ffe5b4;
+  color: #b33c1a;
   border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
+  padding: 10px 26px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
+  box-shadow: 0 2px 8px #ff980044;
+  transition: background 0.2s;
+}
+.pizzaria-btn-cancelar:hover {
+  background: #ff9800;
+  color: #fff;
 }
 .seta-voltar {
-  position: absolute;
-  top: 24px;
-  left: 24px;
+  position: fixed;
+  top: 18px;
+  left: 18px;
   cursor: pointer;
   z-index: 10;
   background: none;
@@ -327,14 +429,101 @@ export default {
   padding: 0;
 }
 .seta-voltar img {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   filter: drop-shadow(0 1px 2px rgba(44,62,80,0.10));
 }
-.botoes-perfil {
+.alerta-perfil-sucesso {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #b33c1a22;
+  padding: 16px 32px;
+  animation: alertaPerfilFadeIn 0.4s;
+  min-width: 220px;
+  text-align: center;
+}
+@keyframes alertaPerfilFadeIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 600px) {
+  .pizzaria-card {
+    padding: 20px 4px 20px 4px;
+    border-radius: 16px;
+    max-width: 99vw;
+  }
+  .pizzaria-avatar {
+    width: 80px;
+    height: 80px;
+  }
+  .seta-voltar {
+    top: 8px;
+    left: 8px;
+    position: fixed;
+  }
+  .alerta-perfil-sucesso {
+    top: 10px;
+    right: 4vw;
+    min-width: 0;
+    max-width: 90vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
+  }
+}
+.perfil-historico-layout {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: center;
-  gap: 4px;
-  margin-top: 12px;
+  gap: 32px;
+}
+.historico-compras-card {
+  background: #fffbe6;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px #b33c1a18;
+  padding: 32px 24px;
+  min-width: 320px;
+  max-width: 400px;
+  width: 100%;
+  margin-top: 32px;
+}
+.historico-compras-card h3 {
+  color: #b33c1a;
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  font-family: 'Playfair Display', serif;
+}
+.item-historico {
+  background: #ffe5b4;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px #b33c1a22;
+}
+.sem-historico {
+  color: #b33c1a;
+  font-size: 1.08rem;
+  text-align: center;
+  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .perfil-historico-layout {
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .historico-compras-card {
+    margin-top: 0;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 18px 8px;
+  }
 }
 </style>

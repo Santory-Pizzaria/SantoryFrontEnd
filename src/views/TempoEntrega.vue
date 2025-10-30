@@ -28,7 +28,8 @@ export default {
       ],
       taxaEntrega: null,
       tempoEntregaMin: null,
-      loadingTaxa: false
+      loadingTaxa: false,
+      showAjuda: false,
     }
   },
   watch: {
@@ -94,7 +95,7 @@ export default {
           this.tempoEntregaMin = null
           alert('Não foi possível calcular a taxa de entrega. Dados insuficientes.')
         }
-      } catch (e) {
+      } catch {
         this.taxaEntrega = null
         this.tempoEntregaMin = null
         alert('Não foi possível calcular a taxa de entrega.')
@@ -108,262 +109,507 @@ export default {
       this.$router.push({ name: 'PedidosProdutos' })
     },
     abrirAjuda() {
-      alert('Entre em contato pelo WhatsApp: (47) 998804-2804')
+      this.showAjuda = true;
+      setTimeout(() => {
+        this.showAjuda = false;
+      }, 4000);
     }
   }
 }
 </script>
 
-
 <template>
-  <div class="tempo-entrega-container">
-    <img
-      src="@/assets/imagens/seta-preta.png"
-      alt="Voltar ao Menu"
-      class="seta-voltar-tempo"
-      @click="voltarMenu"
-    />
-    <div class="tempo-header">
-      <img src="@/assets/imagens/fundo.png" alt="Fundo" class="header-bg" />
-      <div class="header-content">
-        <img src="@/assets/imagens/logo.png" alt="Logo" class="logo" />
-        <h1>Tempo de Entrega</h1>
+  <div class="tempo-entrega-bg-novo">
+    <header class="tempo-header-novo">
+      <img
+        src="@/assets/imagens/seta-preta.png"
+        alt="Voltar ao Menu"
+        class="seta-voltar-tempo-novo"
+        @click="voltarMenu"
+      />
+      <div class="header-center-novo">
+        <img src="@/assets/imagens/logo.png" alt="Logo" class="logo-novo" />
+        <h1 class="titulo-novo">Tempo de Entrega</h1>
       </div>
-    </div>
-    <div class="tempo-box">
-      <div class="tempo-info">
-        <span class="tempo-estimado">Tempo estimado:</span>
-        <span class="tempo">
-          <template v-if="tempoEntregaMin !== null">
-            {{ tempoEntregaMin + 45 }} min
-          </template>
-          <template v-else>
-            {{ tempoMin }}-{{ tempoMax }} min
-          </template>
-        </span>
-      </div>
-      <div class="taxa-entrega">
-        <label for="local">Selecione seu bairro:</label>
-        <select id="local" v-model="bairroSelecionado">
-          <option disabled value="">Selecione</option>
-          <option v-for="bairro in bairros" :key="bairro.nome" :value="bairro.nome">
-            {{ bairro.nome }}
-          </option>
-        </select>
-        <span v-if="taxaEntrega !== null" class="taxa">
-          Taxa de entrega: R$ {{ taxaEntrega.toFixed(2) }}
-        </span>
-        <span v-if="tempoEntregaMin !== null" class="tempo-real">
-
-        </span>
-        <span v-if="loadingTaxa" class="loading-taxa">Calculando...</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress" :style="{ width: progresso + '%' }"></div>
-      </div>
-      <div class="status-list">
-        <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item" :class="{ ativo: idx <= etapaAtual }">
-          <img :src="etapa.icone" :alt="etapa.nome" class="status-icone" />
-          <span>{{ etapa.nome }}</span>
+    </header>
+    <main class="tempo-main-novo">
+      <section class="tempo-box-novo tempo-box-card">
+        <div class="tempo-info-novo tempo-info-card">
+          <span class="tempo-estimado-novo">Tempo estimado:</span>
+          <span class="tempo-novo tempo-novo-card">
+            <template v-if="tempoEntregaMin !== null">
+              {{ tempoEntregaMin + 45 }} min
+            </template>
+            <template v-else>
+              {{ tempoMin }}-{{ tempoMax }} min
+            </template>
+          </span>
         </div>
-      </div>
-      <div class="opcoes">
-        <button class="voltar" @click="voltarMenu">Voltar ao Menu</button>
-        <button class="detalhes" @click="verDetalhes">Ver Detalhes do Pedido</button>
-        <button class="ajuda" @click="abrirAjuda">Precisa de Ajuda?</button>
-      </div>
-    </div>
+        <div class="taxa-entrega-novo taxa-entrega-card">
+          <label for="local">Selecione seu bairro:</label>
+          <select id="local" v-model="bairroSelecionado">
+            <option disabled value="">Selecione</option>
+            <option v-for="bairro in bairros" :key="bairro.nome" :value="bairro.nome">
+              {{ bairro.nome }}
+            </option>
+          </select>
+          <span v-if="taxaEntrega !== null" class="taxa-novo taxa-novo-card">
+            Taxa de entrega: <b>R$ {{ taxaEntrega.toFixed(2) }}</b>
+          </span>
+          <span v-if="loadingTaxa" class="loading-taxa-novo">Calculando...</span>
+        </div>
+        <div class="status-list-novo status-list-card">
+          <div v-for="(etapa, idx) in etapas" :key="etapa.nome" class="status-item-novo status-item-card" :class="{ ativo: idx <= etapaAtual }">
+            <img :src="etapa.icone" :alt="etapa.nome" class="status-icone-novo status-icone-card" />
+            <span>{{ etapa.nome }}</span>
+          </div>
+        </div>
+        <div class="opcoes-novo opcoes-card">
+          <button class="voltar-novo" @click="voltarMenu">Voltar ao Menu</button>
+          <button class="detalhes-novo" @click="verDetalhes">Ver Detalhes do Pedido</button>
+          <button class="ajuda-novo" @click="abrirAjuda">Precisa de Ajuda?</button>
+        </div>
+        <transition name="ajuda-fade">
+          <div v-if="showAjuda" class="mensagem-ajuda-novo mensagem-ajuda-topo">
+            <img src="@/assets/imagens/whatsapp.png" alt="WhatsApp" class="ajuda-icone-novo" />
+            <span>Entre em contato pelo <b>WhatsApp</b>: <a href="https://wa.me/55479988042804" target="_blank">(47) 99880-42804</a></span>
+          </div>
+        </transition>
+      </section>
+    </main>
   </div>
 </template>
 
 <style scoped>
-.tempo-entrega-container {
+.tempo-entrega-bg-novo {
+  min-height: 100vh;
+  background: url('@/assets/imagens/fundo.png') center center/cover no-repeat;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  background: var(--color-background);
-  color: var(--color-text);
 }
-.seta-voltar-tempo {
+.tempo-header-novo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  position: relative;
+}
+.seta-voltar-tempo-novo {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: 24px;
-  height: 24px;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  z-index: 10;
+  transition: filter 0.2s;
 }
-.tempo-header {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-.header-bg {
-  width: 100vw;
-  height: 120px;
-  object-fit: cover;
+
+.logo-novo {
   position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  opacity: 0.15;
-}
-.header-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.logo {
+  top: 18px;
+  right: 32px;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--color-background-soft);
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  box-shadow: none;
+  background: transparent;
+  margin: 0;
+  display: block;
 }
-.tempo-box {
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
+.header-center-novo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+  gap: 0.2rem;
+  width: 100%;
+}
+.titulo-novo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2e1d1d;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.tempo-main-novo {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  padding: 2rem 0;
+}
+.tempo-box-novo {
+  background: #fff;
+  border: 2.5px solid #ffe066;
   border-radius: 20px;
   padding: 2.5rem 3.5rem;
-  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
+  box-shadow: 0 4px 16px #ffe06633;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 340px;
+  max-width: 420px;
 }
-.tempo-info {
+.tempo-box-card {
+  background: #fffbe6;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px #ffe06633;
+  border: 2.5px solid #ffe066;
+  padding: 2.5rem 3.5rem;
+  margin-top: 2rem;
+  min-width: 340px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tempo-info-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
 }
-.tempo-estimado {
-  font-size: 1.1rem;
-  color: var(--color-text);
-  opacity: 0.7;
+.tempo-info-card {
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
-.tempo {
+.tempo-estimado-novo {
+  font-size: 1.1rem;
+  color: #ffe066;
+  opacity: 0.9;
+}
+.tempo-novo {
   font-size: 2.2rem;
   font-weight: bold;
-  color: var(--color-heading);
+  color: #111;
 }
-.taxa-entrega {
+.tempo-novo-card {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #b33c1a;
+}
+.taxa-entrega-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.2rem;
   gap: 0.3rem;
 }
-.taxa-entrega label {
-  font-size: 1rem;
-  color: var(--color-text);
-  opacity: 0.8;
+.taxa-entrega-card {
+  margin-bottom: 1.2rem;
+  gap: 0.3rem;
+  text-align: center;
 }
-.taxa-entrega select {
+.taxa-entrega-novo label {
+  font-size: 1rem;
+  color: #111;
+  opacity: 0.9;
+}
+.taxa-entrega-novo select {
   padding: 0.3rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background-mute);
-  color: var(--color-text);
+  border: 1.5px solid #ffe066;
+  background: #fff;
+  color: #111;
   font-size: 1rem;
 }
-.taxa {
+.taxa-novo {
   margin-top: 0.3rem;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #111;
   font-weight: bold;
 }
-.tempo-real {
+.taxa-novo-card {
+  color: #e63946;
+  font-weight: bold;
+}
+.loading-taxa-novo {
   margin-top: 0.3rem;
   font-size: 1rem;
-  color: #27ae60;
+  color: #ffe066;
 }
-.loading-taxa {
-  margin-top: 0.3rem;
-  font-size: 1rem;
-  color: #e67e22;
-}
-.progress-bar {
+.progress-bar-novo {
   width: 240px;
   height: 18px;
-  background: var(--color-background-mute);
+  background: #222;
   border-radius: 9px;
   overflow: hidden;
   margin-bottom: 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 1.5px solid #ffe066;
 }
-.progress {
+.progress-bar-card {
+  width: 240px;
+  height: 18px;
+  background: #ffe066;
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1.5px solid #b33c1a;
+}
+.progress-novo {
   height: 100%;
-  background: linear-gradient(90deg, #2c3e50 60%, #f2c94c 100%);
+  background: linear-gradient(90deg, #ffe066 60%, #111 100%);
   transition: width 0.5s;
 }
-.status-list {
+.status-list-novo {
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin: 1.5rem 0 1rem 0;
   gap: 0.5rem;
 }
-.status-item {
+.status-list-card {
+  margin: 1.5rem 0 1rem 0;
+  gap: 0.5rem;
+}
+.status-item-novo {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 0.95rem;
-  color: var(--color-text);
+  color: #ffe066;
   opacity: 0.5;
   transition: opacity 0.3s, color 0.3s;
 }
-.status-item.ativo {
-  color: #2c3e50;
+.status-item-card {
+  color: #b33c1a;
+}
+.status-item-novo.ativo {
+  color: #111;
   opacity: 1;
   font-weight: bold;
 }
-.status-icone {
+.status-item-card.ativo {
+  color: #111;
+  opacity: 1;
+  font-weight: bold;
+}
+.status-icone-novo {
   width: 32px;
   height: 32px;
   margin-bottom: 0.3rem;
+  filter: drop-shadow(0 2px 6px #ffe06644);
 }
-.opcoes {
+.status-icone-card {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.3rem;
+  filter: drop-shadow(0 2px 6px #b33c1a44);
+}
+.opcoes-novo {
   display: flex;
   gap: 1rem;
   margin-top: 1.5rem;
 }
-.voltar, .detalhes, .ajuda {
-  background: var(--color-heading);
-  color: var(--color-background);
-  border: none;
+.opcoes-card {
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+.voltar-novo, .detalhes-novo, .ajuda-novo {
+  background: #111;
+  color: #fff;
+  border: 2px solid #ffe066;
   border-radius: 8px;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.3s, color 0.3s, border 0.3s;
 }
-.detalhes {
-  background: #f2c94c;
-  color: #2c3e50;
-}
-.ajuda {
-  background: #e74c3c;
+.detalhes-novo {
+  background: #ff9800;
   color: #fff;
+  border: 2px solid #ff9800;
 }
-.voltar:hover, .detalhes:hover, .ajuda:hover {
+.detalhes-novo:hover {
+  background: #fff3e0;
+  color: #ff9800;
+  border-color: #ff9800;
+}
+.ajuda-novo {
+  background: #fff;
+  color: #111;
+}
+.voltar-novo:hover, .detalhes-novo:hover, .ajuda-novo:hover {
   filter: brightness(0.95);
   opacity: 0.85;
+  border-color: #111;
+}
+.mensagem-ajuda-novo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffe066;
+  color: #111;
+  border: 2px solid #111;
+  border-radius: 12px;
+  padding: 16px 22px;
+  margin-top: 1.5rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px #ffe06633;
+  animation: ajudaPopIn 0.4s;
+}
+.mensagem-ajuda-topo {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 90vw;
+  justify-content: center;
+  box-shadow: 0 6px 24px #ffe06633, 0 1.5px 8px #1112;
+}
+@media (max-width: 900px) {
+  .tempo-box-novo {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 1.5rem 2vw;
+  }
+  .tempo-box-card {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 1.5rem 2vw;
+  }
+  .tempo-header-novo {
+    padding: 18px 2vw 8px 2vw;
+  }
 }
 @media (max-width: 600px) {
-  .tempo-box {
+  .tempo-header-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 4vw 8px 4vw;
+  }
+  .seta-voltar-tempo-novo {
+    position: static;
+    transform: none;
+    margin-bottom: 6px;
+    left: unset;
+    top: unset;
+  }
+  .header-center-novo {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  .logo-novo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  .titulo-novo {
+    text-align: center;
+    width: 100%;
+  }
+  .tempo-main-novo {
+    padding: 1rem 0;
+  }
+  .tempo-box-novo {
+    min-width: 0;
+    max-width: 99vw;
+    padding: 1rem 2vw;
+  }
+  .tempo-box-card {
     min-width: 90vw;
     padding: 1.2rem 0.5rem;
   }
-  .progress-bar {
+  .progress-bar-novo {
     width: 90vw;
     min-width: 120px;
   }
+  .progress-bar-card {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .status-icone-novo {
+    width: 24px;
+    height: 24px;
+  }
+  .status-icone-card {
+    width: 24px;
+    height: 24px;
+  }
+  .opcoes-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .opcoes-card {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .voltar-novo, .detalhes-novo, .ajuda-novo {
+    width: 100%;
+    font-size: 0.98rem;
+    padding: 0.5rem 0;
+  }
+  .mensagem-ajuda-topo {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
+    top: 12px;
+  }
+}
+@media (max-width: 600px) {
+  .mensagem-ajuda-topo {
+    top: 12px;
+    left: 50%;
+    min-width: 0;
+    max-width: 98vw;
+    padding: 10px 4vw;
+    font-size: 0.98rem;
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 600px) {
+  .tempo-box-novo {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+  }
+  .tempo-box-card {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+  }
+  .progress-bar-novo {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .progress-bar-card {
+    width: 90vw;
+    min-width: 120px;
+  }
+  .tempo-header-novo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  .header-center-novo {
+    align-items: flex-start;
+  }
+}
+.ajuda-icone-novo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.ajuda-fade-enter-active, .ajuda-fade-leave-active {
+  transition: opacity 0.4s;
+}
+.ajuda-fade-enter-from, .ajuda-fade-leave-to {
+  opacity: 0;
+}
+@keyframes ajudaPopIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 </style>

@@ -2,7 +2,8 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PizzaList from '@/components/PizzaList.vue';
-
+import DestaqueMenu from '@/components/DestaqueMenu.vue';
+import Footer from '@/components/FooteRor.vue';
 
 const router = useRouter()
 
@@ -17,14 +18,12 @@ onMounted(() => {
   }
 })
 
-
-
-
-
 </script>
 <template>
   <div class="menu">
-    <PizzaList></PizzaList>
+    <PizzaList />
+    <DestaqueMenu />
+    <Footer />
   </div>
 
 </template>
