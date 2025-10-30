@@ -1,207 +1,249 @@
 <template>
-  <footer class="footer-inspirado-italia">
-    <div class="footer-main">
-      <div class="footer-col footer-bemvindo">
-        <h3>BEM VINDO</h3>
-        <hr />
-        <p>
-          Com mais de 20 anos de tradição. Além de pizzas artesanais, oferecemos combos, massas, bebidas e sobremesas típicas italianas.<br>
-          Ambiente acolhedor e atendimento especial para você e sua família.
-        </p>
-        <div class="footer-social-circles">
-          <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="footer-social-icon" />
-          </a>
-          <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="footer-social-icon" />
-          </a>
-          <a href="https://wa.link/h475ec" target="_blank" aria-label="Whatsapp">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="Whatsapp" class="footer-social-icon" />
-          </a>
-        </div>
-      </div>
-      <div class="footer-col footer-facebook">
-        <h3>CURTA NOSSA PÁGINA</h3>
-        <hr />
-        <div class="footer-fb-box">
-          <img src="/src/assets/imagens/estrela.png" alt="Facebook" class="fb-img" />
-          <span class="fb-title">Santory Pizzaria</span>
-          <span class="fb-sub">Siga-nos no Facebook</span>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bar-inspirado">
-      <span>
-        Copyright {{ new Date().getFullYear() }} © Santory Pizzaria | Joinville - SC |
-        <a href="mailto:contato@santory.com">contato@santory.com</a>
-      </span>
-      <span class="footer-agencia">Desenvolvido por Higor do Amaral Fritz</span>
-    </div>
-  </footer>
+  <footer class="rodape">
+            <div class="container-3">
+                <div class="row">
+                    <div class="col" id="company">
+                        
+                        <p id="rea">
+                            Seu portal de notícias de confiança.
+                        </p>
+                        <div class="social">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                        <p id="copy">
+                            © ALLRIGHT RESERVED - JORNAL GEONATION 2023
+                        </p>
+                    </div>
+                    <div class="col" id="services">
+                        <h3>Páginas</h3>
+                        <div class="links">
+                            <a href="#">Voltar ao início</a>
+                            <a href="nacional.html">Nacional</a>
+                            <a href="noticia-destaque.html">Notícia destaque</a>
+                            <a href="#">Newslatter</a>
+                        </div>
+                    </div>
+                    <div class="col" id="useful-links">
+                        <h3>Suporte</h3>
+                        <div class="links">
+                            <a href="cadastro.html">cadastre-se</a>
+                            <a href="login.html">Login</a>
+                            <a href="#">Perguntas frequentes</a>
+                            <a href="#">Suporte</a>
+                        </div>
+                    </div>
+                    <div class="col" id="contact">
+                        <h3>Contato</h3>
+                        <div class="contact-details">
+                            <i class="fa fa-location"></i>
+                            <p>Araquari, BR-280, <br> SC, Brazil</p>
+                        </div>
+                        <div class="contact-details">
+                            <i class="fa fa-phone"></i>
+                            <p>+55 (47) 98804-2804</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form">
+                        <form action="">
+                            <input type="text" placeholder="Email here...">
+                            <button><i class="fa fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </footer>
 </template>
 
 <style scoped>
-.footer-inspirado-italia {
-  background: linear-gradient(120deg, #181d1b 80%, #b33c1a 100%);
-  color: #fff;
-  font-family: 'Montserrat', 'Playfair Display', serif;
-  margin-top: 40px;
-  border-top: 4px solid #b33c1a;
-  box-shadow: 0 -4px 32px #b33c1a22;
+footer {
+  background-color: rgb(244, 244, 9);
   position: relative;
+  overflow-y: hidden;
+  display: grid 'footer';
+  margin-top: 5vh;
+  min-height: 350px;
+  padding: 3rem 1rem;
+  grid-row-end: auto;
+  border-top: 3px solid #000;
 }
-.footer-main {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  max-width: 1200px;
+
+.container-3 {
+  max-width: 1299px;
   margin: 0 auto;
-  padding: 56px 32px 32px 32px;
-  gap: 3.5rem;
-  position: relative;
-  z-index: 1;
-}
-.footer-col {
-  flex: 1 1 320px;
-  min-width: 220px;
-  margin-bottom: 18px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 18px;
-  padding: 18px 22px 18px 22px;
-  box-shadow: 0 2px 12px #b33c1a11;
-}
-.footer-bemvindo h3,
-.footer-facebook h3 {
-  font-size: 1.18rem;
-  letter-spacing: 1.2px;
-  color: #ffe5b4;
-  margin-bottom: 0.5rem;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-}
-.footer-bemvindo hr,
-.footer-facebook hr {
-  border: none;
-  border-top: 2px solid #ff9800;
-  width: 38px;
-  margin: 0 0 1rem 0;
-}
-.footer-bemvindo p {
-  color: #e0e0e0;
-  font-size: 1.08rem;
-  margin-bottom: 1.5rem;
-  line-height: 1.7;
-  text-align: justify;
-}
-.footer-social-circles {
   display: flex;
-  gap: 18px;
-  margin-top: 10px;
-}
-.footer-social-circles a {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #23272f;
-  color: #fffbe6;
-  font-size: 1.3rem;
-  box-shadow: 0 2px 8px #0002;
-  border: 2.5px solid #b33c1a;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-}
-.footer-social-circles a:hover {
-  background: #ff9800;
-  color: #fff;
-  border-color: #ffe066;
-  transform: scale(1.08) rotate(-6deg);
-}
-.footer-social-icon {
-  width: 26px;
-  height: 26px;
-}
-.footer-facebook .footer-fb-box {
-  background: #23272f;
-  border-radius: 12px;
-  padding: 1.3rem 1.1rem;
-  display: flex;
+  align-items: center;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  box-shadow: 0 2px 8px #0002;
-  margin-top: 0.7rem;
 }
-.fb-img {
-  width: 40px;
-  border-radius: 8px;
-  margin-bottom: 0.2rem;
-  box-shadow: 0 2px 8px #b33c1a22;
-}
-.fb-title {
-  color: #fffbe6;
-  font-weight: 700;
-  font-size: 1.13rem;
-  letter-spacing: 1px;
-}
-.fb-sub {
-  color: #b3e59f;
-  font-size: 1.01rem;
-}
-.footer-bar-inspirado {
-  background: #101312;
-  color: #b3b3b3;
-  text-align: center;
-  padding: 18px 0 10px 0;
-  font-size: 1.01rem;
-  letter-spacing: 1.1px;
-  border-top: 1.5px solid #23272f;
+
+.row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.col {
+  min-width: 250px;
+  color:#000;
+  font-family: poppins;
+  padding:0 2rem;
+}
+
+.col .logo {
+  width: 100px;
+  margin-bottom:25px;
+}
+
+.col h3 {
+  font-size: 30px;
+  color:#000;
+  margin-bottom: 20px;
   position: relative;
-  z-index: 2;
+  cursor: pointer;
 }
-.footer-bar-inspirado a {
-  color: #ffe066;
-  text-decoration: underline;
-  font-weight: 600;
+
+.col h3::after {
+  content: '';
+  height:3px;
+  width:0px;
+  background-color: #000;
+  position: absolute;
+  bottom: 0;
+  left:0;
+  transition: 0.3s ease;
+
 }
-.footer-agencia {
-  font-size: 0.99rem;
-  color: #ffe066;
-  font-style: italic;
-  letter-spacing: 0.5px;
+
+.col h3:hover::after {
+  width:30px
 }
-@media (max-width: 900px) {
-  .footer-main {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1.5rem;
-    padding: 24px 8px 8px 8px;
-  }
-  .footer-col {
-    min-width: 0;
-    padding: 14px 8px 14px 8px;
-  }
+
+.col .social a i {
+  color:#000;
+  margin-top:2rem;
+  margin-right: 5px;
+  transition: 0.3s ease;
 }
-@media (max-width: 600px) {
-  .footer-main {
-    padding: 18px 2vw 8px 2vw;
-    gap: 1.1rem;
-  }
-  .footer-col {
-    border-radius: 8px;
-    padding: 10px 4vw 10px 4vw;
-  }
-  .footer-bar-inspirado {
-    font-size: 0.93rem;
-    padding: 10px 0 6px 0;
-  }
-  .footer-agencia {
-    font-size: 0.91rem;
-  }
+
+.col .social a i:hover {
+  transform: scale(1.5);
+  filter:grayscale(25);
+}
+
+.col .links a {
+  display: block;
+  text-decoration: none;
+  color:#000;
+  margin-bottom: 5px;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.col .links a::before {
+  content:'';
+  height: 16px;
+  width:3px;
+  position: absolute;
+  top:5px;
+  left:-10px;
+  background-color: #000;
+  transition: 0.5s ease;
+  opacity: 0;
+}
+
+.col .links a:hover::before {
+  opacity: 1;
+}
+
+.col .links a:hover {
+  transform: translateX(-8px);
+  color:#000;
+}
+
+.col .contact-details {
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.col .contact-details i {
+  margin-right:15px;
+}
+
+.row .form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding:2rem 0;
+}
+
+.row .form input {
+  background-color: #1a1c20ff;
+  border:0;
+  outline:none;
+  padding:14px 20px;
+  border-radius: 6px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.col#contact {
+  margin-top: -2%;
+}
+
+.form button {
+  padding:14px 20px;
+  border:0;
+  border-radius: 6px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: #000;
+}
+
+i .fa-paper-plane {
+  transition: transform .3s ease;
+}
+
+p#copy {
+  margin-top: 3vh;
+  font-size: 12px;
+}
+
+p#rea {
+  margin-top: -5vh;
+}
+
+.i fa-paper-plane:hover {
+  transform: scale(1.1);
+}
+@media (max-width:1299px)
+{
+.row{
+  flex-direction: column;
+}
+
+.col{
+  width: 100%;
+  text-align: left;
+  margin-bottom: 25px;
+}
+}
+
+@media (max-width:768px)
+{
+.row {
+  flex-direction: column;
+}
+
+.col {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
 }
 </style>
