@@ -87,14 +87,14 @@ export default {
         this.erroSelecao = 'Selecione um combo para continuar.';
         return;
       }
-      // Monta pedido com itens fixos do combo e bebidas extras
+      // Adiciona Guaraná como bebida fixa ao combo
+      const bebidas = [
+        { nome: 'Guaraná', tipo: 'Refrigerante', tamanho: '2L', preco: 0 }
+      ];
       const pedido = {
         combo: this.comboSelecionado,
         pizzas: [], // será preenchido na próxima etapa
-        bebidas: [
-          ...this.comboSelecionado.itensFixos.filter(i => i.tipo === 'bebida'),
-          ...this.bebidasExtras
-        ]
+        bebidas
       };
       this.$emit('finish', pedido);
     }
