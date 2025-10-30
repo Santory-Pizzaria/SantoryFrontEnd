@@ -151,7 +151,12 @@ watch(carrinho, () => {
 </script>
 
 <template>
+    <head>
+    <link rel="icon" href="/logo.ico">
+    <link rel="shortcut icon" type="image/x-icon">
+  </head>
   <div>
+    
     <header>
 
 
