@@ -148,6 +148,12 @@ window.addEventListener('carrinho-atualizado', atualizarQtdCarrinho)
 watch(carrinho, () => {
   qtdCarrinho.value = carrinho.value.reduce((soma, item) => soma + (item.quantidade || 1), 0);
 }, { deep: true });
+
+const usuarioAvatar = ref('/src/assets/imagens/perfil.png');
+const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
+if (usuarioLogado && usuarioLogado.avatar) {
+  usuarioAvatar.value = usuarioLogado.avatar;
+}
 </script>
 
 <template>
@@ -189,21 +195,22 @@ watch(carrinho, () => {
 
     <!-- Assistente Flutuante -->
     <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleAssistant">
-      <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="carrinho-icon" />
-      <span class="carrinho-badge">?</span>
+      <img src="/src/assets/imagens/assistente.png" alt="Assistente" class="carrinho-icon" />
     </div>
     <!-- Modal do Assistente -->
     <transition name="mini-cart-fade">
       <div v-if="showAssistant" class="mini-cart-modal" @click.self="toggleAssistant">
         <div class="mini-cart-content" style="max-height: 60vh; overflow-y: auto;">
           <div class="mini-cart-header">
-            <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="mini-cart-icon" />
+            <img src="/src/assets/imagens/assistente.png" alt="Assistente" class="mini-cart-icon" />
             <span class="mini-cart-badge mini-cart-badge">Assistente</span>
           </div>
           <h3>Assistente da Pizzaria</h3>
           <div style="margin-bottom: 12px;">
-            <div v-for="(msg, idx) in assistantMessages" :key="idx" :style="{ textAlign: msg.sender === 'bot' ? 'left' : 'right', margin: '6px 0' }">
+            <div v-for="(msg, idx) in assistantMessages" :key="idx" :style="{ display: 'flex', alignItems: 'center', justifyContent: msg.sender === 'bot' ? 'flex-start' : 'flex-end', margin: '6px 0' }">
+              <img v-if="msg.sender === 'bot'" src="/src/assets/imagens/assistente.png" alt="Assistente" style="width:28px; height:28px; margin-right:8px; border-radius:50%; box-shadow:0 2px 8px #10b98122;" />
               <span :style="{ background: msg.sender === 'bot' ? '#eee' : '#b33c1a', color: msg.sender === 'bot' ? '#222' : '#fff', borderRadius: '8px', padding: '6px 12px', display: 'inline-block', maxWidth: '80%' }">{{ msg.text }}</span>
+              <img v-if="msg.sender === 'user'" :src="usuarioAvatar" alt="Usuário" style="width:28px; height:28px; margin-left:8px; border-radius:50%; box-shadow:0 2px 8px #b33c1a22;" />
             </div>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
