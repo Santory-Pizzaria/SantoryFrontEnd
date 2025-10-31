@@ -84,7 +84,7 @@ watch(metodoPagamento, limparTipoCartaoAoMudarPagamento)
 
 function validarEntrega() {
   if (!tipoEntrega.value) {
-    alert('Por favor, selecione como deseja receber seu pedido.')
+    alert('⚠️ Por favor, selecione como deseja receber seu pedido (Retirar ou Entregar em casa).');
     return false
   }
   return true
@@ -92,19 +92,19 @@ function validarEntrega() {
 
 function submitForm() {
   // Validações antes do pagamento
-  if (!validarEntrega()) return
+  if (!validarEntrega()) return;
 
   if (!metodoPagamento.value) {
-    alert('Por favor, selecione um método de pagamento.')
-    return
+    alert('⚠️ Por favor, selecione um método de pagamento (Pix, Dinheiro ou Cartão).');
+    return;
   }
 
   if (metodoPagamento.value === 'dinheiro' && precisaTroco.value && (!valorTroco.value || isNaN(Number(valorTroco.value)) || Number(valorTroco.value) <= 0)) {
-    alert('Por favor, informe o valor para o troco.')
-    return
+    alert('⚠️ Informe o valor para o troco corretamente.');
+    return;
   }
 
-  processandoPagamento.value = true
+  processandoPagamento.value = true;
 
   // Simular processamento do pagamento
   setTimeout(() => {
@@ -148,7 +148,7 @@ function submitForm() {
 
     // Mostrar confirmação e redirecionar
     alert(
-      `🍕 Pagamento aprovado!\n\nPedido #${pedidoCompleto.id} confirmado com sucesso!\nTempo estimado de entrega: 30-45 minutos\n\nVocê será redirecionado para a página inicial.`,
+      `✅ Pedido finalizado com sucesso!\n\nPedido #${pedidoCompleto.id} confirmado.\nTempo estimado de entrega: 30-45 minutos.\nObrigado por escolher a Santory Pizzaria!\n\nVocê será redirecionado para a página inicial.`,
     )
 
     setTimeout(() => {
