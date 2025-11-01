@@ -1,11 +1,17 @@
 <template>
+
+  <head>
+    <link rel="icon" href="/logo.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/logo.ico">
+  </head>
+
   <footer class="rodape">
             <div class="container-3">
                 <div class="row">
                     <div class="col" id="company">
                         
                         <p id="rea">
-                            Seu portal de notícias de confiança.
+                            <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
                         </p>
                         <div class="social">
                             <a href="#"><i class="fab fa-facebook"></i></a>
@@ -14,9 +20,10 @@
                             <a href="#"><i class="fab fa-twitter"></i></a>
                             <a href="#"><i class="fab fa-linkedin"></i></a>
                         </div>
-                        <p id="copy">
-                            © ALLRIGHT RESERVED - JORNAL GEONATION 2023
-                        </p>
+            <p id="copy">
+              © ALLRIGHT RESERVED <br />
+              PIZZARIA SANTORY
+            </p>
                     </div>
                     <div class="col" id="services">
                         <h3>Páginas</h3>
@@ -38,22 +45,7 @@
                     </div>
                     <div class="col" id="contact">
                         <h3>Contato</h3>
-                        <div class="contact-details">
-                            <i class="fa fa-location"></i>
-                            <p>Araquari, BR-280, <br> SC, Brazil</p>
-                        </div>
-                        <div class="contact-details">
-                            <i class="fa fa-phone"></i>
-                            <p>+55 (47) 98804-2804</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form">
-                        <form action="">
-                            <input type="text" placeholder="Email here...">
-                            <button><i class="fa fa-paper-plane"></i></button>
-                        </form>
+                       <p id="text-footer">Há mais de vinte anos o sevindo as melhores <br /> pizzas da cidade em um lugar agradável e acolhedor, <br /> pra você se sentir em casa. <br /> As pizzas, entradas e saladas são cuidadosamente <br /> preparadas com ingredientes de alta qualidade e <br /> atendem os mais variados públicos: tradicional, vegano <br /> ou sem glúten.</p>
                     </div>
                 </div>
             </div>
@@ -62,12 +54,12 @@
 
 <style scoped>
 footer {
-  background-color: rgb(244, 244, 9);
+  background-color: rgb(1, 42, 1);
   position: relative;
   overflow-y: hidden;
   display: grid 'footer';
   margin-top: 5vh;
-  min-height: 350px;
+  min-height:250px;
   padding: 3rem 1rem;
   grid-row-end: auto;
   border-top: 3px solid #000;
@@ -88,21 +80,25 @@ footer {
   align-items: center;
 }
 
+#text-footer {
+  font-size: 16px;
+}
+
 .col {
   min-width: 250px;
-  color:#000;
+  color:#ffffff;
   font-family: poppins;
   padding:0 2rem;
 }
 
 .col .logo {
   width: 100px;
-  margin-bottom:25px;
+  margin-top: 5vh;
 }
 
 .col h3 {
   font-size: 30px;
-  color:#000;
+  color:#fff1c5;
   margin-bottom: 20px;
   position: relative;
   cursor: pointer;
@@ -112,7 +108,7 @@ footer {
   content: '';
   height:3px;
   width:0px;
-  background-color: #000;
+  background-color: #fff1c5;
   position: absolute;
   bottom: 0;
   left:0;
@@ -125,21 +121,24 @@ footer {
 }
 
 .col .social a i {
-  color:#000;
-  margin-top:2rem;
+  color:#ffffff;
   margin-right: 5px;
   transition: 0.3s ease;
 }
 
+.col a {
+  font-size: 16px;
+}
+
 .col .social a i:hover {
-  transform: scale(1.5);
-  filter:grayscale(25);
+  transform: scale(1.3);
+  color: #d2780d;
 }
 
 .col .links a {
   display: block;
   text-decoration: none;
-  color:#000;
+  color:#ffffff;
   margin-bottom: 5px;
   position: relative;
   transition: 0.3s ease;
@@ -152,7 +151,7 @@ footer {
   position: absolute;
   top:5px;
   left:-10px;
-  background-color: #000;
+  background-color: #d2780d;
   transition: 0.5s ease;
   opacity: 0;
 }
@@ -163,7 +162,7 @@ footer {
 
 .col .links a:hover {
   transform: translateX(-8px);
-  color:#000;
+  color:#d2780d;
 }
 
 .col .contact-details {
@@ -194,6 +193,14 @@ footer {
 
 .col#contact {
   margin-top: -2%;
+}
+
+.col#useful-links {
+  margin-top: -6%;
+}
+
+.col#services {
+  margin-top: -6%;
 }
 
 .form button {

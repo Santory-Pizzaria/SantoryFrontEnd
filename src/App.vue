@@ -153,14 +153,9 @@ watch(carrinho, () => {
 <template>
     <head>
     <link rel="icon" href="/logo.ico">
-    <link rel="shortcut icon" type="image/x-icon">
+    <link rel="shortcut icon" type="image/x-icon" href="/logo.ico">
   </head>
   <div>
-    
-    <header>
-
-
-    </header>
     <router-view />
     <template v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/cadastro' && $route.path !== '/admin' && $route.path !== '/CadastroPizzaria' && $route.path !== '/Login'">
       <transition name="mini-cart-fade">
