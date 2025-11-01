@@ -189,8 +189,7 @@ watch(carrinho, () => {
 
     <!-- Assistente Flutuante -->
     <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleAssistant">
-      <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="carrinho-icon" />
-      <span class="carrinho-badge">?</span>
+      <img src="/src/assets/imagens/" alt="Assistente" class="carrinho-icon" />
     </div>
     <!-- Modal do Assistente -->
     <transition name="mini-cart-fade">
@@ -397,20 +396,6 @@ nav a:first-of-type {
   width: 38px;
   height: 38px;
 }
-.carrinho-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #b33c1a;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 2px 8px;
-  min-width: 24px;
-  text-align: center;
-  box-shadow: 0 2px 8px #b33c1a44;
-}
 @media (max-width: 600px) {
   .carrinho-float {
     width: 48px;
@@ -419,8 +404,8 @@ nav a:first-of-type {
     bottom: 12px;
   }
   .carrinho-icon {
-    width: 26px;
-    height: 26px;
+    width: 100%;
+    height: 100%;
   }
   .carrinho-badge {
     top: 2px;
