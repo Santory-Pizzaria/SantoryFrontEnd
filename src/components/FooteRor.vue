@@ -26,25 +26,25 @@
             </p>
                     </div>
                     <div class="col" id="services">
-                        <h3>Páginas</h3>
+                        <h3>Serviços</h3>
                         <div class="links">
-                            <a href="#">Voltar ao início</a>
-                            <a href="nacional.html">Nacional</a>
-                            <a href="noticia-destaque.html">Notícia destaque</a>
-                            <a href="#">Newslatter</a>
+                            <a href="/src/App.vue">Voltar ao início</a>
+                            <a href="/src/components/ReservasLocal.vue">Reservas</a>
+                            <a href="/src/views/TempoEntrega.vue">Tempo de Entrega</a>
+                            <a href="/src/views/PerfilUsuario.vue">Pefil do Usuário</a>
                         </div>
                     </div>
                     <div class="col" id="useful-links">
-                        <h3>Suporte</h3>
+                        <h3>Pedidos</h3>
                         <div class="links">
-                            <a href="cadastro.html">cadastre-se</a>
-                            <a href="login.html">Login</a>
-                            <a href="#">Perguntas frequentes</a>
-                            <a href="#">Suporte</a>
+                            <a href="/src/views/CardapioTela.vue">Cardápio</a>
+                            <a href="/src/components/FeedBack.vue">Feedback</a>
+                            <a href="/src/views/LoginCliente.vue">Login</a>
+                            <a href="#">(47) 98804-2804</a>
                         </div>
                     </div>
                     <div class="col" id="contact">
-                        <h3>Contato</h3>
+                        <h3>Sobre Nós</h3>
                        <p id="text-footer">Há mais de vinte anos o sevindo as melhores <br /> pizzas da cidade em um lugar agradável e acolhedor, <br /> pra você se sentir em casa. <br /> As pizzas, entradas e saladas são cuidadosamente <br /> preparadas com ingredientes de alta qualidade e <br /> atendem os mais variados públicos: tradicional, vegano <br /> ou sem glúten.</p>
                     </div>
                 </div>
