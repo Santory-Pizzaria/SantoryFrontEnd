@@ -125,7 +125,7 @@ Digite uma dessas opções para saber mais!`;
     return 'Nosso horário de funcionamento é das 18h às 23h, todos os dias.';
   }
   if (txt.includes('endereco') || txt.includes('localizacao')) {
-    return 'Estamos localizados na Rua Exemplo, 123. Veja como chegar pelo botão "Como Chegar".';
+    return 'Estamos localizados na Rua Agricola N 123. Veja como chegar pelo botão "Como Chega localizado na pagina inicial".';
   }
   if (txt.includes('telefone') || txt.includes('whatsapp')) {
     return 'Você pode falar conosco pelo WhatsApp: (99) 99999-9999.';
