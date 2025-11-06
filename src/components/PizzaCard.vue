@@ -76,17 +76,29 @@ export default {
     adicionarItem(item) {
       // Combo Solteiro: pizza média + Guaraná Antarctica lata 350ml grátis
       if (item.nome === 'Combo Solteiro') {
-        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Média', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: 'Lata 350ml', bebidaFixaCombo: true } });
+        this.$router.push({
+          name: 'pizza-options',
+          params: { pizzaNome: 'Média' },
+          query: { combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: 'Lata 350ml', bebidaFixaCombo: true }
+        });
         return;
       }
       // Combo Casal: pizza grande + Guaraná Antarctica 2L grátis
       if (item.nome === 'Combo Casal') {
-        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Grande', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true } });
+        this.$router.push({
+          name: 'pizza-options',
+          params: { pizzaNome: 'Grande' },
+          query: { combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true }
+        });
         return;
       }
       // Combo Família: pizza família + Guaraná Antarctica 2L grátis
       if (item.nome === 'Combo Família') {
-        this.$router.push({ name: 'pizza-options', params: { pizzaNome: 'Família', combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true } });
+        this.$router.push({
+          name: 'pizza-options',
+          params: { pizzaNome: 'Família' },
+          query: { combo: item.nome, refrigerante: 'Guaraná Antarctica', refrigeranteTamanho: '2L', bebidaFixaCombo: true }
+        });
         return;
       }
       // ...lógica de bebidas e pizzas...

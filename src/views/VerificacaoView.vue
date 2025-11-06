@@ -37,13 +37,24 @@ export default {
         this.$emit('atualizar-quantidade', this.pedido.quantidade - 1)
       }
     },
-    calcularValorTotal() {
-      const valorPizza = parseFloat(this.pedido.valor.replace('R$ ', '').replace(',', '.'));
-      let valorBebida = 0;
-      if (this.bebidaSelecionada && this.bebidaSelecionada.preco) {
-        valorBebida = typeof this.bebidaSelecionada.preco === 'string' ? parseFloat(this.bebidaSelecionada.preco.replace('R$', '').replace(',', '.')) : this.bebidaSelecionada.preco;
+    // Parse seguro para strings monetárias no formato "R$ 12,34"
+    parseMoeda(valor) {
+      if (typeof valor === 'number' && !isNaN(valor)) return valor;
+      if (typeof valor === 'string') {
+        const limpo = valor.replace(/[^0-9,.-]/g, '').replace('.', '').replace(',', '.');
+        const num = parseFloat(limpo);
+        return isNaN(num) ? 0 : num;
       }
-      const total = (valorPizza * this.pedido.quantidade) + valorBebida;
+      return 0;
+    },
+    calcularValorTotal() {
+      const quantidade = this.pedido?.quantidade || 1;
+      const valorPizza = this.pedido?.valor ? this.parseMoeda(this.pedido.valor) : 0;
+      // Soma todas as bebidas do pedido (brinde = 0)
+      const totalBebidas = Array.isArray(this.pedido?.bebidas)
+        ? this.pedido.bebidas.reduce((acc, b) => acc + this.parseMoeda(b?.preco || 0), 0)
+        : 0;
+      const total = (valorPizza * quantidade) + totalBebidas;
       return `R$ ${total.toFixed(2).replace('.', ',')}`;
     },
     pedirMais() {
@@ -177,9 +188,11 @@ export default {
         </div>
         <!-- Exibe todos os itens do combo e bebidas extras -->
         <div v-if="pedido.combo">
-          <b>Combo:</b> {{ pedido.combo.nome }}<br>
-          <span>{{ pedido.combo.descricao }}</span>
-          <div><b>Valor do combo:</b> R$ {{ pedido.combo.valor.toFixed(2).replace('.', ',') }}</div>
+          <b>Combo:</b> {{ typeof pedido.combo === 'object' ? pedido.combo.nome : pedido.combo }}<br>
+          <span v-if="typeof pedido.combo === 'object' && pedido.combo.descricao">{{ pedido.combo.descricao }}</span>
+          <div v-if="typeof pedido.combo === 'object' && typeof pedido.combo.valor === 'number'">
+            <b>Valor do combo:</b> R$ {{ pedido.combo.valor.toFixed(2).replace('.', ',') }}
+          </div>
           <div v-if="pedido.pizzas && pedido.pizzas.length">
             <b>Pizzas do combo:</b>
             <ul>
@@ -193,16 +206,17 @@ export default {
           <b>Bebidas:</b>
           <ul>
             <li v-for="(bebida, idx) in pedido.bebidas" :key="idx">
-              {{ bebida.nome || bebida.sabor }} <span v-if="bebida.tamanho">({{ bebida.tamanho }})</span> | Valor: R$ {{ bebida.preco ? bebida.preco.toFixed(2).replace('.', ',') : '0,00' }}
+              {{ bebida.nome || bebida.sabor }} <span v-if="bebida.tamanho">({{ bebida.tamanho }})</span> | Valor: R$ {{ (parseMoeda(bebida.preco)).toFixed(2).replace('.', ',') }}
             </li>
           </ul>
         </div>
+        <!-- Mantém bloco para compatibilidade, mas o total usa a lista de bebidas -->
         <div v-if="bebidaSelecionada" class="verificacao-info bebida-info">
           <b>Bebida:</b>
           <div>Tipo: {{ bebidaSelecionada.tipo }}</div>
           <div v-if="bebidaSelecionada.tamanho">Tamanho: {{ bebidaSelecionada.tamanho }}</div>
           <div v-if="bebidaSelecionada.sabor">Sabor/Marca: {{ bebidaSelecionada.sabor }}</div>
-          <div><b>Valor bebida:</b> R$ {{ bebidaSelecionada.preco ? bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</div>
+          <div><b>Valor bebida:</b> R$ {{ (parseMoeda(bebidaSelecionada.preco)).toFixed(2).replace('.', ',') }}</div>
         </div>
         <div class="verificacao-qtd">
           <button class="verificacao-btn diminuir" @click="diminuirQuantidade">-</button>
