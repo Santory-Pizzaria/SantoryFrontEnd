@@ -201,13 +201,11 @@ body {
 }
 @media (max-width: 900px) {
   .italia-logo-header {
-    height: 44px;
     margin: 0 8px 0 0;
   }
 }
 @media (max-width: 600px) {
   .italia-logo-header {
-    height: 32px !important;
     margin: 0 4px 0 0 !important;
   }
 }
@@ -602,9 +600,7 @@ body {
     font-size: 0.95rem;
     gap: 2px;
   }
-  .italia-hero-title {
-    font-size: 2rem;
-  }
+
   .italia-hero-sub {
     font-size: 1.2rem;
   }
@@ -650,9 +646,6 @@ body {
   .italia-hero-content {
     margin-top: 0 !important;
     padding-top: 40px !important;
-  }
-  .italia-hero-title {
-    font-size: 1.2rem;
   }
   .italia-hero-sub {
     font-size: 1rem;
@@ -752,6 +745,44 @@ body {
     z-index: 1300;
     display: flex;
     align-items: center;
+  }
+}
+@media (max-width: 1000px) {
+  .hamburger {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: 104px; /* 32px margem direita do avatar + 60px avatar + 12px gap */
+    transform: translateY(-50%);
+    z-index: 1200;
+  }
+  .italia-nav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    background: transparent;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 0 18px 24px;
+    z-index: 1100;
+    box-shadow: 0 4px 16px #0002;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  .italia-nav.show-mobile {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+@media (max-width: 900px) {
+  .hamburger {
+    right: 86px; /* 10px margem + 64px avatar + 12px gap */
   }
 }
 .italia-reserva-btn, .italia-delivery-btn {
