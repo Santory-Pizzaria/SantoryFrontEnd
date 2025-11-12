@@ -12,3 +12,26 @@ app.directive('mask', mask)
 
 app.mount('#app')
 
+// Registrar Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        // Atualização automática quando um novo SW é instalado
+        if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' })
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing
+          if (!newWorker) return
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Novo conteúdo disponível; recarrega para aplicar
+              // Comentado para evitar reload automático: descomente se preferir
+              // window.location.reload()
+            }
+          })
+        })
+      })
+      .catch(err => console.debug('SW registration failed', err))
+  })
+}
+

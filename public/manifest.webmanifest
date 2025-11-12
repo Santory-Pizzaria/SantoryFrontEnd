@@ -1,0 +1,25 @@
+{
+  "name": "Santory Pizzaria",
+  "short_name": "Santory",
+  "description": "Pizzaria Santory - Cardápio, pedidos e reservas",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fffbe6",
+  "theme_color": "#b33c1a",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/src/assets/imagens/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/src/assets/imagens/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
