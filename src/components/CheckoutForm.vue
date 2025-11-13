@@ -1,8 +1,7 @@
-// Campo para inserir a PUBLIC_KEY do Mercado Pago depois
-// Exemplo: const MERCADO_PAGO_PUBLIC_KEY = 'SUA_PUBLIC_KEY_AQUI';
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import ToastNotification from '@/components/Toast.vue'
 
 const router = useRouter()
 
@@ -26,6 +25,12 @@ const processandoPagamento = ref(false)
 const precisaTroco = ref(false)
 const valorTroco = ref('')
 const tipoCartao = ref('')
+
+// Estado do toast personalizado
+const showToast = ref(false)
+const toastType = ref('warning')
+const toastTitle = ref('Compra cancelada')
+const toastMessage = ref('Seu pedido foi cancelado. Redirecionando para o menu...')
 
 onMounted(() => {
   // Recuperar dados do pedido do localStorage
@@ -190,8 +195,20 @@ function salvarPedidoConfirmado(pedido) {
   console.log('Pedido confirmado e salvo:', novoPedido)
 }
 
+function cancelarCompra() {
+  // limpa dados temporários e exibe toast personalizado
+  try { localStorage.removeItem('pedido-pagamento') } catch { /* intentionally ignored */ }
+  toastType.value = 'warning'
+  toastTitle.value = 'Compra cancelada'
+  toastMessage.value = 'Seu pedido foi cancelado. Redirecionando para o menu...'
+  showToast.value = true
+  setTimeout(() => {
+    router.push('/menu')
+  }, 1200)
+}
+
 // Função para voltar à verificação (caso o usuário queira ajustar algo)
-// Removido porque não está sendo utilizado
+
 </script>
 <template>
   <div class="checkout-bg"></div>
@@ -200,7 +217,7 @@ function salvarPedidoConfirmado(pedido) {
       <img src="/src/assets/imagens/logo.png" alt="Logo" class="logo" />
       <div class="titulo-Pag"><h1>Pizzaria Santory</h1></div>
     </header>
-    <div class="checkout-main-content">
+    <div class="checkout-grid">
       <section class="checkout-form-section">
         <div>
           <div class="entrega-tipo">
@@ -285,6 +302,10 @@ function salvarPedidoConfirmado(pedido) {
       </section>
       <aside class="checkout-summary">
         <h2>Resumo do pedido</h2>
+        <div class="total">
+            <span><strong>Total do Pedido:</strong></span>
+            <span>{{ calcularValorTotal() }}</span>
+          </div>
         <div v-if="pedidoData">
           <div class="linha">
             <span><strong>Descrição</strong></span>
@@ -293,15 +314,6 @@ function salvarPedidoConfirmado(pedido) {
           <div class="linha">
             <span>{{ pedidoData.pizzaNome }}</span>
             <span>{{ pedidoData.valor }}</span>
-          </div>
-          <div class="linha" v-if="pedidoData.bebidaSelecionada">
-            <span>
-              <strong>Bebida:</strong>
-              {{ pedidoData.bebidaSelecionada.tipo }}
-              <span v-if="pedidoData.bebidaSelecionada.tamanho">- {{ pedidoData.bebidaSelecionada.tamanho }}</span>
-              <span v-if="pedidoData.bebidaSelecionada.sabor">- {{ pedidoData.bebidaSelecionada.sabor }}</span>
-            </span>
-            <span>R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
           </div>
           <!-- Exibe todas as bebidas do pedido (fixas e extras) -->
           <div v-if="pedidoData.bebidas && pedidoData.bebidas.length">
@@ -328,31 +340,12 @@ function salvarPedidoConfirmado(pedido) {
             <p><strong>Borda:</strong> {{ pedidoData.bordaSelecionada }}</p>
             <p><strong>Quantidade:</strong> {{ pedidoData.quantidade }}</p>
             <p><strong>Valor do item:</strong> {{ pedidoData.valor }}</p>
-            <div v-if="pedidoData.bebidaSelecionada">
-              <h4>Bebida:</h4>
-              <p><strong>Tipo:</strong> {{ pedidoData.bebidaSelecionada.tipo }}</p>
-              <p><strong>Tamanho:</strong> {{ pedidoData.bebidaSelecionada.tamanho }}</p>
-              <p><strong>Sabor/Marca:</strong> {{ pedidoData.bebidaSelecionada.sabor }}</p>
-              <p><strong>Valor da bebida:</strong> R$ {{ pedidoData.bebidaSelecionada.preco ? pedidoData.bebidaSelecionada.preco.toFixed(2).replace('.', ',') : '0,00' }}</p>
-            </div>
             <!-- Exibe todas as bebidas do pedido (fixas e extras) no bloco de detalhes -->
-            <div v-if="pedidoData.bebidas && pedidoData.bebidas.length">
-              <h4>Bebidas:</h4>
-              <ul>
-                <li v-for="(bebida, idx) in pedidoData.bebidas" :key="idx">
-                  <strong>{{ bebida.nome || bebida.tipo || bebida.sabor }}</strong>
-                  <span v-if="bebida.tamanho"> - {{ bebida.tamanho }}</span>
-                  <span v-if="bebida.sabor && !bebida.nome"> - {{ bebida.sabor }}</span>
-                  <span> | Valor: R$ {{ bebida.preco ? bebida.preco.toFixed(2).replace('.', ',') : '0,00' }}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="total">
-            <span><strong>Total do Pedido:</strong></span>
-            <span>{{ calcularValorTotal() }}</span>
           </div>
           <div class="buttons-container">
+            <button @click="cancelarCompra" class="cancel-button" :disabled="processandoPagamento">
+              Cancelar compra
+            </button>
             <button @click="submitForm" class="submit-button" :disabled="processandoPagamento">
               {{ processandoPagamento ? '💳 Processando...' : 'Finalizar Pedido' }}
             </button>
@@ -364,6 +357,15 @@ function salvarPedidoConfirmado(pedido) {
       </aside>
     </div>
   </div>
+  <!-- Toast personalizado -->
+  <ToastNotification
+    :show="showToast"
+    :type="toastType"
+    :title="toastTitle"
+    :message="toastMessage"
+    :duration="2000"
+    @close="showToast = false"
+  />
 </template>
 
 <style scoped>
@@ -533,6 +535,29 @@ function salvarPedidoConfirmado(pedido) {
   background: linear-gradient(90deg, #ff9800 60%, #28c76f 100%);
   box-shadow: 0 4px 16px #b33c1a44;
 }
+.cancel-button {
+  background: linear-gradient(90deg, #e63946 60%, #ff9800 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 14px 24px;
+  font-size: 1.08rem;
+  min-width: 120px;
+  margin-top: 18px;
+  transition: background 0.3s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #b33c1a22;
+}
+.cancel-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.cancel-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #b33c1a 60%, #ff9800 100%);
+  box-shadow: 0 4px 16px #b33c1a44;
+}
 .pedido-detalhes {
   margin: 10px 0;
   padding: 10px;
@@ -632,6 +657,27 @@ function salvarPedidoConfirmado(pedido) {
   border-radius: 10px;
   box-shadow: 0 2px 8px #b33c1a22;
 }
+.checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 2fr) minmax(260px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.checkout-summary {
+  align-self: start;
+  position: sticky;
+  top: 16px;
+}
+@media (max-width: 900px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .checkout-summary {
+    position: static;
+    top: auto;
+  }
+}
 @media (max-width: 900px) {
   .checkout-main-content {
     flex-direction: column;
@@ -678,17 +724,14 @@ function salvarPedidoConfirmado(pedido) {
     padding: 6px;
     border-radius: 6px;
     min-width: 0;
-    max-width: 100vw;
+    max-width: 99vw;
   }
-  .checkout-form-section {
-    padding: 6px;
-    border-radius: 6px;
-    min-width: 0;
+  .buttons-container {
+    gap: 8px;
   }
-  .submit-button, .back-button {
-    padding: 8px 6px;
-    font-size: 0.92rem;
-    min-width: 80px;
+  .submit-button,
+  .cancel-button {
+    width: 100%;
   }
 }
 </style>
