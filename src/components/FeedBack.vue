@@ -432,6 +432,17 @@ export default {
     padding: 18px 4vw 18px 4vw;
   }
   .feedback-header-novo {
+    position: relative;
+    padding-left: 52px; /* espaço para a seta à esquerda */
+  }
+  .seta-voltar-novo {
+    position: absolute !important;
+    left: 12px !important;
+    top: 12px !important;
+    margin-bottom: 0;
+    transform: none;
+  }
+  .feedback-header-novo {
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
@@ -466,18 +477,6 @@ export default {
     font-size: 0.98rem;
     text-align: center;
     width: 100%;
-  }
-}
-@media (max-width: 900px) {
-  .feedback-main-novo {
-    flex-direction: column;
-    gap: 18px;
-    align-items: center;
-  }
-  .feedback-form-section-novo, .feedback-list-section-novo {
-    max-width: 98vw;
-    min-width: 0;
-    padding: 18px 4vw 18px 4vw;
   }
 }
 </style>
