@@ -12,9 +12,9 @@ const pinia = createPinia()
 
 app.use(pinia)
 
-// Restaurar o estado do usuário logado ao inicializar o aplicativo
+// Carregar estado do usuário do localStorage
 const userStore = useUserStore();
-userStore.restoreUser();
+userStore.loadFromLocalStorage();
 
 app.use(router)
 app.directive('mask', mask)

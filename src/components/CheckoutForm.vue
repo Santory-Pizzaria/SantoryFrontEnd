@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { refreshToken } from '@/utils/api.js';
 import { useUserStore } from '@/stores/user';
 
 const router = useRouter()
@@ -24,16 +23,16 @@ const frete = ref(0)
 const calculandoFrete = ref(false)
 
 onMounted(() => {
-  // Restaurar o estado do usuário logado antes de prosseguir
-  userStore.restoreUser();
+  // Carregar o estado do usuário logado antes de prosseguir
+  userStore.loadFromLocalStorage();
 
   // Recuperar dados do pedido do localStorage
-  const dadosPedido = localStorage.getItem('pedido-pagamento')
+  const dadosPedido = localStorage.getItem('pedido-pagamento');
   if (dadosPedido) {
-    pedidoData.value = JSON.parse(dadosPedido)
+    pedidoData.value = JSON.parse(dadosPedido);
   } else {
     // Se não há dados do pedido, redirecionar para o menu
-    router.push('/menu')
+    router.push('/menu');
   }
 })
 
@@ -106,32 +105,18 @@ function calcularValorTotal() {
   return `R$ ${valorTotal.toFixed(2).replace('.', ',')}`
 }
 
-async function verificarToken() {
-  const usuarioLogado = userStore.user;
-  console.log('Usuário logado no verificarToken:', usuarioLogado); // Log para verificar os dados do usuário
-
-  if (!usuarioLogado) {
-    console.error('Nenhum usuário logado encontrado no userStore.');
-    throw new Error('Usuário não autenticado.');
+function verificarToken() {
+  if (!userStore.accessToken) {
+    console.log('Nenhum token de acesso encontrado no userStore.');
+    return;
   }
 
-  if (!usuarioLogado.refresh) {
-    console.error('Token de atualização ausente para o usuário logado.');
-    throw new Error('Token de atualização não encontrado.');
+  if (!userStore.user) {
+    console.log('Nenhum usuário logado encontrado no userStore.');
+    return;
   }
 
-  try {
-    const response = await refreshToken(usuarioLogado.refresh);
-    const novoAccessToken = response.data.access;
-
-    // Atualizar o token de acesso na store
-    userStore.setUser({ ...usuarioLogado, access: novoAccessToken });
-
-    console.log('Token renovado com sucesso no verificarToken:', novoAccessToken); // Log para verificar o token renovado
-  } catch (error) {
-    console.error('Erro ao renovar o token:', error);
-    throw error;
-  }
+  console.log('Usuário logado no verificarToken:', userStore.user);
 }
 
 async function submitForm() {

@@ -52,7 +52,35 @@ export const getCarrinho = (id) => api.get(`/carrinhos/${id}/`);
 export const getCarrinhoItens = () => api.get('/carrinhoitens/');
 export const addCarrinhoItem = (data) => api.post('/carrinhoitens/', data);
 export const registerUser = (data) => api.post('/auth/users/', data);
-export const loginUser = (data) => api.post('/auth/jwt/create/', data);
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post('/auth/jwt/create/', credentials);
+    const { access, refresh } = response.data;
+
+    // Salvar tokens no localStorage
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
+
+    // Obter dados do usuário logado
+    const userResponse = await api.get('/auth/users/me/', {
+      headers: { Authorization: `Bearer ${access}` },
+    });
+    const user = userResponse.data;
+
+    // Salvar usuário no localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+
+    return user;
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    throw error;
+  }
+};
+export const logoutUser = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+};
 export const getBebidas = () => api.get('/bebidas/');
 export const refreshToken = (refresh) => api.post('/auth/jwt/refresh/', { refresh });
 
