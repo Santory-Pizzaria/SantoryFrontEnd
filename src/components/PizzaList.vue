@@ -122,13 +122,10 @@ onUnmounted(() => {
       </button>
       <nav class="italia-nav" :class="{ 'show-mobile': showMenu }">
         <a href="#" class="italia-nav-link active">HOME</a>
-        <span class="italia-sep">|</span>
+
         <a href="#" class="italia-nav-link" @click.prevent="goToReservaUsuario">RESERVAS</a>
-        <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToCardapioTela">CARDAPIO</a>
-        <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToTempoEntrega">TAXA E TEMPO DE ENTREGA</a>
-        <span class="italia-sep">|</span>
         <a href="#" class="italia-nav-link" @click.prevent="goToFeedBack">FEEDBACKS</a>
         <button class="italia-perfil-btn" @click="router.push('/perfil')" aria-label="Perfil">
           </button>
@@ -201,13 +198,11 @@ body {
 }
 @media (max-width: 900px) {
   .italia-logo-header {
-    height: 44px;
     margin: 0 8px 0 0;
   }
 }
 @media (max-width: 600px) {
   .italia-logo-header {
-    height: 32px !important;
     margin: 0 4px 0 0 !important;
   }
 }
@@ -583,6 +578,9 @@ body {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   .italia-delivery-btn {
     margin-top: 8px;
@@ -590,9 +588,12 @@ body {
 }
 @media (max-width: 900px) {
   .italia-header {
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px 8px 0 8px;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1200;
   }
   .italia-logo {
     height: 60px;
@@ -602,9 +603,7 @@ body {
     font-size: 0.95rem;
     gap: 2px;
   }
-  .italia-hero-title {
-    font-size: 2rem;
-  }
+
   .italia-hero-sub {
     font-size: 1.2rem;
   }
@@ -625,6 +624,14 @@ body {
   }
 }
 @media (max-width: 600px) {
+  .italia-header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1200;
+  }
   .italia-header {
     flex-direction: column;
     gap: 6px;
@@ -650,9 +657,6 @@ body {
   .italia-hero-content {
     margin-top: 0 !important;
     padding-top: 40px !important;
-  }
-  .italia-hero-title {
-    font-size: 1.2rem;
   }
   .italia-hero-sub {
     font-size: 1rem;
@@ -753,6 +757,56 @@ body {
     display: flex;
     align-items: center;
   }
+}
+@media (max-width: 1000px) {
+  .hamburger {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: 104px; /* 32px margem direita do avatar + 60px avatar + 12px gap */
+    transform: translateY(-50%);
+    z-index: 1200;
+  }
+  .italia-nav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    background: transparent;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 0 18px 24px;
+    z-index: 1100;
+    box-shadow: 0 4px 16px #0002;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  .italia-nav.show-mobile {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    min-height: calc(100vh - 60px);
+  }
+}
+@media (max-width: 900px) {
+  .hamburger {
+    right: 86px; /* 10px margem + 64px avatar + 12px gap */
+  }
+}
+@media (max-width: 1000px) and (min-width: 621px) {
+  .italia-nav.show-mobile .italia-nav-link,
+  .italia-nav.show-mobile .italia-sep {
+    display: block;
+    margin: 10px 0;
+  }
+  .italia-nav.show-mobile .italia-sep { opacity: 0.25; }
 }
 .italia-reserva-btn, .italia-delivery-btn {
   background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
@@ -941,6 +995,100 @@ body {
   .usuario-img-bola {
     width: 48px;
     height: 48px;
+  }
+}
+/* Overrides para o menu hambúrguer: apenas a área dos links fica fosca */
+@media (max-width: 1000px) {
+  .italia-nav {
+    /* não ocupar a tela toda */
+    left: auto !important;
+    right: 12px !important;
+    width: auto !important;
+    min-width: 240px;
+    max-width: 86vw;
+    padding: 12px 0 12px 0; /* padding vertical, lateral no show-mobile */
+  }
+  .italia-nav.show-mobile {
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 16px;
+    min-height: auto; /* remove full height */
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px #0004;
+  }
+}
+@media (max-width: 620px) {
+  .italia-nav {
+    left: 12px !important;
+    right: auto !important;
+    transform-origin: top left !important;
+    width: auto !important;
+    min-width: 220px;
+    max-width: 92vw;
+    padding: 10px 0 10px 0;
+  }
+  .italia-nav.show-mobile {
+    left: 12px !important;
+    right: auto !important;
+    transform-origin: top left !important;
+    width: auto !important;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 14px;
+    min-height: auto;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px #0004;
+  }
+  /* Espaçamento vertical entre links para melhor leitura no painel */
+  .italia-nav.show-mobile .italia-nav-link,
+  .italia-nav.show-mobile .italia-sep {
+    display: block;
+    margin: 8px 0;
+  }
+  .italia-nav.show-mobile .italia-sep { opacity: 0.25; }
+}
+/* Ícone hambúrguer vira X ao abrir */
+.hamburger.active { transform: none !important; }
+.hamburger .bar { transition: transform 280ms cubic-bezier(.2,.8,.2,1), opacity 200ms ease; }
+.hamburger.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active .bar:nth-child(2) { opacity: 0; }
+.hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Animação do painel do menu (apenas quando abre) */
+@keyframes italia-pop-slide {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 1000px) {
+  .italia-nav {
+    /* estado fechado (inicial) */
+    transform-origin: top right;
+    transform: translateY(-8px) scale(0.96);
+    opacity: 0;
+  }
+  .italia-nav.show-mobile {
+    animation: italia-pop-slide 280ms cubic-bezier(.2,.8,.2,1);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@media (max-width: 620px) {
+  .italia-nav {
+    transform-origin: top left;
+    transform: translateY(-8px) scale(0.96);
+    opacity: 0;
+  }
+  .italia-nav.show-mobile {
+    animation: italia-pop-slide 280ms cubic-bezier(.2,.8,.2,1);
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }
 </style>

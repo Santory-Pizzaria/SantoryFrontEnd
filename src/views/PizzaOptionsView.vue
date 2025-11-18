@@ -17,27 +17,25 @@ export default {
       mostrarPerguntaBebida: false,
       mostrarBebidaOptions: false,
       bebidaSelecionada: null,
-      bebidasExtras: [], // Adiciona array para bebidas extras
+      bebidasExtras: [],
     };
   },
   computed: {
-    bebidaFixaComboAtiva() {
-      return this.$route.params.bebidaFixaCombo === true || this.$route.params.bebidaFixaCombo === 'true';
-    }
-  },
-  mounted() {
-    // Se vier bebida fixa do combo, já salva e pula a escolha de bebida
-    const params = this.$route.params;
-    if (params.bebidaFixaCombo === true || params.bebidaFixaCombo === 'true') {
-      this.pedido = { pizzaNome: params.pizzaNome, combo: params.combo };
-      this.bebidaSelecionada = {
-        tipo: params.refrigerante,
-        tamanho: params.refrigeranteTamanho,
-        preco: 0
+    routeExtras() {
+      const p = this.$route?.params || {};
+      const q = this.$route?.query || {};
+      const get = (k) => (p[k] !== undefined ? p[k] : q[k]);
+      const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
+      return {
+        pizzaNome: get('pizzaNome'),
+        combo: get('combo'),
+        refrigerante: get('refrigerante'),
+        refrigeranteTamanho: get('refrigeranteTamanho'),
+        bebidaFixaCombo: toBool(get('bebidaFixaCombo')),
       };
-      this.mostrarVerificacao = true;
-      this.mostrarPerguntaBebida = false;
-      this.mostrarBebidaOptions = false;
+    },
+    bebidaFixaComboAtiva() {
+      return this.routeExtras.bebidaFixaCombo;
     }
   },
   methods: {
@@ -45,17 +43,36 @@ export default {
       this.$router.push('/menu');
     },
     finalizarSelecao(pedidoSelecionado) {
-      // Se vier de um combo, preenche as pizzas e bebidas fixas do combo
-      if (pedidoSelecionado.combo) {
+      if (pedidoSelecionado.combo || this.routeExtras.combo) {
+        let bebidasCombo = Array.isArray(pedidoSelecionado.bebidas) ? [...pedidoSelecionado.bebidas] : [];
+        if (this.routeExtras.bebidaFixaCombo) {
+          const bebidaBrinde = {
+            nome: this.routeExtras.refrigerante,
+            tipo: this.routeExtras.refrigerante,
+            tamanho: this.routeExtras.refrigeranteTamanho,
+            preco: 0
+          };
+          if (!bebidasCombo.some(b => b.nome === bebidaBrinde.nome && b.tamanho === bebidaBrinde.tamanho)) {
+            bebidasCombo.unshift(bebidaBrinde);
+          }
+          this.bebidaSelecionada = bebidaBrinde;
+        }
         this.pedido = {
-          combo: pedidoSelecionado.combo,
+          pizzaNome: this.routeExtras.pizzaNome || pedidoSelecionado.pizzaNome || '',
+          quantidade: pedidoSelecionado.quantidade || 1,
+          combo: pedidoSelecionado.combo || this.routeExtras.combo,
           pizzas: pedidoSelecionado.pizzas,
-          bebidas: [...pedidoSelecionado.bebidas], // já inclui Guaraná fixo
+          bebidas: bebidasCombo,
+          // garantir dados para VerificacaoView
+          saboresSelecionados: pedidoSelecionado.saboresSelecionados || [],
+          bordaSelecionada: pedidoSelecionado.bordaSelecionada || 'Sem Borda',
+          qtdSabores: pedidoSelecionado.qtdSabores || 1,
+          valor: pedidoSelecionado.valor || 'R$ 0,00',
         };
         this.mostrarPerguntaBebida = true;
         return;
       }
-      // ...fluxo normal para pizzas avulsas...
+      // fluxo para pizza avulsa
       this.pedido = pedidoSelecionado;
       this.mostrarPerguntaBebida = true;
     },
@@ -70,16 +87,24 @@ export default {
         this.mostrarBebidaOptions = true;
         this.mostrarPerguntaBebida = false;
       } else {
+        if (this.bebidaFixaComboAtiva && this.pedido && (!this.pedido.bebidas || this.pedido.bebidas.length === 0)) {
+          const bebidaBrinde = {
+            nome: this.routeExtras.refrigerante,
+            tipo: this.routeExtras.refrigerante,
+            tamanho: this.routeExtras.refrigeranteTamanho,
+            preco: 0
+          };
+          this.pedido.bebidas = [bebidaBrinde];
+          this.bebidaSelecionada = bebidaBrinde;
+        }
         this.mostrarVerificacao = true;
         this.mostrarPerguntaBebida = false;
       }
     },
     finalizarBebidas(bebida) {
-      // Adiciona bebida extra ao array
       this.bebidasExtras.push(bebida);
       this.mostrarBebidaOptions = false;
       this.mostrarVerificacao = true;
-      // Junta bebidas fixas do combo com extras
       if (this.pedido && this.pedido.bebidas) {
         this.pedido.bebidas = [...this.pedido.bebidas, ...this.bebidasExtras];
       } else if (this.pedido) {
@@ -100,14 +125,14 @@ export default {
       @finish="onFinishPizzaOptions"
       @voltar="voltar"
     />
-    <div v-if="mostrarPerguntaBebida && !bebidaFixaComboAtiva" class="pergunta-bebida-container">
-      <p class="pergunta-bebida-titulo">Deseja adicionar bebidas ao pedido?</p>
+    <div v-if="mostrarPerguntaBebida" class="pergunta-bebida-container">
+      <p class="pergunta-bebida-titulo">Deseja adicionar bebidas extras ao pedido?</p>
       <div class="pergunta-bebida-botoes">
         <button class="pergunta-bebida-btn sim" @click="escolherBebida(true)">Sim</button>
         <button class="pergunta-bebida-btn nao" @click="escolherBebida(false)">Não</button>
       </div>
     </div>
-    <div v-if="mostrarBebidaOptions && !bebidaFixaComboAtiva">
+    <div v-if="mostrarBebidaOptions">
       <BebidaOptions @finish="finalizarBebidas" />
     </div>
     <VerificacaoView

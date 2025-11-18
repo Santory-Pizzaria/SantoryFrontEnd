@@ -432,18 +432,29 @@ export default {
     padding: 18px 4vw 18px 4vw;
   }
   .feedback-header-novo {
+    position: relative;
+    padding-left: 52px; /* espaço para a seta à esquerda */
+  }
+  .seta-voltar-novo {
+    position: absolute !important;
+    left: 12px !important;
+    top: 12px !important;
+    margin-bottom: 0 !important;
+    transform: none !important;
+  }
+  .feedback-header-novo {
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
-    padding: 12px 4vw 8px 4vw;
+    padding: 12px 4vw 8px 4vw !important;
   }
   .seta-voltar-novo {
-    position: static;
-    transform: none;
-    margin-bottom: 6px;
-    left: unset;
-    top: unset;
+    position: absolute !important;
+    left: 12px !important;
+    top: 12px !important;
+    margin-bottom: 0 !important;
+    transform: none !important;
   }
   .header-center-novo {
     align-items: center;
@@ -466,18 +477,6 @@ export default {
     font-size: 0.98rem;
     text-align: center;
     width: 100%;
-  }
-}
-@media (max-width: 900px) {
-  .feedback-main-novo {
-    flex-direction: column;
-    gap: 18px;
-    align-items: center;
-  }
-  .feedback-form-section-novo, .feedback-list-section-novo {
-    max-width: 98vw;
-    min-width: 0;
-    padding: 18px 4vw 18px 4vw;
   }
 }
 </style>

@@ -256,7 +256,7 @@ export default {
   pointer-events: none;
 }
 .pizzaria-layout {
-  min-height: 100vh;
+  margin-top: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
