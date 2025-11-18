@@ -1,6 +1,10 @@
 <script>
 import MesaCard from './MesaCard.vue';
 
+import { useRouter } from 'vue-router';
+import { createReserva } from '@/utils/api.js';
+
+
 export default {
   name: 'ReservasLocal',
   components: { MesaCard },
@@ -13,7 +17,6 @@ export default {
         horaInicio: '',
         horaFim: '',
         pessoas: 1,
-        observacao: ''
       },
       erros: {},
       mensagem: '',
@@ -68,7 +71,8 @@ export default {
       this.mesaSelecionada = null;
       this.montandoMesa = false;
       this.mensagem = '';
-      this.reserva = { nome: '', telefone: '', data: '', horaInicio: '', horaFim: '', pessoas: 1, observacao: '' };
+      this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1 };
+
       this.erros = {};
     },
     validarFormulario() {
@@ -98,28 +102,37 @@ export default {
       }
       return Object.keys(this.erros).length === 0;
     },
-    enviarReserva() {
-      if (this.validarFormulario()) {
-        this.salvarReserva({
-          nome: this.reserva.nome,
-          telefone: this.reserva.telefone,
-          data: this.reserva.data,
-          horaInicio: this.reserva.horaInicio,
-          horaFim: this.reserva.horaFim,
-          qtdPessoas: this.reserva.pessoas,
-          observacao: this.reserva.observacao,
-          mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : 'Montada',
-          status: 'Aberta'
-        });
-        this.mensagem = `Reserva confirmada! Mesa ${this.mesaSelecionada ? this.mesaSelecionada.numero : 'Montada'} para ${this.reserva.pessoas} pessoa(s) em ${this.reserva.data} das ${this.reserva.horaInicio} às ${this.reserva.horaFim}.`;
-        setTimeout(() => { this.mensagem = ''; }, 7000);
-        this.reserva = { nome: '', telefone: '', data: '', horaInicio: '', horaFim: '', pessoas: 1, observacao: '' };
-        this.erros = {};
-        this.formularioVisivel = false;
-        this.mesaSelecionada = null;
-        this.montandoMesa = false;
-      } else {
+
+    async enviarReserva() {
+      if (!this.validarFormulario()) {
         this.mensagem = '';
+        return;
+      }
+
+      // Buscar usuário logado do localStorage
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado || !usuarioLogado.id) {
+        this.mensagem = 'Você precisa estar logado para reservar.';
+        return;
+      }
+
+      // Montar payload para o backend
+      const payload = {
+        usuario: usuarioLogado.id,
+        data: `${this.reserva.data}T${this.reserva.hora}`,
+        mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : null,
+        quantidade_pessoas: this.reserva.pessoas,
+        horario: this.reserva.hora
+      };
+
+      try {
+        await createReserva(payload);
+        this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.hora}.`;
+        this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1 };
+        this.erros = {};
+      } catch {
+        this.mensagem = 'Erro ao realizar reserva. Tente novamente.';
+
       }
     },
     irParaMenu() {
@@ -194,16 +207,19 @@ export default {
               <span v-if="erros.horaFim" class="erro-msg">{{ erros.horaFim }}</span>
             </div>
           </div>
-          <div class="form-group-novo full-width-novo">
-            <label for="observacao">Observação</label>
-            <textarea id="observacao" v-model="reserva.observacao" placeholder="Alguma observação? (opcional)" rows="2"></textarea>
+        </div>
+        <!--<div class="form-group">
+        <label for="observacao">Observação</label>
+        <div class="input-wrapper">
+          <textarea id="observacao" v-model="reserva.observacao" placeholder="Alguma observação? (opcional)" rows="2"></textarea>
           </div>
-          <div class="botoes-form-novo">
-            <button type="submit" class="btn-reservar-novo">Reservar</button>
-            <button type="button" class="btn-voltar-novo" @click="voltarEscolha">Voltar</button>
-          </div>
-        </form>
-      </main>
+        </div>
+        -->
+        <button type="submit" class="btn-reservar">Reservar Mesa</button>
+        <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
+      </form>
+      <div v-if="mensagem" class="mensagem">{{ mensagem }}</div>
+
     </div>
   </div>
 </template>

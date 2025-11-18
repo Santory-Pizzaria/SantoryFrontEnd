@@ -1,58 +1,32 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { register } from '@/utils/auth.js'
 
-const nome = ref('')
 const email = ref('')
-const senha = ref('')
-const telefone = ref('')
-const endereco = ref('')
-const mensagem = ref('')
+const password = ref('')
+const name = ref('')
+const erro = ref('')
+const sucesso = ref(false)
 const router = useRouter()
 
-async function cadastrarPizzaria() {
-  mensagem.value = ''
-
+async function handleRegister() {
   try {
-    // Criar objeto do usuário com os dados do cadastro
-    const novoUsuario = {
-      id: Date.now(), // ID único baseado no timestamp
-      nome: nome.value,
-      email: email.value,
-      senha: senha.value, // Em produção, isso deveria ser hash
-      telefone: telefone.value,
-      endereco: endereco.value,
-      avatar: '',
-      dataCadastro: new Date().toISOString()
-    }
 
-    // Salvar usuário no localStorage (simulando banco de dados)
-    const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]')
-
-    // Verificar se email já existe
-    const emailJaExiste = usuariosExistentes.find(user => user.email === email.value)
-    if (emailJaExiste) {
-      mensagem.value = 'Este email já está cadastrado!'
-      return
-    }
-
-    usuariosExistentes.push(novoUsuario)
-    localStorage.setItem('usuarios', JSON.stringify(usuariosExistentes))
-    // Salvar também o usuário logado
-    if (!localStorage.getItem('usuarioLogado')) {
-      localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario))
-    }
-
-    mensagem.value = 'Cadastro realizado com sucesso!'
-    nome.value = email.value = senha.value = telefone.value = endereco.value = ''
+    await register({ email: email.value, password: password.value, name: name.value })
+    erro.value = ''
+    sucesso.value = true
 
     setTimeout(() => {
       router.push('/login')
     }, 1200)
-  } catch (err) {
-    mensagem.value = err.message || 'Erro ao cadastrar. Tente novamente.'
+  } catch (e) {
+    // Mostra o erro detalhado do backend
+    erro.value = e.message
+    sucesso.value = false
   }
 }
+
 function irParaLogin() {
   router.push('/login')
 }
@@ -62,23 +36,25 @@ function irParaLogin() {
   <div class="cadastro-pizzaria-container">
     <div class="cadastro-pizzaria-box">
       <img src="/src/assets/imagens/logo.png" alt="Logo da Pizzaria" class="logo" />
-      <h2>Realize o seu Cadastro</h2>
-      <form @submit.prevent="cadastrarPizzaria">
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <input id="nome" v-model="nome" required placeholder="Seu nome" />
-        </div>
+      <h2>Cadastro</h2>
+      <form @submit.prevent="handleRegister">
         <div class="form-group">
           <label for="email">E-mail</label>
           <input id="email" type="email" v-model="email" required placeholder="E-mail para contato" />
         </div>
         <div class="form-group">
           <label for="senha">Senha</label>
-          <input id="senha" type="password" v-model="senha" required placeholder="Crie uma senha" />
+          <input id="senha" type="password" v-model="password" required placeholder="Crie uma senha" />
         </div>
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input id="nome" v-model="name" required placeholder="Seu nome" />
+        </div>
+
         <button type="submit">Cadastrar</button>
       </form>
-      <p v-if="mensagem" class="mensagem">{{ mensagem }}</p>
+      <p v-if="erro" style="color:red">{{ erro }}</p>
+      <p v-if="sucesso" style="color:green">Cadastro realizado! Faça login.</p>
       <p class="register-link">Já tem conta? <a href="#" @click.prevent="irParaLogin">Logar</a></p>
     </div>
   </div>

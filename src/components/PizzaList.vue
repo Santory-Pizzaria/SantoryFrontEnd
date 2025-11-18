@@ -7,9 +7,13 @@ const carouselImages = [
 ]
 
 import { useRouter } from 'vue-router';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+import { onUnmounted } from 'vue';
+
 
 const router = useRouter();
+const userStore = useUserStore();
 
 // Dados do usuário logado
 const usuario = ref({
@@ -19,8 +23,12 @@ const usuario = ref({
 
 // Carregar dados do usuário logado
 onMounted(() => {
-  carregarDadosUsuario();
+  usuario.value = {
+    nome: userStore.user?.name || '',
+    avatar: userStore.user?.avatar || ''
+  };
 });
+
 
 function carregarDadosUsuario() {
   const usuarioLogado = localStorage.getItem('usuarioLogado');
@@ -37,6 +45,7 @@ function carregarDadosUsuario() {
   }
 }
 
+
 const currentImage = ref(0);
 
 function nextImage() {
@@ -48,9 +57,35 @@ setInterval(nextImage, 3500);
 function goToTempoEntrega() {
   router.push({ name: 'TempoEntrega' });
 }
+// Lista de pizzas
+const pizzas = ref([]);
+// Corrigindo o uso do onMounted para garantir que está dentro do setup
+onMounted(() => {
+  carregarPizzas();
+});
+
 function goToCardapioTela() {
   router.push({ name: 'CardapioTela' });
 }
+// Buscar pizzas do backend Django
+async function carregarPizzas() {
+  try {
+    const response = await fetch('http://localhost:8000/api/pizzas/');
+    if (!response.ok) throw new Error('Erro ao buscar pizzas');
+    const data = await response.json();
+
+    // Verificar se a resposta contém uma propriedade específica
+    const pizzasData = Array.isArray(data) ? data : data.results || [];
+    pizzas.value = pizzasData.map(pizza => ({
+      ...pizza,
+      preco: pizza.preco || 0, // Garante que o preço tenha um valor padrão
+    }));
+  } catch (e) {
+    console.error('Erro ao carregar pizzas:', e);
+    pizzas.value = []; // Define um array vazio em caso de erro
+  }
+}
+
 function goToFeedBack() {
   router.push({ name: 'FeedBack' });
 }
@@ -95,12 +130,12 @@ onUnmounted(() => {
   <div class="italia-bg">
     <!-- Pizza List -->
     <section class="pizza-grid">
-      <div v-for="pizza in pizzas" :key="pizza.name" class="pizza-item">
+      <div v-for="pizza in pizzas" :key="pizza.id" class="pizza-item">
         <img :src="pizza.image" :alt="pizza.name" />
         <div class="pizza-info">
           <h3>{{ pizza.name }}</h3>
           <p>{{ pizza.description }}</p>
-          <p>Price: ${{ pizza.price.toFixed(2) }}</p>
+          <p>Price: ${{ pizza.preco ? pizza.preco : '0.00' }}</p>
         </div>
       </div>
     </section>

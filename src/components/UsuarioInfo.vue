@@ -1,36 +1,18 @@
 <script>
+import { useUserStore } from '@/stores/user';
+
 export default {
   name: 'UsuarioInfo',
-  data() {
+  setup() {
+    const userStore = useUserStore();
+    const defaultAvatar = new URL('@/assets/imagens/perfil.png', import.meta.url).href;
+
     return {
-      usuarioLogado: null,
-      defaultAvatar: new URL('@/assets/imagens/perfil.png', import.meta.url).href,
-    }
+      usuarioLogado: userStore.user,
+      defaultAvatar,
+    };
   },
-  mounted() {
-    this.carregarUsuario()
-    // Escutar mudanças no localStorage
-    window.addEventListener('storage', this.carregarUsuario)
-  },
-  beforeUnmount() {
-    window.removeEventListener('storage', this.carregarUsuario)
-  },
-  methods: {
-    carregarUsuario() {
-      const usuario = localStorage.getItem('usuarioLogado')
-      if (usuario) {
-        try {
-          this.usuarioLogado = JSON.parse(usuario)
-        } catch (error) {
-          console.error('Erro ao carregar dados do usuário:', error)
-          this.usuarioLogado = null
-        }
-      } else {
-        this.usuarioLogado = null
-      }
-    }
-  }
-}
+};
 </script>
 
 

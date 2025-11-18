@@ -1,4 +1,7 @@
 <script>
+import { getFeedbacks } from '@/utils/api.js';
+import api from '@/utils/api.js';
+
 export default {
   name: 'FeedBack',
   data() {
@@ -9,17 +12,47 @@ export default {
         estrelas: 0
       },
       aviso: '',
+      carregando: false
       filtroEstrelas: '',
       usuarioLogado: ''
     }
   },
+  async mounted() {
+    await this.carregarFeedbacks();
+  },
   methods: {
-    addFeedback() {
+    async carregarFeedbacks() {
+      this.carregando = true;
+      try {
+        const res = await getFeedbacks();
+        this.feedbacks = res.data;
+      } catch {
+        this.aviso = 'Erro ao carregar avaliações.';
+      } finally {
+        this.carregando = false;
+      }
+    },
+    async addFeedback() {
       if (this.novoFeedback.opiniao.trim() === '' || this.novoFeedback.estrelas === 0) {
         this.aviso = 'Por favor, escreva sua opinião e selecione uma quantidade de estrelas para avaliar.';
         setTimeout(() => { this.aviso = ''; }, 3000);
         return;
       }
+     // try {
+     //   await api.post('/feedbacks/', {
+      //    opiniao: this.novoFeedback.opiniao.trim(),
+      //    estrelas: this.novoFeedback.estrelas
+     //   });
+     //   this.novoFeedback.opiniao = '';
+     //   this.novoFeedback.estrel as = 0;
+     //   this.aviso = 'Avaliação enviada!';
+     //   setTimeout(() => { this.aviso = ''; }, 2000);
+     //   await this.carregarFeedbacks();
+    //  } catch {
+     //   this.aviso = 'Erro ao enviar avaliação.';
+    //    setTimeout(() => { this.aviso = ''; }, 3000);
+    //  }
+
       // Pega o nome do usuário logado
       let usuario = '';
       try {
@@ -70,6 +103,7 @@ export default {
         return lista.filter(fb => fb.estrelas === Number(this.filtroEstrelas));
       }
       return lista;
+
     }
   }
 }
