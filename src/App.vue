@@ -151,11 +151,11 @@ watch(carrinho, () => {
 </script>
 
 <template>
+    <head>
+    <link rel="icon" href="/logo.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/logo.ico">
+  </head>
   <div>
-    <header>
-
-
-    </header>
     <router-view />
     <template v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/cadastro' && $route.path !== '/admin' && $route.path !== '/CadastroPizzaria' && $route.path !== '/Login'">
       <transition name="mini-cart-fade">
@@ -189,8 +189,7 @@ watch(carrinho, () => {
 
     <!-- Assistente Flutuante -->
     <div v-if="mostrarCarrinho" class="carrinho-float" @click="toggleAssistant">
-      <img src="/src/assets/imagens/perfil.png" alt="Assistente" class="carrinho-icon" />
-      <span class="carrinho-badge">?</span>
+      <img src="/src/assets/imagens/logo-assistente-virtual.png" alt="Assistente" class="carrinho-icon" />
     </div>
     <!-- Modal do Assistente -->
     <transition name="mini-cart-fade">
@@ -375,13 +374,11 @@ nav a:first-of-type {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  z-index: 9999;
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 2px 8px #0002;
   width: 64px;
   height: 64px;
-  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -394,22 +391,8 @@ nav a:first-of-type {
   transform: scale(1.08);
 }
 .carrinho-icon {
-  width: 38px;
-  height: 38px;
-}
-.carrinho-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #b33c1a;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 2px 8px;
-  min-width: 24px;
-  text-align: center;
-  box-shadow: 0 2px 8px #b33c1a44;
+  width: 64px;
+  height: 64px;
 }
 @media (max-width: 600px) {
   .carrinho-float {
@@ -419,8 +402,8 @@ nav a:first-of-type {
     bottom: 12px;
   }
   .carrinho-icon {
-    width: 26px;
-    height: 26px;
+    width: 100%;
+    height: 100%;
   }
   .carrinho-badge {
     top: 2px;
