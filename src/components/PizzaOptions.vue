@@ -172,7 +172,7 @@ export default {
   <div class="pizza-options-container">
     <header class="header">
       <button class="back-btn" @click="$router.push('/pizza-card')">
-        <img src="/src/assets/imagens/seta.png" alt="Voltar" />
+        <img src="/src/assets/imagens/seta-preta.png" alt="Voltar" />
       </button>
       <span class="pizza-title">{{ pizzaNome }}</span>
     </header>
@@ -225,84 +225,136 @@ export default {
 </template>
 
 <style scoped>
+/* Layout responsivo, moderno e temático para PizzaOptions */
 .pizza-options-container {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #0001;
+  background: linear-gradient(120deg, #fffbe6 60%, #ffe5b4 100%);
+  border-radius: 32px;
+  box-shadow: 0 12px 48px #b33c1a33;
   padding-bottom: 32px;
+  max-width: 480px;
+  margin: 32px auto;
+  position: relative;
+  border: 2px solid #ff9800;
+  animation: fadein 0.7s;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 .header {
   width: 100%;
-  background: #ff9800;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
   color: #fff;
-  padding: 16px 0 8px 0;
+  padding: 24px 0 12px 0;
   text-align: center;
   position: relative;
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 4px 18px #b33c1a22;
 }
 .pizza-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
+  letter-spacing: 2px;
+  font-family: 'Playfair Display', serif;
+  text-shadow: 0 2px 8px #b33c1a44;
 }
 .back-btn {
   position: absolute;
-  left: 16px;
-  top: 5px;
-  background: none;
+  left: 18px;
+  top: 18px;
+  background: #fffbe6;
   border: none;
   cursor: pointer;
-
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #b33c1a22;
+  padding: 4px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .back-btn img {
-  width: 45px;
-  height: 45px;
+  width: 32px;
+  height: 32px;
+  display: block;
 }
 .section {
   margin: 24px 0 0 0;
-  padding: 0 24px;
+  padding: 0 18px;
 }
 .section-title {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   text-align: center;
+  color: #b33c1a;
+  font-family: 'Playfair Display', serif;
+  text-shadow: 0 2px 8px #ff980044;
 }
 .options-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   align-items: center;
 }
 .option-card {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px #0002;
-  padding: 18px 32px;
-  min-width: 320px;
-  font-size: 1.1rem;
+  background: #fffbe6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #ff980033;
+  padding: 12px 18px;
+  min-width: 220px;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: box-shadow 0.2s;
-  border-left: #ff9800 4px solid;
+  border-left: #ff9800 5px solid;
+  transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+}
+.option-card.sabor-card {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+  max-width: 100%;
+  width: 100%;
+  background: #fffbe6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #ff980033;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-left: #ff9800 5px solid;
+  transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+.option-card.sabor-card.adicionado {
+  background: #ffe5b4;
+  border-left: #b33c1a 7px solid;
+  box-shadow: 0 4px 16px #b33c1a22;
+}
+.option-card.sabor-card.desabilitado {
+  opacity: 0.5;
+  pointer-events: none;
 }
 .option-card.adicionado {
-  background: #fffbe6;
-  border-left: #ff9800 6px solid;
-  box-shadow: 0 2px 8px #ff980033;
+  background: #ffe5b4;
+  border-left: #b33c1a 7px solid;
+  box-shadow: 0 4px 16px #b33c1a22;
 }
 .option-card.desabilitado {
   opacity: 0.5;
   pointer-events: none;
 }
 .option-card input[type="radio"] {
-  margin-right: 18px;
-  width: 22px;
-  height: 22px;
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
 }
 .sabor-card {
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
 }
 .sabor-info {
   flex: 1;
@@ -311,23 +363,28 @@ export default {
 .sabor-nome {
   font-weight: bold;
   display: block;
+  color: #b33c1a;
+  font-size: 1rem;
 }
 .sabor-desc {
   font-size: 0.95rem;
   color: #444;
 }
 .plus-btn, .minus-btn {
-  background: none;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
   border: none;
-  font-size: 2rem;
-  color: #222;
+  font-size: 1.2rem;
+  color: #fff;
   cursor: pointer;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #b33c1a22;
+  transition: background 0.2s;
 }
 .plus-btn:disabled,
 .minus-btn:disabled {
@@ -337,16 +394,16 @@ export default {
 .tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
-  gap: 32px;
+  margin-bottom: 10px;
+  gap: 18px;
 }
 .tab {
   background: none;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
-  color: #aaa;
-  padding: 8px 16px;
+  color: #b33c1a;
+  padding: 6px 10px;
   border-bottom: 2px solid transparent;
   cursor: pointer;
   transition: color 0.2s, border-bottom 0.2s;
@@ -357,19 +414,22 @@ export default {
 }
 .nav-btn {
   display: block;
-  margin: 24px auto;
-  padding: 12px 24px;
-  background: #ff9800;
+  margin: 18px auto 0 auto;
+  padding: 10px 18px;
+  background: linear-gradient(90deg, #ff9800 0%, #b33c1a 100%);
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #b33c1a22;
+  transition: background 0.2s;
 }
 .step-buttons {
   display: flex;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 8px;
 }
 .nav-btn.secondary {
   background: #ccc;
@@ -382,18 +442,29 @@ export default {
   border-radius: 4px;
   padding: 8px 12px;
   margin: 12px 0 0 0;
-  font-size: 1rem;
+  font-size: 0.95rem;
   text-align: center;
 }
 @media (max-width: 600px) {
   .pizza-options-container {
-    max-width: 98vw;
+    max-width: 99vw;
     margin: 0;
     border-radius: 0;
+    padding-bottom: 8px;
   }
   .option-card {
     min-width: 90vw;
-    padding: 16px 8px;
+    padding: 10px 4px;
+  }
+  .header {
+    padding: 10px 0 4px 0;
+    border-radius: 0;
+  }
+  .pizza-title {
+    font-size: 1rem;
+  }
+  .section {
+    padding: 0 4px;
   }
 }
 </style>

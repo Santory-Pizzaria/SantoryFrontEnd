@@ -24,6 +24,7 @@ import ProdutosAdmin from '@/components/ProdutosAdmin.vue'
 import UsuariosAdmin from '@/components/UsuariosAdmin.vue'
 import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -31,6 +32,17 @@ const router = createRouter({
       path: '/perfil',
       name: 'perfil',
       component: PerfilUsuario,
+    },
+    {
+
+      path: '/destaque-menu',
+      name: 'DestaqueMenu',
+      component: DestaqueMenu,
+    },
+    {
+      path: '/reservasUsuario',
+      name: 'ReservasUsuario',
+      component: ReservasUsuario,
     },
     {
       path: '/ProdutosAdmin',

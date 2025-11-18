@@ -81,4 +81,26 @@ onUnmounted(() => {
   color: #888;
   margin: 2rem 0;
 }
+
+@media (max-width: 900px) {
+  .tabela-usuarios {
+    font-size: 0.95rem;
+    min-width: 400px;
+  }
+  .admin-section {
+    padding: 1rem 0.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .tabela-usuarios {
+    font-size: 0.88rem;
+    min-width: 320px;
+  }
+  .admin-section {
+    padding: 0.5rem 0.1rem;
+  }
+  .tabela-usuarios th, .tabela-usuarios td {
+    padding: 0.4rem 0.5rem;
+  }
+}
 </style>

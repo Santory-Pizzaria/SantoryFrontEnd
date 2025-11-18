@@ -60,6 +60,9 @@ defineExpose({ carregarPedidos })
 <style scoped>
 .admin-pedidos-lista {
   width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+  padding: 0;
 }
 .tabela-pedidos {
   width: 100%;
@@ -69,6 +72,7 @@ defineExpose({ carregarPedidos })
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   overflow: hidden;
+  max-width: 100vw;
 }
 .tabela-pedidos th, .tabela-pedidos td {
   padding: 0.7rem 1rem;
@@ -87,5 +91,25 @@ defineExpose({ carregarPedidos })
   text-align: center;
   color: #888;
   margin: 2rem 0;
+}
+
+@media (max-width: 700px) {
+  .tabela-pedidos {
+    font-size: 0.95rem;
+  }
+  .admin-pedidos-lista {
+    padding: 0;
+  }
+}
+@media (max-width: 500px) {
+  .tabela-pedidos {
+    font-size: 0.88rem;
+  }
+  .admin-pedidos-lista {
+    padding: 0;
+  }
+  .tabela-pedidos th, .tabela-pedidos td {
+    padding: 0.4rem 0.5rem;
+  }
 }
 </style>

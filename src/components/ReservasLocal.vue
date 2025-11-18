@@ -1,7 +1,9 @@
 <script>
 import MesaCard from './MesaCard.vue';
+
 import { useRouter } from 'vue-router';
 import { createReserva } from '@/utils/api.js';
+
 
 export default {
   name: 'ReservasLocal',
@@ -12,7 +14,8 @@ export default {
         nome: '',
         telefone: '',
         data: '',
-        hora: '',
+        horaInicio: '',
+        horaFim: '',
         pessoas: 1,
       },
       erros: {},
@@ -33,6 +36,21 @@ export default {
   computed: {
     dataMinima() {
       return new Date().toISOString().split('T')[0];
+    },
+    mesasDisponiveis() {
+      // Filtra mesas que não estão reservadas para o período selecionado
+      const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+      if (!this.reserva.data || !this.reserva.horaInicio || !this.reserva.horaFim) return this.mesas;
+      return this.mesas.filter(mesa => {
+        const reservasMesa = reservas.filter(r => r.mesa === mesa.numero && r.data === this.reserva.data && r.status !== 'Cancelada');
+        // Verifica se há conflito de horário
+        return !reservasMesa.some(r => {
+          // Conflito se o intervalo selecionado sobrepõe o intervalo da reserva existente
+          return (
+            (this.reserva.horaInicio < r.horaFim && this.reserva.horaFim > r.horaInicio)
+          );
+        });
+      });
     }
   },
   methods: {
@@ -54,6 +72,7 @@ export default {
       this.montandoMesa = false;
       this.mensagem = '';
       this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1 };
+
       this.erros = {};
     },
     validarFormulario() {
@@ -70,8 +89,11 @@ export default {
       } else if (this.reserva.data < this.dataMinima) {
         this.erros.data = 'A data não pode ser anterior a hoje.';
       }
-      if (!this.reserva.hora) {
-        this.erros.hora = 'Escolha um horário.';
+      if (!this.reserva.horaInicio) {
+        this.erros.horaInicio = 'Escolha um horário de início.';
+      }
+      if (!this.reserva.horaFim) {
+        this.erros.horaFim = 'Escolha um horário de fim.';
       }
       if (!this.reserva.pessoas || this.reserva.pessoas < 1) {
         this.erros.pessoas = 'Informe ao menos 1 pessoa.';
@@ -80,6 +102,7 @@ export default {
       }
       return Object.keys(this.erros).length === 0;
     },
+
     async enviarReserva() {
       if (!this.validarFormulario()) {
         this.mensagem = '';
@@ -109,68 +132,80 @@ export default {
         this.erros = {};
       } catch {
         this.mensagem = 'Erro ao realizar reserva. Tente novamente.';
+
       }
     },
     irParaMenu() {
       this.$router.push({ name: 'menu' });
+    },
+    salvarReserva(reserva) {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+      reserva.id = Date.now();
+      reserva.usuarioId = usuarioLogado.id;
+      reservas.push(reserva);
+      localStorage.setItem('reservas', JSON.stringify(reservas));
     }
   }
 }
 </script>
 
-
 <template>
-  <div class="reserva-container">
-    <div v-if="formularioVisivel" class="seta-voltar" @click="voltarEscolha">
-      <img src="@/assets/imagens/seta-preta.png" alt="Voltar" />
-    </div>
-    <div v-if="!formularioVisivel" class="seta-voltar" @click="irParaMenu">
+  <div class="reserva-bg-novo">
+    <button class="seta-voltar-fixa" @click="irParaMenu" title="Voltar ao menu">
       <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
+    </button>
+    <div v-if="mensagem" class="mensagem-topo-direita">
+      <span>{{ mensagem }}</span>
     </div>
-    <h2>Reserva de Mesas</h2>
-    <div v-if="!formularioVisivel" class="mesas-grid">
-      <MesaCard v-for="mesa in mesas" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
-      <div class="novo-montar-mesa-btn" @click="selecionarMontarMesa">
-        <span class="montar-mesa-icone-wrapper">
-          <img src="@/assets/imagens/adicionar.png" alt="Montar" class="montar-mesa-icone" />
-        </span>
-        <span class="montar-mesa-label">Montar Mesa</span>
-      </div>
-    </div>
-    <div v-else>
-      <form @submit.prevent="enviarReserva" class="reserva-form" novalidate>
-        <div v-if="montandoMesa" class="form-group">
-          <label for="cadeiras">Quantidade de Cadeiras</label>
-          <div class="input-wrapper">
-            <input type="number" id="cadeiras" v-model.number="reserva.pessoas" min="1" max="20" />
+    <div class="reserva-card-novo">
+      <header class="reserva-header-novo">
+        <img src="@/assets/imagens/logo.png" alt="Logo" class="logo-reserva-novo" />
+        <h1 class="reserva-title-novo">Reserve sua Mesa</h1>
+      </header>
+      <main class="reserva-main-novo">
+        <div v-if="!formularioVisivel" class="mesas-grid-novo">
+          <MesaCard v-for="mesa in mesasDisponiveis" :key="mesa.numero" :numero="mesa.numero" :cadeiras="mesa.cadeiras" @click="selecionarMesa(mesa)" />
+          <div class="novo-montar-mesa-btn" @click="selecionarMontarMesa">
+            <img src="@/assets/imagens/adicionar.png" alt="Montar" class="montar-mesa-icone" />
+            <span>Montar Mesa</span>
           </div>
         </div>
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <div class="input-wrapper">
-            <input type="text" id="nome" v-model="reserva.nome" :class="{'erro': erros.nome}" placeholder="Digite seu nome completo" autocomplete="off" />
-            <span v-if="erros.nome" class="erro-msg">{{ erros.nome }}</span>
+        <form v-else class="reserva-form-novo" @submit.prevent="enviarReserva">
+          <div class="form-row-novo">
+            <div v-if="montandoMesa" class="form-group-novo">
+              <label for="cadeiras">Cadeiras</label>
+              <input type="number" id="cadeiras" v-model.number="reserva.pessoas" min="1" max="20" />
+            </div>
+            <div class="form-group-novo">
+              <label for="nome">Nome</label>
+              <input type="text" id="nome" v-model="reserva.nome" :class="{'erro': erros.nome}" placeholder="Seu nome completo" />
+              <span v-if="erros.nome" class="erro-msg">{{ erros.nome }}</span>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="telefone">Telefone</label>
-          <div class="input-wrapper">
-            <input type="tel" id="telefone" v-model="reserva.telefone" :class="{'erro': erros.telefone}" placeholder="(99) 99999-9999" maxlength="15" autocomplete="off" />
-            <span v-if="erros.telefone" class="erro-msg">{{ erros.telefone }}</span>
+          <div class="form-row-novo">
+            <div class="form-group-novo">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" v-model="reserva.telefone" :class="{'erro': erros.telefone}" placeholder="(99) 99999-9999" maxlength="15" />
+              <span v-if="erros.telefone" class="erro-msg">{{ erros.telefone }}</span>
+            </div>
+            <div class="form-group-novo">
+              <label for="data">Data</label>
+              <input type="date" id="data" v-model="reserva.data" :class="{'erro': erros.data}" :min="dataMinima" />
+              <span v-if="erros.data" class="erro-msg">{{ erros.data }}</span>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="data">Data</label>
-          <div class="input-wrapper">
-            <input type="date" id="data" v-model="reserva.data" :class="{'erro': erros.data}" :min="dataMinima" />
-            <span v-if="erros.data" class="erro-msg">{{ erros.data }}</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="hora">Horário</label>
-          <div class="input-wrapper">
-            <input type="time" id="hora" v-model="reserva.hora" :class="{'erro': erros.hora}" />
-            <span v-if="erros.hora" class="erro-msg">{{ erros.hora }}</span>
+          <div class="form-row-novo">
+            <div class="form-group-novo">
+              <label for="horaInicio">Início</label>
+              <input type="time" id="horaInicio" v-model="reserva.horaInicio" :class="{'erro': erros.horaInicio}" />
+              <span v-if="erros.horaInicio" class="erro-msg">{{ erros.horaInicio }}</span>
+            </div>
+            <div class="form-group-novo">
+              <label for="horaFim">Fim</label>
+              <input type="time" id="horaFim" v-model="reserva.horaFim" :class="{'erro': erros.horaFim}" />
+              <span v-if="erros.horaFim" class="erro-msg">{{ erros.horaFim }}</span>
+            </div>
           </div>
         </div>
         <!--<div class="form-group">
@@ -184,75 +219,116 @@ export default {
         <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
       </form>
       <div v-if="mensagem" class="mensagem">{{ mensagem }}</div>
+
     </div>
   </div>
 </template>
 
 <style scoped>
-.reserva-container {
-  max-width: 420px;
-  margin: 48px auto;
-  padding: 32px 28px 24px 28px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(44,62,80,0.13);
-  font-family: 'Roboto', Arial, sans-serif;
+.reserva-bg-novo {
+  min-height: 100vh;
+  background: url('@/assets/imagens/fundo.png') center center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.reserva-container h2 {
-  text-align: center;
-  margin-bottom: 28px;
-  color: #e63946;
-  font-weight: 700;
-  letter-spacing: 1px;
+.reserva-card-novo {
+  background: #fffbe6;
+  border-radius: 32px;
+  box-shadow: 0 8px 40px #b33c1a33;
+  max-width: 520px;
+  width: 100%;
+  padding: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 540px;
+  border: 2px solid #ff9800;
+  position: relative;
 }
-.mesas-grid {
+.reserva-header-novo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 40px 16px 40px;
+  border-bottom: 2px solid #ff9800;
+  background: linear-gradient(90deg, #fffbe6 0%, #ffe5b4 100%);
+  border-radius: 32px 32px 0 0;
+}
+.logo-reserva-novo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+.reserva-title-novo {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #b33c1a;
+  margin: 0;
+  letter-spacing: 2px;
+  font-family: 'Playfair Display', serif;
+}
+.reserva-main-novo {
+  flex: 1;
+  padding: 32px 40px 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.mesas-grid-novo {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: 18px;
 }
-.reserva-form .form-group {
-  margin-bottom: 22px;
+.novo-montar-mesa-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffe5b4;
+  border: 2px dashed #b33c1a;
+  border-radius: 16px;
+  padding: 18px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #b33c1a;
+  font-size: 1.1rem;
+  transition: background 0.2s, border 0.2s;
 }
-.reserva-form label {
-  display: block;
+.novo-montar-mesa-btn:hover {
+  background: #fffbe6;
+  border-color: #ff9800;
+}
+.montar-mesa-icone {
+  width: 38px;
+  height: 38px;
   margin-bottom: 6px;
-  font-weight: 500;
-  color: #222;
-  letter-spacing: 0.5px;
 }
-.input-wrapper {
-  position: relative;
+.reserva-form-novo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.reserva-form input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid #bdbdbd;
-  border-radius: 6px;
-  font-size: 15px;
-  outline: none;
-  transition: border 0.2s;
-  background: #fafafa;
+.form-row-novo {
+  display: flex;
+  gap: 18px;
 }
-.reserva-form input:focus {
-  border-color: #e63946;
-  background: #fff;
+.form-group-novo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
 }
-.reserva-form input.erro {
-  border-color: #e63946;
-  background: #fff0f0;
+.full-width-novo {
+  flex: 1 1 100%;
 }
-.erro-msg {
-  color: #e63946;
-  font-size: 13px;
-  margin-top: 2px;
-  position: absolute;
-  left: 0;
-  top: 38px;
+.botoes-form-novo {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
 }
-.btn-reservar {
-  width: 100%;
+.btn-reservar-novo {
+  flex: 1;
   padding: 12px;
   background: linear-gradient(90deg, #e63946 60%, #ffb347 100%);
   color: #fff;
@@ -263,106 +339,134 @@ export default {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(230,57,70,0.08);
   transition: background 0.2s, box-shadow 0.2s;
-  margin-top: 10px;
 }
-.btn-reservar:hover {
+.btn-reservar-novo:hover {
   background: linear-gradient(90deg, #b71c1c 60%, #ffb347 100%);
   box-shadow: 0 4px 16px rgba(230,57,70,0.13);
 }
-.mensagem {
-  margin-top: 28px;
-  color: #388e3c;
-  font-weight: bold;
-  text-align: center;
-  font-size: 16px;
-  background: #e8f5e9;
-  border-radius: 6px;
-  padding: 10px 0;
-}
-.mesa-card.montar-mesa {
-  cursor: pointer;
-  opacity: 0.85;
-  border: 2px dashed #e63946;
-  background: #fff7e6;
-  transition: box-shadow 0.2s, opacity 0.2s;
-}
-.mesa-card.montar-mesa:hover {
-  opacity: 1;
-  box-shadow: 0 0 0 3px #ffe5b4;
-}
-.mesa-circular.especial {
-  background: #fff3e0;
-  border: 2px dashed #e63946;
-}
-.btn-voltar {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
+.btn-voltar-novo {
+  flex: 1;
+  padding: 12px;
   background: #bdbdbd;
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
-.btn-voltar:hover {
+.btn-voltar-novo:hover {
   background: #888;
 }
-.reserva-form textarea {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1.5px solid #bdbdbd;
-  border-radius: 6px;
-  font-size: 15px;
-  background: #fafafa;
-  resize: vertical;
+.mensagem-topo-novo {
+  margin-top: 18px;
+  font-size: 1.1em;
+  color: #388e3c;
+  font-weight: bold;
+  text-align: center;
+  background: #e8f5e9;
+  border-radius: 8px;
+  padding: 10px 0;
+  box-shadow: 0 2px 8px #b33c1a11;
 }
-.seta-voltar {
-  position: absolute;
+.mensagem-topo-global-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 9999;
+  background: #e8f5e9;
+  color: #388e3c;
+  font-size: 1.15em;
+  font-weight: bold;
+  text-align: center;
+  padding: 18px 0 14px 0;
+  border-bottom: 2px solid #b33c1a;
+  box-shadow: 0 2px 12px #b33c1a22;
+  border-radius: 0 0 16px 16px;
+  white-space: pre-line;
+}
+.mensagem-topo-direita {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  min-width: 320px;
+  max-width: 90vw;
+  z-index: 9999;
+  background: #fffbe6;
+  color: #b33c1a;
+  font-size: 1.08em;
+  font-weight: bold;
+  text-align: left;
+  padding: 18px 24px 16px 18px;
+  border-left: 6px solid #ff9800;
+  border-radius: 12px 18px 18px 12px;
+  box-shadow: 0 4px 24px #b33c1a22;
+  white-space: pre-line;
+  animation: slidein 0.4s;
+}
+.seta-voltar-fixa {
+  position: fixed;
   top: 18px;
   left: 18px;
+  z-index: 10001;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  padding: 4px;
   cursor: pointer;
-  z-index: 10;
+  transition: background 0.2s, filter 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.seta-voltar img {
+.seta-voltar-fixa img {
   width: 32px;
   height: 32px;
-}
-.montar-mesa-icone {
-  width: 24px;
-  height: 24px;
   display: block;
-  margin: 0 auto;
 }
-.novo-montar-mesa-btn {
-  cursor: pointer;
-  opacity: 0.85;
-  border: none;
-  background: #e63946;
-  color: #fff;
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: background 0.2s, box-shadow 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 32px;
+.seta-voltar-fixa:hover {
+  background: #ffe5b4;
+  filter: brightness(1.2) drop-shadow(0 4px 12px #b33c1a66);
+  transform: scale(1.08);
 }
-.novo-montar-mesa-btn:hover {
-  background: #b71c1c;
-  box-shadow: 0 4px 16px rgba(230,57,70,0.13);
+@keyframes slidein {
+  from { opacity: 0; right: 0; }
+  to { opacity: 1; right: 32px; }
 }
-.montar-mesa-icone-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+@media (max-width: 700px) {
+  .reserva-card-novo {
+    max-width: 99vw;
+    min-height: 0;
+    padding: 0 0 16px 0;
+    border-radius: 16px;
+  }
+  .reserva-header-novo, .reserva-main-novo {
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
+  .reserva-title-novo {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+  .logo-reserva-novo {
+    width: 38px;
+    height: 38px;
+  }
+  .form-row-novo {
+    flex-direction: column;
+    gap: 0;
+  }
+  .seta-voltar-fixa {
+    top: 8px;
+    left: 8px;
+    padding: 2px;
+  }
+  .seta-voltar-fixa img {
+    width: 22px;
+    height: 22px;
+  }
 }
 </style>

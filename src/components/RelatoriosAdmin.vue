@@ -16,16 +16,18 @@ const mesSelecionado = ref('')
 
 function getTodasDatasPedidos() {
   const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]')
-  return pedidos.map(p => p.data)
+  return pedidos
+    .map(p => p.data)
+    .filter(data => typeof data === 'string' && data.split('/').length === 3)
 }
 
 function getTodosMesesPedidos() {
   // Retorna meses únicos no formato MM/YYYY
-  const datas = getTodasDatasPedidos()
+  const datas = getTodasDatasPedidos().filter(data => typeof data === 'string');
   const meses = datas.map(data => {
-    const [, mes, ano] = data.split('/')
-    return `${mes}/${ano}`
-  })
+    const [, mes, ano] = data.split('/');
+    return `${mes}/${ano}`;
+  });
   return [...new Set(meses)].sort((a, b) => {
     const [ma, aa] = a.split('/')
     const [mb, ab] = b.split('/')
@@ -36,7 +38,11 @@ function getTodosMesesPedidos() {
 function getDiasDoMes(mesAno) {
   // Retorna todos os dias (DD/MM/YYYY) do mês selecionado
   const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]')
-  return [...new Set(pedidos.filter(p => p.data.endsWith(`/${mesAno}`)).map(p => p.data))].sort((a, b) => {
+  return [...new Set(
+    pedidos
+      .filter(p => typeof p.data === 'string' && p.data.endsWith(`/${mesAno}`))
+      .map(p => p.data)
+  )].sort((a, b) => {
     const [da, ma, aa] = a.split('/')
     const [db, mb, ab] = b.split('/')
     return new Date(`${aa}-${ma}-${da}`) - new Date(`${ab}-${mb}-${db}`)
@@ -255,5 +261,41 @@ watch(mesSelecionado, () => {
 canvas {
   max-width: 100%;
   max-height: 260px;
+}
+
+@media (max-width: 900px) {
+  .graficos-relatorio {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .grafico-box {
+    min-width: 0;
+    width: 100%;
+    max-width: 100vw;
+    padding: 1rem 0.5rem 1.2rem 0.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .admin-section {
+    padding: 1rem 0.2rem;
+  }
+  .graficos-relatorio {
+    gap: 0.7rem;
+  }
+  .grafico-box {
+    padding: 0.7rem 0.1rem 1rem 0.1rem;
+    font-size: 0.98rem;
+  }
+  .filtro-data {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .data-selecionada-info {
+    font-size: 0.95rem;
+  }
+  canvas {
+    max-height: 180px;
+  }
 }
 </style>
