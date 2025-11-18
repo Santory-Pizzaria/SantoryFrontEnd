@@ -391,7 +391,6 @@ nav a:first-of-type {
   transform: scale(1.08);
 }
 .carrinho-icon {
-  margin: 0;
   width: 64px;
   height: 64px;
 }
