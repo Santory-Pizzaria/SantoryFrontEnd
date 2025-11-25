@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user';
 import ToastNotification from '@/components/Toast.vue'
 
 const router = useRouter()
+const userStore = useUserStore()
 
 // Mercado Pago - Exemplo de uso da PUBLIC_KEY
 const MERCADO_PAGO_PUBLIC_KEY = 'TEST-a08af5e5-b543-4202-850d-c8ea7f5462cf';
@@ -33,13 +35,16 @@ const toastTitle = ref('Compra cancelada')
 const toastMessage = ref('Seu pedido foi cancelado. Redirecionando para o menu...')
 
 onMounted(() => {
+  // Carregar o estado do usuário logado antes de prosseguir
+  userStore.loadFromLocalStorage();
+
   // Recuperar dados do pedido do localStorage
-  const dadosPedido = localStorage.getItem('pedido-pagamento')
+  const dadosPedido = localStorage.getItem('pedido-pagamento');
   if (dadosPedido) {
-    pedidoData.value = JSON.parse(dadosPedido)
+    pedidoData.value = JSON.parse(dadosPedido);
   } else {
     // Se não há dados do pedido, redirecionar para o menu
-    router.push('/menu')
+    router.push('/menu');
   }
 
   // Mercado Pago - Carregar SDK e inicializar
@@ -95,7 +100,29 @@ function validarEntrega() {
   return true
 }
 
-function submitForm() {
+function verificarToken() {
+  if (!userStore.accessToken) {
+    console.log('Nenhum token de acesso encontrado no userStore.');
+    return;
+  }
+
+  if (!userStore.user) {
+    console.log('Nenhum usuário logado encontrado no userStore.');
+    return;
+  }
+
+  console.log('Usuário logado no verificarToken:', userStore.user);
+}
+
+async function submitForm() {
+  try {
+    await verificarToken(); // Verifica e renova o token antes de prosseguir
+  } catch (error) {
+    alert(error.message);
+    router.push('/login'); // Redireciona para a página de login se o token for inválido
+    return;
+  }
+
   // Validações antes do pagamento
   if (!validarEntrega()) return;
 
@@ -112,18 +139,22 @@ function submitForm() {
   processandoPagamento.value = true;
 
   // Simular processamento do pagamento
-  setTimeout(() => {
+  // Processa pagamento (simulado) e envia para backend
+  setTimeout(async () => {
     // Criar objeto do pedido completo
     const pedidoCompleto = {
       id: Date.now(),
       data: new Date().toLocaleDateString('pt-BR'),
       hora: new Date().toLocaleTimeString('pt-BR'),
-      pizza: {
-        nome: pedidoData.value.pizzaNome,
-        sabores: pedidoData.value.saboresSelecionados,
-        borda: pedidoData.value.bordaSelecionada,
-        quantidade: pedidoData.value.quantidade,
-      },
+      itens: [
+        {
+          nome: pedidoData.value.pizzaNome,
+          detalhes: (pedidoData.value.saboresSelecionados || []).map(s => `${s.fracao} ${s.nome}`).join(', '),
+          qtd: pedidoData.value.quantidade || 1,
+          preco: parseFloat((pedidoData.value.valor || 'R$ 0').replace('R$', '').replace(',', '.')) || 0
+        },
+        ...(pedidoData.value.bebida ? [{ nome: pedidoData.value.bebida.nome, detalhes: pedidoData.value.bebida.detalhes || '', qtd: pedidoData.value.bebida.quantidade || 1, preco: pedidoData.value.bebida.preco || 0 }] : [])
+      ],
       valores: {
         unitario: pedidoData.value.valor,
         total: calcularValorTotal(),
@@ -140,25 +171,74 @@ function submitForm() {
         status: 'Aprovado',
         troco: metodoPagamento.value === 'dinheiro' && precisaTroco.value ? valorTroco.value : null,
       },
-      status: 'Confirmado',
+      status: 'confirmado',
     }
 
-    // Salvar pedido confirmado
-    salvarPedidoConfirmado(pedidoCompleto)
+    try {
+      // Verificar e renovar o token de acesso, se necessário
+      const auth = await import('@/utils/auth');
+      const isTokenValid = await auth.isAuthenticated();
+      if (!isTokenValid) {
+        const tokenRenovado = await auth.refreshAccessToken();
+        if (!tokenRenovado) {
+          alert('Erro de autenticação. Faça login novamente.');
+          router.push('/login');
+          return;
+        }
+      }
 
-    // Limpar dados temporários
-    localStorage.removeItem('pedido-pagamento')
+      const access = localStorage.getItem('access');
+      if (!access) {
+        alert('Erro de autenticação. Faça login novamente.');
+        router.push('/login');
+        return;
+      }
 
-    processandoPagamento.value = false
+      const payload = {
+        items: pedidoCompleto.itens,
+        total: parseFloat((pedidoCompleto.valores.total || 'R$ 0').toString().replace('R$', '').replace(',', '.')) || 0,
+        cep: pedidoCompleto.endereco.cep,
+        rua: pedidoCompleto.endereco.rua,
+        bairro: pedidoCompleto.endereco.bairro,
+        cidade: pedidoCompleto.endereco.cidade,
+        uf: pedidoCompleto.endereco.uf,
+        status: pedidoCompleto.status,
+        pagamento_status: pedidoCompleto.pagamento.status || 'aprovado',
+        observacoes: ''
+      };
 
-    // Mostrar confirmação e redirecionar
-    alert(
-      `✅ Pedido finalizado com sucesso!\n\nPedido #${pedidoCompleto.id} confirmado.\nTempo estimado de entrega: 30-45 minutos.\nObrigado por escolher a Santory Pizzaria!\n\nVocê será redirecionado para a página inicial.`,
-    )
+      const res = await fetch('http://localhost:8000/api/pedidos/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(access ? { 'Authorization': `Bearer ${access}` } : {})
+        },
+        body: JSON.stringify(payload)
+      })
 
-    setTimeout(() => {
-      router.push('/menu')
-    }, 1000)
+
+      if (!res.ok) {
+        const err = await res.text()
+        console.error('Erro ao enviar pedido:', res.status, err)
+        // fallback: salvar localmente
+        salvarPedidoConfirmado(pedidoCompleto)
+        alert('Pedido salvo localmente (backend indisponível).')
+      } else {
+        const data = await res.json()
+        console.log('Pedido criado no backend:', data)
+        // Limpar dados temporários
+        localStorage.removeItem('pedido-pagamento')
+        alert(`🍕 Pedido #${data.id} confirmado com sucesso!\nTempo estimado de entrega: ${data.tempo_entrega_min || '30'}-${data.tempo_entrega_max || '45'} minutos`)
+      }
+    } catch (err) {
+      console.error('Erro ao processar pedido:', err)
+      alert('Erro ao processar pedido. Tente novamente.')
+    } finally {
+      processandoPagamento.value = false
+      setTimeout(() => router.push('/menu'), 800)
+    }
+
+
   }, 1000) // Simula tempo de processamento do pagamento
 }
 
