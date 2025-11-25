@@ -129,7 +129,9 @@ export default {
       />
       <div class="header-center-novo">
         <img src="@/assets/imagens/logo.png" alt="Logo" class="logo-novo" />
-        <h1 class="titulo-novo">Tempo de Entrega</h1>
+        <div class="back-titulo">
+          <h1 class="titulo-novo">Tempo de Entrega</h1>
+        </div>
       </div>
     </header>
     <main class="tempo-main-novo">
@@ -191,8 +193,18 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1.5rem;
   position: relative;
+}
+.back-titulo {
+  width: 30%;
+  background-color: #8d0a0a;
+  margin-top: 3vh;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: #111 4px solid;
+  border-radius:  0px 12px;
 }
 .seta-voltar-tempo-novo {
   position: absolute;
@@ -222,13 +234,13 @@ export default {
   flex-direction: column;
   align-items: center;
   flex: none;
-  gap: 0.2rem;
   width: 100%;
 }
 .titulo-novo {
+  margin-top: 0;
   font-size: 2rem;
   font-weight: 800;
-  color: #2e1d1d;
+  color: #ffffff;
   margin-bottom: 2px;
   letter-spacing: 1px;
   text-align: center;
