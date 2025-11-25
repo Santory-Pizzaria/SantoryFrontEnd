@@ -252,6 +252,11 @@ function salvarPedidoConfirmado(pedido) {
               </label>
             </li>
           </ul>
+            <!-- Exibe QR Code Pix quando selecionado -->
+            <div v-if="metodoPagamento === 'pix'" style="text-align:center; margin: 16px 0;">
+              <img src="@/assets/imagens/qrcode-pix.jpg" alt="QR Code Pix" style="max-width: 300px; width: 100%; border-radius: 12px; box-shadow: 0 2px 8px #b33c1a22;" />
+              <p style="margin-top:8px; color:#b33c1a; font-weight:600;">Escaneie o QR Code para pagar via Pix</p>
+            </div>
           <div v-if="metodoPagamento === 'dinheiro'">
             <label>
               <input type="checkbox" v-model="precisaTroco" />

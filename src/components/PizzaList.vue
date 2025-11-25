@@ -1,10 +1,7 @@
+
+ 
 <script setup>
-const carouselImages = [
-  '/src/assets/imagens/fundo.png',
-  '/src/assets/imagens/Sabores.png',
-  '/src/assets/imagens/SaboresOpc.png',
-  '/src/assets/imagens/Borda.png',
-]
+  
 
 import { useRouter } from 'vue-router';
 import { ref, onMounted, onUnmounted } from 'vue';
@@ -24,7 +21,7 @@ onMounted(() => {
 
 function carregarDadosUsuario() {
   const usuarioLogado = localStorage.getItem('usuarioLogado');
-  if (usuarioLogado) {
+  
     try {
       const dadosUsuario = JSON.parse(usuarioLogado);
       usuario.value = {
@@ -35,7 +32,7 @@ function carregarDadosUsuario() {
       console.error('Erro ao carregar dados do usuário:', error);
     }
   }
-}
+
 
 const currentImage = ref(0);
 
