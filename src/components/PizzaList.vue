@@ -129,7 +129,7 @@ onUnmounted(() => {
 <template>
   <div class="italia-bg">
     <!-- Pizza List -->
-    <section class="pizza-grid">
+    <!-- <section class="pizza-grid">
       <div v-for="pizza in pizzas" :key="pizza.id" class="pizza-item">
         <img :src="pizza.image" :alt="pizza.name" />
         <div class="pizza-info">
@@ -138,7 +138,7 @@ onUnmounted(() => {
           <p>Price: ${{ pizza.preco ? pizza.preco : '0.00' }}</p>
         </div>
       </div>
-    </section>
+    </section> -->
     <!-- Header -->
     <header :class="['italia-header', { 'italia-header-transparente': isScrolled }]">
       <img src="/src/assets/imagens/logo.png" alt="Logo Itália" class="italia-logo-header" />

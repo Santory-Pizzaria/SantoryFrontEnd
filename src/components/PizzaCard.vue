@@ -8,25 +8,25 @@ export default {
         {
           nome: 'Pequena',
           preco: 18.00,
-          img: '/src/assets/imagens/Pizzaex.png',
+          img: '/src/assets/imagens/PizzaEx.png',
           descricao: '12cm •4 fatias • Serve até 1 pessoa'
         },
         {
           nome: 'Média',
           preco: 25.00,
-          img: '/src/assets/imagens/Pizzaex.png',
+          img: '/src/assets/imagens/PizzaEx.png',
           descricao: '18cm •8 fatias • Serve até 2 pessoas'
         },
         {
           nome: 'Grande',
           preco: 35.00,
-          img: '/src/assets/imagens/Pizzaex.png',
+          img: '/src/assets/imagens/PizzaEx.png',
           descricao: '22cm •12 fatias • Serve até 4 pessoas'
         },
         {
           nome: 'Família',
           preco: 45.00,
-          img: '/src/assets/imagens/Pizzaex.png',
+          img: '/src/assets/imagens/PizzaEx.png',
           descricao: '22cm •18 fatias • Serve até 4 pessoas'
         }
         ],
