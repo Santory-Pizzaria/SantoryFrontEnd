@@ -23,7 +23,7 @@ export default {
     this.atualizarHistoricoCompras(); // Atualiza histórico ao montar
   },
   methods: {
-    carregarDadosUsuario() {
+    async carregarDadosUsuario() {
       // Verificar se usuário está logado
       const usuarioLogado = localStorage.getItem('usuarioLogado');
 
@@ -165,14 +165,25 @@ export default {
       localStorage.removeItem('token');
       this.$router.push('/login');
     },
-    atualizarHistoricoCompras() {
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-      if (!usuarioLogado) return;
-      const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-      // Ordena do mais recente para o mais antigo
-      this.historicoCompras = pedidos
-        .filter(p => p.usuarioId === usuarioLogado.id)
-        .sort((a, b) => b.id - a.id);
+    async atualizarHistoricoCompras() {
+      const token = localStorage.getItem('access');
+      if (!token) return;
+      try {
+        const res = await fetch('http://localhost:8000/api/pedidos/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Erro ao buscar pedidos');
+        const pedidos = await res.json();
+        this.historicoCompras = Array.isArray(pedidos) ? pedidos : [];
+      } catch (error) {
+        console.error('Erro ao carregar histórico de compras:', error);
+        this.historicoCompras = [];
+      }
+    },
+    formatarData(data) {
+      if (!data) return '';
+      const d = new Date(data);
+      return d.toLocaleDateString('pt-BR');
     },
   },
 };
@@ -222,18 +233,18 @@ export default {
       <div v-if="historicoCompras.length === 0" class="sem-historico">Nenhuma compra realizada.</div>
       <ul v-else>
         <li v-for="pedido in historicoCompras" :key="pedido.id" class="item-historico">
-          <div><strong>Pedido #{{ pedido.id }}</strong> - {{ pedido.data }}</div>
+          <div><strong>Pedido #{{ pedido.id }}</strong> - {{ formatarData(pedido.criado_em) }}</div>
           <div>Status: <span :class="pedido.status">{{ pedido.status }}</span></div>
-          <div>Valor: R$ {{ pedido.valor.toFixed(2).replace('.', ',') }}</div>
+          <div>Valor: R$ {{ Number(pedido.total).toFixed(2).replace('.', ',') }}</div>
           <div>Itens:
             <ul>
-              <li v-for="item in pedido.itens" :key="item.nome">
+              <li v-for="item in pedido.items" :key="item.nome">
                 <template v-if="item && item.nome">
                   <span v-if="item.nome.toLowerCase().includes('bebida') || item.nome.toLowerCase().includes('refrigerante') || item.nome.toLowerCase().includes('cerveja') || item.nome.toLowerCase().includes('água')">
                     <strong>Bebida:</strong> {{ item.nome }} <span v-if="item.detalhes">- {{ item.detalhes }}</span>
                   </span>
                   <span v-else>
-                    {{ item.nome }} ({{ item.qtd }}) - {{ item.detalhes }}
+                    {{ item.nome }} ({{ item.qtd }}) <span v-if="item.detalhes">- {{ item.detalhes }}</span>
                   </span>
                 </template>
               </li>
