@@ -14,8 +14,7 @@ export default {
         nome: '',
         telefone: '',
         data: '',
-        horaInicio: '',
-        horaFim: '',
+        horario: '',
         pessoas: 1,
       },
       erros: {},
@@ -40,14 +39,14 @@ export default {
     mesasDisponiveis() {
       // Filtra mesas que não estão reservadas para o período selecionado
       const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
-      if (!this.reserva.data || !this.reserva.horaInicio || !this.reserva.horaFim) return this.mesas;
+      if (!this.reserva.data || !this.reserva.horario) return this.mesas;
       return this.mesas.filter(mesa => {
         const reservasMesa = reservas.filter(r => r.mesa === mesa.numero && r.data === this.reserva.data && r.status !== 'Cancelada');
         // Verifica se há conflito de horário
         return !reservasMesa.some(r => {
           // Conflito se o intervalo selecionado sobrepõe o intervalo da reserva existente
           return (
-            (this.reserva.horaInicio < r.horaFim && this.reserva.horaFim > r.horaInicio)
+            (this.reserva.horario < r.horario && this.reserva.horario > r.horario)
           );
         });
       });
@@ -71,7 +70,7 @@ export default {
       this.mesaSelecionada = null;
       this.montandoMesa = false;
       this.mensagem = '';
-      this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1 };
+      this.reserva = { nome: '', telefone: '', data: '', horario: '', pessoas: 1 };
 
       this.erros = {};
     },
@@ -89,11 +88,8 @@ export default {
       } else if (this.reserva.data < this.dataMinima) {
         this.erros.data = 'A data não pode ser anterior a hoje.';
       }
-      if (!this.reserva.horaInicio) {
-        this.erros.horaInicio = 'Escolha um horário de início.';
-      }
-      if (!this.reserva.horaFim) {
-        this.erros.horaFim = 'Escolha um horário de fim.';
+      if (!this.reserva.horario) {
+        this.erros.horario = 'Escolha um horário.';
       }
       if (!this.reserva.pessoas || this.reserva.pessoas < 1) {
         this.erros.pessoas = 'Informe ao menos 1 pessoa.';
@@ -119,16 +115,16 @@ export default {
       // Montar payload para o backend
       const payload = {
         usuario: usuarioLogado.id,
-        data: `${this.reserva.data}T${this.reserva.hora}`,
+        data: `${this.reserva.data}T${this.reserva.horario}`,
         mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : null,
         quantidade_pessoas: this.reserva.pessoas,
-        horario: this.reserva.hora
+        horario: this.reserva.horario
       };
 
       try {
         await createReserva(payload);
-        this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.hora}.`;
-        this.reserva = { nome: '', telefone: '', data: '', hora: '', pessoas: 1 };
+        this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.horario}.`;
+        this.reserva = { nome: '', telefone: '', data: '', horario: '', pessoas: 1 };
         this.erros = {};
       } catch {
         this.mensagem = 'Erro ao realizar reserva. Tente novamente.';
@@ -197,29 +193,15 @@ export default {
           </div>
           <div class="form-row-novo">
             <div class="form-group-novo">
-              <label for="horaInicio">Início</label>
-              <input type="time" id="horaInicio" v-model="reserva.horaInicio" :class="{'erro': erros.horaInicio}" />
-              <span v-if="erros.horaInicio" class="erro-msg">{{ erros.horaInicio }}</span>
-            </div>
-            <div class="form-group-novo">
-              <label for="horaFim">Fim</label>
-              <input type="time" id="horaFim" v-model="reserva.horaFim" :class="{'erro': erros.horaFim}" />
-              <span v-if="erros.horaFim" class="erro-msg">{{ erros.horaFim }}</span>
+              <label for="horario">Horário</label>
+              <input type="time" id="horario" v-model="reserva.horario" :class="{'erro': erros.horario}" />
+              <span v-if="erros.horario" class="erro-msg">{{ erros.horario }}</span>
             </div>
           </div>
-        </div>
-        <!--<div class="form-group">
-        <label for="observacao">Observação</label>
-        <div class="input-wrapper">
-          <textarea id="observacao" v-model="reserva.observacao" placeholder="Alguma observação? (opcional)" rows="2"></textarea>
-          </div>
-        </div>
-        -->
-        <button type="submit" class="btn-reservar">Reservar Mesa</button>
-        <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
-      </form>
-      <div v-if="mensagem" class="mensagem">{{ mensagem }}</div>
-
+          <button type="submit" class="btn-reservar">Reservar Mesa</button>
+          <button type="button" class="btn-voltar" @click="voltarEscolha">Voltar</button>
+        </form>
+      </main>
     </div>
   </div>
 </template>

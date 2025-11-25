@@ -9,7 +9,7 @@
             <div class="container-3">
                 <div class="row">
                     <div class="col" id="company">
-                        
+
                         <p id="rea">
                             <img src="@/assets/imagens/logo.png" alt="Santory Pizzaria" class="logo" />
                         </p>
@@ -54,7 +54,7 @@
 
 <style scoped>
 footer {
-  background-color: rgb(1, 42, 1);
+  background-color: rgb(42, 1, 17);
   position: relative;
   overflow-y: hidden;
   display: grid 'footer';

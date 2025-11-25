@@ -12,7 +12,7 @@ export default {
         estrelas: 0
       },
       aviso: '',
-      carregando: false
+      carregando: false,
       filtroEstrelas: '',
       usuarioLogado: ''
     }

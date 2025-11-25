@@ -23,6 +23,8 @@ import ControleEstoque from '../components/ControleEstoque.vue'
 import ProdutosAdmin from '@/components/ProdutosAdmin.vue'
 import UsuariosAdmin from '@/components/UsuariosAdmin.vue'
 import RelatoriosAdmin from '@/components/RelatoriosAdmin.vue'
+import DestaqueMenu from '../components/DestaqueMenu.vue'
+import ReservasUsuario from '../components/ReservasUsuario.vue'
 
 
 const router = createRouter({
