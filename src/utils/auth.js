@@ -29,9 +29,14 @@ export async function login(email, password) {
       headers: { 'Authorization': `Bearer ${data.access}` }
     });
     if (userResp.ok) {
-      const userData = await userResp.json();
-      console.log('Dados do usuário logado:', userData); // Log para verificar os dados do usuário
-      localStorage.setItem('user', JSON.stringify(userData));
+      const apiUser = await userResp.json();
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      const merged = {
+        ...currentUser,
+        ...apiUser,
+        avatar: apiUser.avatar || (currentUser && currentUser.avatar) || ''
+      };
+      localStorage.setItem('user', JSON.stringify(merged));
     } else {
       console.error('Erro ao buscar dados do usuário:', userResp.status, await userResp.text());
     }
@@ -90,9 +95,14 @@ export async function isAuthenticated() {
     console.log('Resposta do backend no isAuthenticated:', response.status); // Log para verificar a resposta
 
     if (response.ok) {
-      const userData = await response.json();
-      console.log('Usuário autenticado:', userData); // Log para verificar os dados do usuário
-      localStorage.setItem('user', JSON.stringify(userData)); // Atualiza o localStorage com os dados do usuário
+      const apiUser = await response.json();
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      const merged = {
+        ...currentUser,
+        ...apiUser,
+        avatar: apiUser.avatar || (currentUser && currentUser.avatar) || ''
+      };
+      localStorage.setItem('user', JSON.stringify(merged)); // Atualiza o localStorage com os dados do usuário
       return true;
     } else if (response.status === 401) {
       console.warn('Token expirado. Tentando renovar...');

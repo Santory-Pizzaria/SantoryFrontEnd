@@ -117,7 +117,7 @@ function verificarToken() {
 async function submitForm() {
   try {
     await verificarToken();
-  } catch (error) {
+  } catch {
     router.push('/login');
     return;
   }
@@ -235,7 +235,7 @@ async function submitForm() {
       showToast.value = true;
       window.dispatchEvent(new Event('pedidos-atualizados'));
 
-    } catch (err) {
+    } catch {
       // Em caso de erro, salva local e mostra toast
       salvarPedidoConfirmado(pedidoCompleto);
       toastType.value = 'success';

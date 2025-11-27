@@ -16,6 +16,13 @@ app.use(pinia)
 const userStore = useUserStore();
 userStore.loadFromLocalStorage();
 
+// Sincroniza a store quando a chave 'user' é atualizada no localStorage
+window.addEventListener('storage', (e) => {
+  if (e.key === 'user') {
+    userStore.loadFromLocalStorage();
+  }
+});
+
 app.use(router)
 app.directive('mask', mask)
 

@@ -1,6 +1,5 @@
 <script>
 import { getFeedbacks } from '@/utils/api.js';
-import api from '@/utils/api.js';
 
 export default {
   name: 'FeedBack',
@@ -17,9 +16,9 @@ export default {
       usuarioLogado: ''
     }
   },
-  async mounted() {
-    await this.carregarFeedbacks();
-  },
+  // async mounted() {
+  //   await this.carregarFeedbacks();
+  // },
   methods: {
     async carregarFeedbacks() {
       this.carregando = true;
@@ -53,17 +52,17 @@ export default {
     //    setTimeout(() => { this.aviso = ''; }, 3000);
     //  }
 
-      // Pega o nome do usuário logado
+      // Pega o nome do usuário logado (padronizado em 'user')
       let usuario = '';
       try {
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-        usuario = usuarioLogado?.nome || '';
+        const usuarioLogado = JSON.parse(localStorage.getItem('user') || 'null');
+        usuario = usuarioLogado?.nome || usuarioLogado?.name || '';
       } catch { usuario = ''; }
       this.feedbacks.push({
         id: Date.now() + Math.random(), // id único
         opiniao: this.novoFeedback.opiniao.trim(),
         estrelas: this.novoFeedback.estrelas,
-        usuario: usuario
+        usuario
       });
       this.novoFeedback.opiniao = '';
       this.novoFeedback.estrelas = 0;
@@ -84,8 +83,8 @@ export default {
       }
     }
     try {
-      const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
-      this.usuarioLogado = usuario?.nome || '';
+      const usuario = JSON.parse(localStorage.getItem('user') || 'null');
+      this.usuarioLogado = usuario?.nome || usuario?.name || '';
     } catch { this.usuarioLogado = ''; }
   },
   watch: {

@@ -1,7 +1,6 @@
 <script>
 import MesaCard from './MesaCard.vue';
 
-import { useRouter } from 'vue-router';
 import { createReserva } from '@/utils/api.js';
 
 
@@ -78,12 +77,14 @@ export default {
     },
     validarFormulario() {
       this.erros = {};
-      if (!this.reserva.nome || this.reserva.nome.trim().length < 3) {
+      const nome = (this.reserva.nome || '').trim();
+      if (!nome || nome.length < 3) {
         this.erros.nome = 'Informe um nome válido (mínimo 3 letras).';
       }
-      const telRegex = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
-      if (!this.reserva.telefone || !telRegex.test(this.reserva.telefone)) {
-        this.erros.telefone = 'Telefone inválido. Use o formato (99) 99999-9999.';
+      // Aceita formatos com ou sem máscara; extrai apenas dígitos e valida 10-11 dígitos
+      const telDigits = String(this.reserva.telefone || '').replace(/\D/g, '');
+      if (!telDigits || !(telDigits.length === 10 || telDigits.length === 11)) {
+        this.erros.telefone = 'Telefone inválido. Ex: (99) 99999-9999';
       }
       if (!this.reserva.data) {
         this.erros.data = 'Escolha uma data.';
@@ -93,9 +94,10 @@ export default {
       if (!this.reserva.horario) {
         this.erros.horario = 'Escolha um horário.';
       }
-      if (!this.reserva.pessoas || this.reserva.pessoas < 1) {
+      const pessoas = Number(this.reserva.pessoas || 0);
+      if (!pessoas || pessoas < 1) {
         this.erros.pessoas = 'Informe ao menos 1 pessoa.';
-      } else if (this.reserva.pessoas > 20) {
+      } else if (pessoas > 20) {
         this.erros.pessoas = 'Máximo de 20 pessoas por reserva.';
       }
       return Object.keys(this.erros).length === 0;

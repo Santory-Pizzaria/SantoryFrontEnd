@@ -24,6 +24,58 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// Interceptor de resposta para renovar token automaticamente em 401
+let isRefreshing = false;
+let pendingRequests = [];
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      if (isRefreshing) {
+        // Fila enquanto renova
+        return new Promise((resolve) => {
+          pendingRequests.push((token) => {
+            originalRequest.headers = originalRequest.headers || {};
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(api(originalRequest));
+          });
+        });
+      }
+      isRefreshing = true;
+      try {
+        const refresh = localStorage.getItem('refreshToken');
+        if (!refresh) throw new Error('Sem refreshToken');
+        const refreshRes = await api.post('/auth/jwt/refresh/', { refresh });
+        const newAccess = refreshRes.data?.access;
+        if (!newAccess) throw new Error('Sem novo accessToken');
+        localStorage.setItem('accessToken', newAccess);
+        // Atualiza header padrão
+        api.defaults.headers.common.Authorization = `Bearer ${newAccess}`;
+        // Executa pendentes
+        pendingRequests.forEach(cb => cb(newAccess));
+        pendingRequests = [];
+        // Refaz a requisição original
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+        return api(originalRequest);
+      } catch (e) {
+        console.error('Erro ao tentar renovar o token:', e);
+        pendingRequests = [];
+        // Limpa tokens e propaga erro
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        return Promise.reject(error);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Métodos para recursos principais (corrigidos para plural e adicionados faltantes)
 export const getUsuarios = () => api.get('/usuarios/');
 export const getUsuario = (id) => api.get(`/usuario/${id}/`);
