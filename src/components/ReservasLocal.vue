@@ -29,7 +29,9 @@ export default {
       ],
       formularioVisivel: false,
       mesaSelecionada: null,
-      montandoMesa: false
+      montandoMesa: false,
+      showAlertaReserva: false,
+      alertaMsgReserva: ''
     }
   },
   computed: {
@@ -105,8 +107,8 @@ export default {
         return;
       }
 
-      // Buscar usuário logado do localStorage
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      // Buscar usuário logado do localStorage (padronizado)
+      const usuarioLogado = JSON.parse(localStorage.getItem('user'));
       if (!usuarioLogado || !usuarioLogado.id) {
         this.mensagem = 'Você precisa estar logado para reservar.';
         return;
@@ -124,11 +126,29 @@ export default {
       try {
         await createReserva(payload);
         this.mensagem = `Reserva realizada para ${this.reserva.nome} no dia ${this.reserva.data} às ${this.reserva.horario}.`;
+        // Mostra alerta no canto superior direito
+        this.alertaMsgReserva = 'Reserva realizada com sucesso!';
+        this.showAlertaReserva = true;
+        setTimeout(() => { this.showAlertaReserva = false; }, 3000);
+
+        // Persistir no localStorage para histórico
+        const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+        reservas.push({
+          id: Date.now(),
+          usuarioId: usuarioLogado.id,
+          data: `${this.reserva.data}T${this.reserva.horario}`,
+          horario: this.reserva.horario,
+          mesa: this.mesaSelecionada ? this.mesaSelecionada.numero : null,
+          qtdPessoas: this.reserva.pessoas,
+          status: 'Aberta'
+        });
+        localStorage.setItem('reservas', JSON.stringify(reservas));
+
+        // Resetar formulário
         this.reserva = { nome: '', telefone: '', data: '', horario: '', pessoas: 1 };
         this.erros = {};
       } catch {
         this.mensagem = 'Erro ao realizar reserva. Tente novamente.';
-
       }
     },
     irParaMenu() {
@@ -148,12 +168,15 @@ export default {
 
 <template>
   <div class="reserva-bg-novo">
+    <!-- Alerta topo central via Teleport -->
+    <teleport to="body">
+      <div v-if="showAlertaReserva" class="alerta-reserva-sucesso">
+        <span>{{ alertaMsgReserva }}</span>
+      </div>
+    </teleport>
     <button class="seta-voltar-fixa" @click="irParaMenu" title="Voltar ao menu">
       <img src="@/assets/imagens/seta-preta.png" alt="Voltar ao menu" />
     </button>
-    <div v-if="mensagem" class="mensagem-topo-direita">
-      <span>{{ mensagem }}</span>
-    </div>
     <div class="reserva-card-novo">
       <header class="reserva-header-novo">
         <img src="@/assets/imagens/logo.png" alt="Logo" class="logo-reserva-novo" />
@@ -290,6 +313,12 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid #ffdd99;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 6px 24px #b33c1a22;
+  backdrop-filter: blur(6px);
 }
 .form-row-novo {
   display: flex;
@@ -301,6 +330,41 @@ export default {
   flex-direction: column;
   margin-bottom: 0;
 }
+.form-group-novo label {
+  font-weight: 700;
+  color: #b33c1a;
+  margin-bottom: 6px;
+}
+.form-group-novo input[type="text"],
+.form-group-novo input[type="tel"],
+.form-group-novo input[type="date"],
+.form-group-novo input[type="time"],
+.form-group-novo input[type="number"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.6px solid #ff9800;
+  border-radius: 10px;
+  background: #fffbe6;
+  color: #222;
+  font-size: 1rem;
+  box-shadow: 0 1px 6px #b33c1a11 inset;
+  transition: border 0.2s, box-shadow 0.2s, transform 0.08s;
+}
+.form-group-novo input:focus {
+  outline: none;
+  border-color: #b33c1a;
+  box-shadow: 0 0 0 3px #ff980033;
+}
+.form-group-novo input.erro {
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px #e6394633;
+}
+.erro-msg {
+  margin-top: 6px;
+  color: #e63946;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 .full-width-novo {
   flex: 1 1 100%;
 }
@@ -309,115 +373,41 @@ export default {
   gap: 12px;
   margin-top: 10px;
 }
-.btn-reservar-novo {
-  flex: 1;
-  padding: 12px;
-  background: linear-gradient(90deg, #e63946 60%, #ffb347 100%);
+.btn-reservar,
+.btn-voltar {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.2s, filter 0.2s;
+}
+.btn-reservar {
+  background: linear-gradient(90deg, #28c76f 0%, #ff9800 100%);
   color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(230,57,70,0.08);
-  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px #28c76f55;
 }
-.btn-reservar-novo:hover {
-  background: linear-gradient(90deg, #b71c1c 60%, #ffb347 100%);
-  box-shadow: 0 4px 16px rgba(230,57,70,0.13);
-}
-.btn-voltar-novo {
-  flex: 1;
-  padding: 12px;
-  background: #bdbdbd;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-voltar-novo:hover {
-  background: #888;
-}
-.mensagem-topo-novo {
-  margin-top: 18px;
-  font-size: 1.1em;
-  color: #388e3c;
-  font-weight: bold;
-  text-align: center;
-  background: #e8f5e9;
-  border-radius: 8px;
-  padding: 10px 0;
-  box-shadow: 0 2px 8px #b33c1a11;
-}
-.mensagem-topo-global-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 9999;
-  background: #e8f5e9;
-  color: #388e3c;
-  font-size: 1.15em;
-  font-weight: bold;
-  text-align: center;
-  padding: 18px 0 14px 0;
-  border-bottom: 2px solid #b33c1a;
-  box-shadow: 0 2px 12px #b33c1a22;
-  border-radius: 0 0 16px 16px;
-  white-space: pre-line;
-}
-.mensagem-topo-direita {
-  position: fixed;
-  top: 32px;
-  right: 32px;
-  min-width: 320px;
-  max-width: 90vw;
-  z-index: 9999;
-  background: #fffbe6;
-  color: #b33c1a;
-  font-size: 1.08em;
-  font-weight: bold;
-  text-align: left;
-  padding: 18px 24px 16px 18px;
-  border-left: 6px solid #ff9800;
-  border-radius: 12px 18px 18px 12px;
-  box-shadow: 0 4px 24px #b33c1a22;
-  white-space: pre-line;
-  animation: slidein 0.4s;
-}
-.seta-voltar-fixa {
-  position: fixed;
-  top: 18px;
-  left: 18px;
-  z-index: 10001;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  box-shadow: none;
-  padding: 4px;
-  cursor: pointer;
-  transition: background 0.2s, filter 0.2s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.seta-voltar-fixa img {
-  width: 32px;
-  height: 32px;
-  display: block;
-}
-.seta-voltar-fixa:hover {
+.btn-reservar:hover { transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+.btn-reservar:active { transform: translateY(0) scale(0.99); }
+.btn-voltar {
   background: #ffe5b4;
-  filter: brightness(1.2) drop-shadow(0 4px 12px #b33c1a66);
-  transform: scale(1.08);
+  color: #b33c1a;
+  border: 1.5px solid #ff9800;
+  box-shadow: 0 4px 16px #ff980044;
 }
-@keyframes slidein {
-  from { opacity: 0; right: 0; }
-  to { opacity: 1; right: 32px; }
+.btn-voltar:hover { transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+.btn-voltar:active { transform: translateY(0) scale(0.99); }
+
+/* Ajustes do cartão */
+.reserva-card-novo {
+  background: linear-gradient(120deg, #fff 70%, #fffbe6 100%);
+  backdrop-filter: blur(4px);
 }
+.reserva-header-novo {
+  box-shadow: 0 2px 12px #b33c1a22;
+}
+
+/* Responsivo */
 @media (max-width: 700px) {
   .reserva-card-novo {
     max-width: 99vw;
@@ -447,8 +437,51 @@ export default {
     padding: 2px;
   }
   .seta-voltar-fixa img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
+  .reserva-form-novo { padding: 14px; }
+  .form-row-novo { flex-direction: column; gap: 12px; }
+}
+.seta-voltar-fixa {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10001;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+}
+.seta-voltar-fixa img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+@media (max-width: 700px) {
+  .seta-voltar-fixa { top: 8px; left: 8px; }
+  .seta-voltar-fixa img { width: 20px; height: 20px; }
+}
+.alerta-reserva-sucesso {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: linear-gradient(90deg, #28c76f 0%, #ff9800 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #b33c1a22;
+  padding: 16px 24px;
+  animation: alertaReservaFadeIn 0.4s;
+  min-width: 220px;
+  text-align: center;
+}
+@keyframes alertaReservaFadeIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 </style>

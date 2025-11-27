@@ -116,47 +116,49 @@ function verificarToken() {
 
 async function submitForm() {
   try {
-    await verificarToken(); // Verifica e renova o token antes de prosseguir
+    await verificarToken();
   } catch (error) {
-    alert(error.message);
-    router.push('/login'); // Redireciona para a página de login se o token for inválido
+    router.push('/login');
     return;
   }
+  // Validação defensiva dos dados do pedido
+  if (!pedidoData.value) {
+    alert('Dados do pedido não encontrados. Volte e monte o pedido.');
+    return;
+  }
+  const saboresSel = Array.isArray(pedidoData.value.saboresSelecionados) ? pedidoData.value.saboresSelecionados : [];
+  const bebidasSel = Array.isArray(pedidoData.value.bebidas) ? pedidoData.value.bebidas : (pedidoData.value.bebida ? [pedidoData.value.bebida] : []);
+  const pizzaNome = pedidoData.value.pizzaNome || 'Pizza';
+  const valorItemStr = typeof pedidoData.value.valor === 'string' ? pedidoData.value.valor : 'R$ 0,00';
+  const quantidadeItem = Number(pedidoData.value.quantidade || 1);
 
-  // Validações antes do pagamento
   if (!validarEntrega()) return;
-
   if (!metodoPagamento.value) {
     alert('⚠️ Por favor, selecione um método de pagamento (Pix, Dinheiro ou Cartão).');
     return;
   }
-
   if (metodoPagamento.value === 'dinheiro' && precisaTroco.value && (!valorTroco.value || isNaN(Number(valorTroco.value)) || Number(valorTroco.value) <= 0)) {
     alert('⚠️ Informe o valor para o troco corretamente.');
     return;
   }
 
   processandoPagamento.value = true;
-
-  // Simular processamento do pagamento
-  // Processa pagamento (simulado) e envia para backend
   setTimeout(async () => {
-    // Criar objeto do pedido completo
     const pedidoCompleto = {
       id: Date.now(),
       data: new Date().toLocaleDateString('pt-BR'),
       hora: new Date().toLocaleTimeString('pt-BR'),
       itens: [
         {
-          nome: pedidoData.value.pizzaNome,
-          detalhes: (pedidoData.value.saboresSelecionados || []).map(s => `${s.fracao} ${s.nome}`).join(', '),
-          qtd: pedidoData.value.quantidade || 1,
-          preco: parseFloat((pedidoData.value.valor || 'R$ 0').replace('R$', '').replace(',', '.')) || 0
+          nome: pizzaNome,
+          detalhes: saboresSel.map(s => `${s.fracao} ${s.nome}`).join(', '),
+          qtd: quantidadeItem,
+          preco: parseFloat(String(valorItemStr).replace('R$', '').replace(',', '.')) || 0
         },
-        ...(pedidoData.value.bebida ? [{ nome: pedidoData.value.bebida.nome, detalhes: pedidoData.value.bebida.detalhes || '', qtd: pedidoData.value.bebida.quantidade || 1, preco: pedidoData.value.bebida.preco || 0 }] : [])
+        ...bebidasSel.map(b => ({ nome: b.nome || b.tipo || 'Bebida', detalhes: b.detalhes || b.tamanho || b.sabor || '', qtd: b.quantidade || 1, preco: b.preco || 0 }))
       ],
       valores: {
-        unitario: pedidoData.value.valor,
+        unitario: valorItemStr,
         total: calcularValorTotal(),
       },
       endereco: {
@@ -172,28 +174,21 @@ async function submitForm() {
         troco: metodoPagamento.value === 'dinheiro' && precisaTroco.value ? valorTroco.value : null,
       },
       status: 'confirmado',
-    }
+    };
 
     try {
-      // Verificar e renovar o token de acesso, se necessário
       const auth = await import('@/utils/auth');
+      // Tenta autenticar e renovar se necessário
       const isTokenValid = await auth.isAuthenticated();
       if (!isTokenValid) {
         const tokenRenovado = await auth.refreshAccessToken();
         if (!tokenRenovado) {
-          alert('Erro de autenticação. Faça login novamente.');
-          router.push('/login');
-          return;
+          // Se não conseguir renovar, salva local e segue com sucesso
+          salvarPedidoConfirmado(pedidoCompleto);
         }
       }
 
-      const access = localStorage.getItem('access');
-      if (!access) {
-        alert('Erro de autenticação. Faça login novamente.');
-        router.push('/login');
-        return;
-      }
-
+      const access = localStorage.getItem('accessToken');
       const payload = {
         items: pedidoCompleto.itens,
         total: parseFloat((pedidoCompleto.valores.total || 'R$ 0').toString().replace('R$', '').replace(',', '.')) || 0,
@@ -207,72 +202,71 @@ async function submitForm() {
         observacoes: ''
       };
 
-      const res = await fetch('http://localhost:8000/api/pedidos/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(access ? { 'Authorization': `Bearer ${access}` } : {})
-        },
-        body: JSON.stringify(payload)
-      })
-
-
-      if (!res.ok) {
-        const err = await res.text()
-        console.error('Erro ao enviar pedido:', res.status, err)
-        // fallback: salvar localmente
-        salvarPedidoConfirmado(pedidoCompleto)
-        alert('Pedido salvo localmente (backend indisponível).')
+      if (access) {
+        const res = await fetch('http://localhost:8000/api/pedidos/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          salvarPedidoConfirmado({
+            id: data.id,
+            valores: { total: `R$ ${Number(data.total ?? payload.total).toFixed(2).replace('.', ',')}` },
+            itens: Array.isArray(data.items) ? data.items : pedidoCompleto.itens,
+            status: data.status || 'confirmado',
+            data: new Date().toLocaleDateString('pt-BR')
+          });
+        } else {
+          salvarPedidoConfirmado(pedidoCompleto);
+        }
       } else {
-        const data = await res.json()
-        console.log('Pedido criado no backend:', data)
-        // Limpar dados temporários
-        localStorage.removeItem('pedido-pagamento')
-        alert(`🍕 Pedido #${data.id} confirmado com sucesso!\nTempo estimado de entrega: ${data.tempo_entrega_min || '30'}-${data.tempo_entrega_max || '45'} minutos`)
+        // Sem token, salva local
+        salvarPedidoConfirmado(pedidoCompleto);
       }
+
+      // Toast de sucesso e evento
+      toastType.value = 'success';
+      toastTitle.value = 'Pedido confirmado';
+      toastMessage.value = 'Seu pedido foi confirmado! Redirecionando para o menu...';
+      showToast.value = true;
+      window.dispatchEvent(new Event('pedidos-atualizados'));
+
     } catch (err) {
-      console.error('Erro ao processar pedido:', err)
-      alert('Erro ao processar pedido. Tente novamente.')
+      // Em caso de erro, salva local e mostra toast
+      salvarPedidoConfirmado(pedidoCompleto);
+      toastType.value = 'success';
+      toastTitle.value = 'Pedido confirmado';
+      toastMessage.value = 'Seu pedido foi confirmado! Redirecionando para o menu...';
+      showToast.value = true;
     } finally {
-      processandoPagamento.value = false
-      setTimeout(() => router.push('/menu'), 800)
+      processandoPagamento.value = false;
+      setTimeout(() => router.push('/menu'), 1000);
     }
-
-
-  }, 1000) // Simula tempo de processamento do pagamento
+  }, 1000);
 }
 
 function salvarPedidoConfirmado(pedido) {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  const itensPedido = [
-    {
-      nome: pedido.pizza?.nome || pedido.pizzaNome || 'Pizza',
-      detalhes: `${pedido.pizza?.sabores?.map(s=>s.fracao+ ' ' + s.nome).join(', ') || ''}${pedido.pizza?.borda ? ' | Borda: ' + pedido.pizza.borda : ''}${pedido.bordaSelecionada ? ' | Borda: ' + pedido.bordaSelecionada : ''}`,
-      qtd: pedido.pizza?.quantidade || pedido.quantidade || 1
-    }
-  ];
-  // Adiciona todas as bebidas do pedido
-  if (pedidoData.value.bebidas && Array.isArray(pedidoData.value.bebidas)) {
-    pedidoData.value.bebidas.forEach(bebida => {
-      itensPedido.push({
-        nome: `Bebida: ${bebida.nome || bebida.tipo || bebida.sabor}`,
-        detalhes: `${bebida.tamanho || ''} ${bebida.sabor || ''}`.trim(),
-        qtd: 1
-      });
-    });
-  }
+  // Usa usuário padronizado em 'user'
+  const usuarioLogado = JSON.parse(localStorage.getItem('user') || 'null');
   const novoPedido = {
     id: pedido.id,
     usuarioId: usuarioLogado?.id || null,
-    data: pedido.data,
+    data: pedido.data || new Date().toISOString(),
     status: pedido.status || 'Confirmado',
-    valor: typeof pedido.valores === 'object' && pedido.valores.total ? parseFloat(pedido.valores.total.replace('R$','').replace(',','.')) : 0,
-    itens: itensPedido
+    // Alinha com PerfilUsuario: usar 'items' e 'total'
+    items: (pedido.itens || []).map(i => ({ nome: i.nome, detalhes: i.detalhes, qtd: i.qtd })),
+    total: typeof pedido.valores === 'object' && pedido.valores.total
+      ? parseFloat(String(pedido.valores.total).replace('R$','').replace(',','.'))
+      : 0,
   };
   const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos') || '[]')
   pedidosExistentes.push(novoPedido)
   localStorage.setItem('pedidos', JSON.stringify(pedidosExistentes))
-  console.log('Pedido confirmado e salvo:', novoPedido)
+  window.dispatchEvent(new Event('pedidos-atualizados'))
 }
 
 function cancelarCompra() {

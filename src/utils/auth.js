@@ -19,8 +19,9 @@ export async function login(email, password) {
   }
   const data = await response.json();
   console.log('Tokens recebidos:', data); // Log para verificar os tokens recebidos
-  localStorage.setItem('access', data.access);
-  localStorage.setItem('refresh', data.refresh);
+  // Persistir tokens com chaves padronizadas
+  localStorage.setItem('accessToken', data.access);
+  localStorage.setItem('refreshToken', data.refresh);
 
   // Buscar dados do usuário logado
   try {
@@ -70,12 +71,12 @@ export async function register({ email, password, name }) {
 }
 
 export function logout() {
-  localStorage.removeItem('access');
-  localStorage.removeItem('refresh');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
 }
 
 export async function isAuthenticated() {
-  const access = localStorage.getItem('access');
+  const access = localStorage.getItem('accessToken');
   console.log('Token de acesso no isAuthenticated:', access); // Log para verificar o token
   if (!access) {
     console.warn('Nenhum token de acesso encontrado.');
@@ -110,7 +111,7 @@ export async function isAuthenticated() {
 }
 
 export async function refreshAccessToken() {
-  const refresh = localStorage.getItem('refresh');
+  const refresh = localStorage.getItem('refreshToken');
   if (!refresh) {
     console.warn('Nenhum token de atualização encontrado.');
     return false;
@@ -125,21 +126,21 @@ export async function refreshAccessToken() {
 
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem('access', data.access);
+      localStorage.setItem('accessToken', data.access);
       console.log('Token de acesso renovado e armazenado:', data.access);
       return true;
     } else {
       console.warn('Falha ao renovar o token de acesso. Limpando tokens e redirecionando para login.');
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       const errorText = await response.text();
       console.warn('Detalhes do erro:', errorText);
       return false;
     }
   } catch (error) {
     console.error('Erro ao tentar renovar o token de acesso:', error);
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     return false;
   }
 }

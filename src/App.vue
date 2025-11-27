@@ -400,16 +400,12 @@ nav a:first-of-type {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px #0002;
   width: 64px;
   height: 64px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: box-shadow 0.2s, transform 0.2s;
-  border: 2.5px solid #222;
 }
 .carrinho-float:hover,
 .carrinho-float.open {
