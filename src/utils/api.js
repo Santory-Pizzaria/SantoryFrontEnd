@@ -12,7 +12,7 @@ const api = axios.create({
 // Interceptor para adicionar o token de acesso no cabeçalho Authorization
 api.interceptors.request.use((config) => {
   const userStore = useUserStore();
-  const access = userStore.token; // Obter o token do Pinia
+  const access = userStore.accessToken || localStorage.getItem('accessToken');
   if (access) {
     config.headers.Authorization = `Bearer ${access}`;
     console.log('Token enviado na requisição:', access); // Log para verificar o token enviado

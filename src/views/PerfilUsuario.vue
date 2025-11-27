@@ -180,18 +180,20 @@ export default {
       this.$router.push('/login');
     },
     async atualizarHistoricoCompras() {
-      const token = localStorage.getItem('access');
-      if (!token) return;
+      const token = localStorage.getItem('accessToken') || localStorage.getItem('access');
       try {
+        if (!token) throw new Error('Sem token');
         const res = await fetch('http://localhost:8000/api/pedidos/', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('Erro ao buscar pedidos');
         const pedidos = await res.json();
-        this.historicoCompras = Array.isArray(pedidos) ? pedidos : [];
+        const lista = Array.isArray(pedidos) ? pedidos : (Array.isArray(pedidos?.results) ? pedidos.results : []);
+        // Se backend não trouxe nada, usar fallback local
+        this.historicoCompras = lista.length ? lista : JSON.parse(localStorage.getItem('pedidos') || '[]');
       } catch (error) {
         console.error('Erro ao carregar histórico de compras:', error);
-        this.historicoCompras = [];
+        this.historicoCompras = JSON.parse(localStorage.getItem('pedidos') || '[]');
       }
     },
     formatarData(data) {
