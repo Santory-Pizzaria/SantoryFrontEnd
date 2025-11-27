@@ -169,7 +169,7 @@ const router = createRouter({
     },
     {
       path: '/',
-      redirect: '/menu',
+      name: '/',
     },
   ],
 })
