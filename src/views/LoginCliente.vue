@@ -12,7 +12,7 @@ async function handleLogin() {
   try {
     await login(email.value, password.value)
     erro.value = ''
-    router.push('/menu')
+    router.push('/menu') // Redireciona usando o router, preservando o token
   } catch (e) {
     erro.value = e.message || 'Email ou senha inválidos'
   }
