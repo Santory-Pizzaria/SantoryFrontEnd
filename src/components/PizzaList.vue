@@ -1,10 +1,8 @@
-
- 
 <script setup>
-  
+
 
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { onUnmounted } from 'vue';
 
@@ -18,32 +16,40 @@ const usuario = ref({
   avatar: ''
 });
 
-// Carregar dados do usuário logado
+const defaultAvatar = '/src/assets/imagens/perfil.png';
+const avatarUrl = computed(() => {
+  const storeUser = userStore.user || JSON.parse(localStorage.getItem('user') || '{}');
+  const url = storeUser?.avatar || defaultAvatar;
+  // Adiciona cache-bust apenas para URLs http(s) ou caminhos absolutos, não para data URLs/base64
+  const isHttp = typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/'));
+  const bust = (isHttp && storeUser?.avatar) ? `?t=${Date.now()}` : '';
+  return isHttp ? (url + bust) : url;
+});
+
+// Carregar dados do usuário logado a partir do store (que já foi carregado do localStorage em main.js)
 onMounted(() => {
   usuario.value = {
-    nome: userStore.user?.name || '',
+    nome: userStore.user?.name || userStore.user?.nome || '',
     avatar: userStore.user?.avatar || ''
   };
 });
 
-
-function carregarDadosUsuario() {
-  const usuarioLogado = localStorage.getItem('usuarioLogado');
-  
-    try {
-      const dadosUsuario = JSON.parse(usuarioLogado);
-      usuario.value = {
-        nome: dadosUsuario.nome || '',
-        avatar: dadosUsuario.avatar || ''
-      };
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error);
-    }
-  }
+// Atualiza avatar quando userStore.user.avatar mudar
+watch(() => userStore.user?.avatar, (novoAvatar) => {
+  usuario.value.avatar = novoAvatar || '';
+});
 
 
 
 const currentImage = ref(0);
+
+const carouselImages = [
+  '/src/assets/imagens/carrosel1.png',
+  '/src/assets/imagens/carrosel2.png',
+  '/src/assets/imagens/carrosel-1.png',
+  '/src/assets/imagens/carrosel-2.png',
+  '/src/assets/imagens/carrosel-3.png'
+];
 
 function nextImage() {
   currentImage.value = (currentImage.value + 1) % carouselImages.length;
@@ -142,7 +148,7 @@ onUnmounted(() => {
       <div class="header-user-area-right">
         <button class="usuario-img-bola-btn" @click="router.push('/perfil')" aria-label="Perfil">
           <div class="usuario-img-bola">
-            <img :src="usuario.avatar || '/src/assets/imagens/perfil.png'" alt="Foto do usuário" />
+            <img :src="avatarUrl" alt="Foto do usuário" />
           </div>
         </button>
       </div>

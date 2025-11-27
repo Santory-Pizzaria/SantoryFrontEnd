@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const userStore = useUserStore();
 const qtdCarrinho = ref(0);
 const showMiniCart = ref(false);
 const carrinho = ref([]);
@@ -150,10 +152,25 @@ watch(carrinho, () => {
 }, { deep: true });
 
 const usuarioAvatar = ref('/src/assets/imagens/perfil.png');
-const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
-if (usuarioLogado && usuarioLogado.avatar) {
-  usuarioAvatar.value = usuarioLogado.avatar;
+
+// Fonte única: store Pinia carregada em main.js
+function atualizarAvatarDoHeader() {
+  const user = userStore.user || JSON.parse(localStorage.getItem('user') || '{}');
+  usuarioAvatar.value = user?.avatar || '/src/assets/imagens/perfil.png';
 }
+
+// Inicializa avatar
+atualizarAvatarDoHeader();
+
+// Reage a alterações no store
+watch(() => userStore.user?.avatar, () => {
+  atualizarAvatarDoHeader();
+});
+
+// Também reage a alterações no localStorage (quando outro fluxo salva diretamente)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'user') atualizarAvatarDoHeader();
+});
 </script>
 
 <template>

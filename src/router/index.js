@@ -175,9 +175,23 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  const userStr = localStorage.getItem('user');
+  const _access = localStorage.getItem('access');
+
+  // Permitir login e cadastro sempre
+  if (to.name === 'login' || to.name === 'cadastro') {
+    return next();
+  }
+
+  // Se já existe usuário no localStorage, permite navegar (melhor UX)
+  if (userStr) {
+    return next();
+  }
+
+  // Caso não haja 'user', valida token com backend
   const isAuthenticated = await import('@/utils/auth').then((auth) => auth.isAuthenticated());
 
-  if (to.name !== 'login' && to.name !== 'cadastro' && !isAuthenticated) {
+  if (!isAuthenticated) {
     next({ name: 'login' });
   } else {
     next();

@@ -1,4 +1,5 @@
 <script>
+import { useUserStore } from '@/stores/user';
 export default {
   name: 'PerfilUsuario',
   data() {
@@ -19,30 +20,31 @@ export default {
     };
   },
   mounted() {
+    this.userStore = useUserStore();
     this.carregarDadosUsuario();
     this.atualizarHistoricoCompras(); // Atualiza histórico ao montar
   },
   methods: {
     async carregarDadosUsuario() {
       // Verificar se usuário está logado
-      const usuarioLogado = localStorage.getItem('usuarioLogado');
+      const userStr = localStorage.getItem('user');
 
-      if (!usuarioLogado) {
+      if (!userStr) {
         // Se não estiver logado, redirecionar para login
         this.$router.push('/login');
         return;
       }
 
       try {
-        const dadosUsuario = JSON.parse(usuarioLogado);
+        const dadosUsuario = JSON.parse(userStr);
         // Gera id se não existir
         if (!dadosUsuario.id) {
           dadosUsuario.id = Math.floor(10000000 + Math.random() * 90000000).toString();
-          localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+          localStorage.setItem('user', JSON.stringify(dadosUsuario));
         }
         this.usuario = {
           id: dadosUsuario.id,
-          nome: dadosUsuario.nome || '',
+          nome: dadosUsuario.nome || dadosUsuario.name || '',
           email: dadosUsuario.email || '',
           telefone: dadosUsuario.telefone || '',
           avatar: dadosUsuario.avatar || '',
@@ -68,9 +70,10 @@ export default {
         this.usuario = { ...this.usuarioEdit };
 
         // Atualizar dados no localStorage
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const userStr = localStorage.getItem('user');
+        const userAtual = userStr ? JSON.parse(userStr) : {};
         const usuarioAtualizado = {
-          ...usuarioLogado,
+          ...userAtual,
           id: this.usuario.id,
           nome: this.usuario.nome,
           email: this.usuario.email,
@@ -78,11 +81,11 @@ export default {
           avatar: this.usuario.avatar,
         };
 
-        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+        localStorage.setItem('user', JSON.stringify(usuarioAtualizado));
 
         // Atualizar também na lista de usuários
         const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-        const indiceUsuario = usuarios.findIndex(user => user.id === usuarioLogado.id);
+        const indiceUsuario = usuarios.findIndex(user => user.id === userAtual.id);
 
         if (indiceUsuario !== -1) {
           usuarios[indiceUsuario] = {
@@ -94,6 +97,11 @@ export default {
             avatar: this.usuario.avatar,
           };
           localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+
+        // Atualiza a store Pinia para refletir no header
+        if (this.userStore?.updateUser) {
+          this.userStore.updateUser(usuarioAtualizado);
         }
 
         this.editando = false;
@@ -139,21 +147,27 @@ export default {
     },
     salvarAvatarImediato() {
       try {
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const userStr = localStorage.getItem('user');
+        const userAtual = userStr ? JSON.parse(userStr) : {};
         const usuarioAtualizado = {
-          ...usuarioLogado,
+          ...userAtual,
           avatar: this.usuario.avatar,
         };
 
-        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+        localStorage.setItem('user', JSON.stringify(usuarioAtualizado));
 
         // Atualizar também na lista de usuários
         const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-        const indiceUsuario = usuarios.findIndex(user => user.id === usuarioLogado.id);
+        const indiceUsuario = usuarios.findIndex(user => user.id === userAtual.id);
 
         if (indiceUsuario !== -1) {
           usuarios[indiceUsuario].avatar = this.usuario.avatar;
           localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+
+        // Atualiza a store Pinia para refletir no header
+        if (this.userStore?.updateUser) {
+          this.userStore.updateUser(usuarioAtualizado);
         }
 
       } catch (error) {

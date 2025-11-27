@@ -30,7 +30,7 @@ export async function login(email, password) {
     if (userResp.ok) {
       const userData = await userResp.json();
       console.log('Dados do usuário logado:', userData); // Log para verificar os dados do usuário
-      localStorage.setItem('usuarioLogado', JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(userData));
     } else {
       console.error('Erro ao buscar dados do usuário:', userResp.status, await userResp.text());
     }
@@ -91,7 +91,7 @@ export async function isAuthenticated() {
     if (response.ok) {
       const userData = await response.json();
       console.log('Usuário autenticado:', userData); // Log para verificar os dados do usuário
-      localStorage.setItem('usuarioLogado', JSON.stringify(userData)); // Atualiza o localStorage com os dados do usuário
+      localStorage.setItem('user', JSON.stringify(userData)); // Atualiza o localStorage com os dados do usuário
       return true;
     } else if (response.status === 401) {
       console.warn('Token expirado. Tentando renovar...');
